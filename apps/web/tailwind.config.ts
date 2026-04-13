@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { designTokens } from "./src/design/tokens";
 
 const config: Config = {
   darkMode: "class",
@@ -6,51 +7,80 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#0a0a0f",
+        background: "hsl(var(--background) / <alpha-value>)",
+        foreground: "hsl(var(--foreground) / <alpha-value>)",
         surface: {
-          DEFAULT: "#12121a",
-          light: "#1a1a2e",
-          lighter: "#24243a",
+          DEFAULT: "hsl(var(--surface) / <alpha-value>)",
+          light: "hsl(var(--surface-light) / <alpha-value>)",
+          lighter: "hsl(var(--surface-lighter) / <alpha-value>)",
+        },
+        panel: {
+          DEFAULT: "hsl(var(--panel) / <alpha-value>)",
+          elevated: "hsl(var(--panel-elevated) / <alpha-value>)",
         },
         primary: {
-          50: "#eef2ff",
-          100: "#e0e7ff",
-          200: "#c7d2fe",
-          300: "#a5b4fc",
-          400: "#818cf8",
-          500: "#6366f1",
-          600: "#4f46e5",
-          700: "#4338ca",
-          800: "#3730a3",
-          900: "#312e81",
-          950: "#1e1b4b",
+          50: "hsl(var(--primary-50) / <alpha-value>)",
+          100: "hsl(var(--primary-100) / <alpha-value>)",
+          200: "hsl(var(--primary-200) / <alpha-value>)",
+          300: "hsl(var(--primary-300) / <alpha-value>)",
+          400: "hsl(var(--primary-400) / <alpha-value>)",
+          500: "hsl(var(--primary-500) / <alpha-value>)",
+          600: "hsl(var(--primary-600) / <alpha-value>)",
+          700: "hsl(var(--primary-700) / <alpha-value>)",
+          800: "hsl(var(--primary-800) / <alpha-value>)",
+          900: "hsl(var(--primary-900) / <alpha-value>)",
+          950: "hsl(var(--primary-950) / <alpha-value>)",
         },
         accent: {
-          50: "#ecfdf5",
-          100: "#d1fae5",
-          200: "#a7f3d0",
-          300: "#6ee7b7",
-          400: "#34d399",
-          500: "#10b981",
-          600: "#059669",
-          700: "#047857",
-          800: "#065f46",
-          900: "#064e3b",
+          100: "hsl(var(--accent-100) / <alpha-value>)",
+          200: "hsl(var(--accent-200) / <alpha-value>)",
+          300: "hsl(var(--accent-300) / <alpha-value>)",
+          400: "hsl(var(--accent-400) / <alpha-value>)",
+          500: "hsl(var(--accent-500) / <alpha-value>)",
+          600: "hsl(var(--accent-600) / <alpha-value>)",
+          700: "hsl(var(--accent-700) / <alpha-value>)",
         },
-        border: "rgba(255, 255, 255, 0.08)",
-        "border-light": "rgba(255, 255, 255, 0.12)",
+        success: "hsl(var(--success) / <alpha-value>)",
+        warning: "hsl(var(--warning) / <alpha-value>)",
+        danger: "hsl(var(--danger) / <alpha-value>)",
+        info: "hsl(var(--info) / <alpha-value>)",
+        border: "hsl(var(--border))",
+        "border-light": "hsl(var(--border-light))",
+        overlay: "hsl(var(--overlay))",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: designTokens.typography.fontFamily.sans,
+        mono: designTokens.typography.fontFamily.mono,
       },
-      backdropBlur: {
-        xs: "2px",
+      fontSize: designTokens.typography.fontSize,
+      spacing: designTokens.spacing,
+      borderRadius: {
+        none: "var(--radius-none)",
+        sm: "var(--radius-sm)",
+        DEFAULT: "var(--radius-md)",
+        md: "var(--radius-md)",
+        lg: "var(--radius-lg)",
+        xl: "var(--radius-xl)",
+        "2xl": "var(--radius-2xl)",
+        full: "var(--radius-full)",
+      },
+      boxShadow: {
+        xs: "var(--shadow-xs)",
+        sm: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        "glow-primary": "var(--shadow-glow-primary)",
+        "glow-accent": "var(--shadow-glow-accent)",
       },
       animation: {
-        "fade-in": "fadeIn 0.5s ease-out",
-        "slide-up": "slideUp 0.5s ease-out",
-        "slide-in-left": "slideInLeft 0.3s ease-out",
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "fade-in": "fadeIn var(--motion-duration-normal) var(--motion-ease-standard)",
+        "slide-up":
+          "slideUp var(--motion-duration-normal) var(--motion-ease-emphasized)",
+        "slide-in-left":
+          "slideInLeft var(--motion-duration-fast) var(--motion-ease-standard)",
+        "pulse-slow":
+          "pulse 3s var(--motion-ease-standard) infinite",
+        shimmer: "shimmer 1.8s linear infinite",
         "score-fill": "scoreFill 1.5s ease-out forwards",
       },
       keyframes: {
@@ -65,6 +95,10 @@ const config: Config = {
         slideInLeft: {
           "0%": { opacity: "0", transform: "translateX(-10px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
         },
         scoreFill: {
           "0%": { strokeDashoffset: "283" },

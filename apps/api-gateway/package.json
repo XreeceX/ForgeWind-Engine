@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/api-gateway",
+  "name": "@careeros-forge-engine/api-gateway",
   "version": "0.1.0",
   "private": true,
   "scripts": {

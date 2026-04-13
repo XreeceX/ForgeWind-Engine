@@ -2,10 +2,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: user-service
-  namespace: career-os
+  namespace: careeros-forge
   labels:
     app: user-service
-    app.kubernetes.io/part-of: career-os
+    app.kubernetes.io/part-of: careeros-forge
 spec:
   type: ClusterIP
   selector:

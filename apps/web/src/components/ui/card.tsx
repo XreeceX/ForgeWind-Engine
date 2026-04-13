@@ -1,47 +1,96 @@
 import { cn } from "@/lib/cn";
+import type { HTMLAttributes } from "react";
 
-interface CardProps {
-  children: React.ReactNode;
-  className?: string;
+type CardVariant = "default" | "elevated" | "interactive";
+
+interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: CardVariant;
   hover?: boolean;
 }
 
-interface CardHeaderProps {
-  children: React.ReactNode;
-  className?: string;
-}
+const variantStyles: Record<CardVariant, string> = {
+  default: "panel",
+  elevated: "panel-elevated",
+  interactive: "panel-interactive",
+};
 
-interface CardFooterProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export function Card({ children, className, hover = false }: CardProps) {
+export function Card({
+  children,
+  className,
+  variant = "default",
+  hover = false,
+  ...props
+}: CardProps) {
+  const resolvedVariant = hover ? "interactive" : variant;
   return (
     <div
       className={cn(
-        "rounded-xl border border-border bg-surface/80 backdrop-blur-sm",
-        hover && "transition-all duration-200 hover:border-border-light hover:bg-surface-light/50",
+        variantStyles[resolvedVariant],
         className
       )}
+      {...props}
     >
       {children}
     </div>
   );
 }
 
-export function CardHeader({ children, className }: CardHeaderProps) {
+export function CardHeader({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("border-b border-border px-6 py-4", className)}>
+    <div className={cn("border-b border-border px-6 py-4", className)} {...props}>
       {children}
     </div>
   );
 }
 
-export function CardFooter({ children, className }: CardFooterProps) {
+export function CardContent({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("border-t border-border px-6 py-4", className)}>
+    <div className={cn("px-6 py-4", className)} {...props}>
       {children}
     </div>
+  );
+}
+
+export function CardFooter({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div className={cn("border-t border-border px-6 py-4", className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+export function CardTitle({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLHeadingElement>) {
+  return (
+    <h3 className={cn("text-base font-semibold text-white", className)} {...props}>
+      {children}
+    </h3>
+  );
+}
+
+export function CardDescription({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <p className={cn("text-sm text-slate-400", className)} {...props}>
+      {children}
+    </p>
   );
 }

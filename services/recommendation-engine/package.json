@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/recommendation-engine",
+  "name": "@careeros-forge-engine/recommendation-engine",
   "version": "0.1.0",
   "private": true,
   "scripts": {

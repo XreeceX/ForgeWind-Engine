@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/job-service",
+  "name": "@careeros-forge-engine/job-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {

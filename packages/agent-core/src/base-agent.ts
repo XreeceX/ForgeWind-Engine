@@ -11,6 +11,13 @@ import type {
 } from "./types.js";
 import { messagesToChatParams } from "./types.js";
 import { LLMClient } from "./llm-client.js";
+import {
+  DefaultMemoryOrchestrator,
+  formatContextInjectionMessage,
+  mergeRetrievedDocuments,
+  type MemoryOrchestrator,
+} from "./memory/memory.orchestrator.js";
+import type { AgentContextWithMemory } from "./memory/memory.types.js";
 
 const MAX_TOOL_ITERATIONS = 10;
 
@@ -18,8 +25,14 @@ export abstract class BaseAgent {
   protected readonly llm: LLMClient;
   protected readonly logger: pino.Logger;
   private readonly agentName: string;
+  private readonly memoryOrchestrator: MemoryOrchestrator;
 
-  constructor(openai: OpenAI, agentName: string, logger?: pino.Logger) {
+  constructor(
+    openai: OpenAI,
+    agentName: string,
+    logger?: pino.Logger,
+    memoryOrchestrator?: MemoryOrchestrator,
+  ) {
     this.agentName = agentName;
     this.logger =
       logger ??
@@ -28,6 +41,11 @@ export abstract class BaseAgent {
         level: process.env["LOG_LEVEL"] ?? "info",
       });
     this.llm = new LLMClient(openai, this.logger);
+    this.memoryOrchestrator =
+      memoryOrchestrator ??
+      new DefaultMemoryOrchestrator({
+        logger: this.logger.child({ component: "memory-orchestrator" }),
+      });
   }
 
   protected abstract getSystemPrompt(context: AgentContext): string;
@@ -42,6 +60,14 @@ export abstract class BaseAgent {
     const startTime = Date.now();
     const toolsUsed: string[] = [];
     const aggregatedTokens: TokenUsage = { prompt: 0, completion: 0 };
+    let activeContext: AgentContextWithMemory = {
+      ...context,
+      memory: {
+        conversationHistory: context.memory.conversationHistory,
+        shortTermContext: context.memory.shortTermContext,
+        retrievedDocuments: context.memory.retrievedDocuments,
+      },
+    };
 
     this.logger.info(
       { taskId: context.taskId, userId: context.userId },
@@ -49,17 +75,35 @@ export abstract class BaseAgent {
     );
 
     try {
+      activeContext = await this.memoryOrchestrator.beforeExecution(context);
+
       const tools = this.getTools();
       const toolMap = new Map(tools.map((t) => [t.name, t]));
 
       const messages: Message[] = [
-        ...context.memory.conversationHistory,
-        { role: "system", content: this.getSystemPrompt(context) },
-        { role: "user", content: this.buildUserMessage(context) },
+        ...activeContext.memory.conversationHistory,
+        { role: "system", content: this.getSystemPrompt(activeContext) },
       ];
 
-      if (context.memory.retrievedDocuments.length > 0) {
-        const docsContext = context.memory.retrievedDocuments
+      const contextInjection = formatContextInjectionMessage(
+        activeContext.memory.contextPackage,
+      );
+      if (contextInjection) {
+        messages.push({ role: "system", content: contextInjection });
+      }
+
+      messages.push({
+        role: "user",
+        content: this.buildUserMessage(activeContext),
+      });
+
+      const mergedDocuments = mergeRetrievedDocuments(
+        context.memory.retrievedDocuments,
+        activeContext.memory.retrievedDocuments,
+      );
+
+      if (mergedDocuments.length > 0) {
+        const docsContext = mergedDocuments
           .map(
             (doc) =>
               `[Document: ${doc.id} (relevance: ${doc.relevanceScore.toFixed(2)})]\n${doc.content}`,
@@ -135,7 +179,7 @@ export abstract class BaseAgent {
 
       this.logger.info(
         {
-          taskId: context.taskId,
+          taskId: activeContext.taskId,
           durationMs,
           tokensUsed: aggregatedTokens,
           toolsUsed,
@@ -144,7 +188,7 @@ export abstract class BaseAgent {
         `${this.agentName} execution complete`,
       );
 
-      return {
+      const result: AgentExecutionResult = {
         success: true,
         output: parsed.output,
         reasoning: parsed.reasoning,
@@ -153,6 +197,18 @@ export abstract class BaseAgent {
         durationMs,
         toolsUsed: [...new Set(toolsUsed)],
       };
+
+      await this.memoryOrchestrator.afterExecution(activeContext, {
+        agentName: this.agentName,
+        taskId: activeContext.taskId,
+        success: true,
+        durationMs,
+        confidence: parsed.confidence,
+        output: parsed.output,
+        promptInput: activeContext.input,
+      });
+
+      return result;
     } catch (error: unknown) {
       const durationMs = Date.now() - startTime;
       const errorMessage =
@@ -163,7 +219,7 @@ export abstract class BaseAgent {
         `${this.agentName} execution failed`,
       );
 
-      return {
+      const result: AgentExecutionResult = {
         success: false,
         output: null,
         reasoning: `Execution failed: ${errorMessage}`,
@@ -172,6 +228,18 @@ export abstract class BaseAgent {
         durationMs,
         toolsUsed: [...new Set(toolsUsed)],
       };
+
+      await this.memoryOrchestrator.afterExecution(activeContext, {
+        agentName: this.agentName,
+        taskId: activeContext.taskId,
+        success: false,
+        durationMs,
+        confidence: 0,
+        output: null,
+        promptInput: activeContext.input,
+      });
+
+      return result;
     }
   }
 

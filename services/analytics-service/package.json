@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/analytics-service",
+  "name": "@careeros-forge-engine/analytics-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {

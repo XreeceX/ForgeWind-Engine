@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/agent-core",
+  "name": "@careeros-forge-engine/agent-core",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",

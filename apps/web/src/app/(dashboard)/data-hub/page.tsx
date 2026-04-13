@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Header } from "@/components/layout/header";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { createAiSession, streamAiSession } from "@/lib/ai-stream";
 import { useAuthStore } from "@/stores/auth.store";
 import { useWorkflowStore } from "@/stores/workflow.store";
 import { Github, Sparkles } from "lucide-react";
@@ -25,19 +26,27 @@ const INTEGRATION_BASE_URL =
   process.env.NEXT_PUBLIC_INTEGRATION_SERVICE_URL ?? "http://localhost:4010/api/v1";
 const CONTENT_BASE_URL =
   process.env.NEXT_PUBLIC_CONTENT_SERVICE_URL ?? "http://localhost:4012/api/v1";
-const WORKFLOW_BASE_URL =
-  process.env.NEXT_PUBLIC_WORKFLOW_SERVICE_URL ?? "http://localhost:4013/api/v1";
 
 export default function DataHubPage() {
   const user = useAuthStore((s) => s.user);
+  const accessToken = useAuthStore((s) => s.accessToken);
   const userId = user?.id ?? "1";
+  const streamCleanupRef = useRef<(() => void) | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [generated, setGenerated] = useState("");
   const {
     sessionId,
+    state,
     messages,
+    actionSuggestions,
+    memoryContext,
+    finalOutput,
+    streamError,
     pushMessage,
+    ingestEvent,
     setSessionId,
+    setState,
+    setStreamError,
     setSelectedRepoId,
     selectedRepoId,
     clear,
@@ -78,35 +87,45 @@ export default function DataHubPage() {
     onError: () => toast.error("Import failed"),
   });
 
-  const startWorkflowMutation = useMutation({
-    mutationFn: async (repoId: string) => {
-      const response = await api.post<{ sessionId: string; prompt: string }>(
-        `${WORKFLOW_BASE_URL}/workflow/start`,
-        { userId, repoId },
-      );
-      return response.data;
-    },
-    onSuccess: (data) => {
-      setSessionId(data.sessionId);
-      pushMessage({ role: "assistant", text: data.prompt });
-    },
-  });
-
-  const workflowResponseMutation = useMutation({
-    mutationFn: async (text: string) => {
-      if (!sessionId) return null;
-      const response = await api.post<{ prompt: string; step: string }>(
-        `${WORKFLOW_BASE_URL}/workflow/respond`,
+  const startSessionMutation = useMutation({
+    mutationFn: async ({ repoId, intent }: { repoId: string; intent: string }) => {
+      if (!accessToken) {
+        throw new Error("No access token");
+      }
+      return createAiSession(
         {
-          sessionId,
-          response: text,
+          intent,
+          selectedRepoId: repoId,
         },
+        accessToken,
       );
-      return response.data;
     },
-    onSuccess: (data) => {
-      if (!data) return;
-      pushMessage({ role: "assistant", text: data.prompt });
+    onSuccess: async (data) => {
+      if (!accessToken) return;
+
+      streamCleanupRef.current?.();
+      setSessionId(data.sessionId);
+      setStreamError(null);
+      setState("CONNECTING");
+
+      const stop = await streamAiSession({
+        sessionId: data.sessionId,
+        accessToken,
+        onEvent: ingestEvent,
+        onError: (error) => {
+          setStreamError(error.message);
+          toast.error("AI stream disconnected");
+        },
+        onDone: () => {
+          toast.success("AI session complete");
+        },
+      });
+
+      streamCleanupRef.current = stop;
+    },
+    onError: () => {
+      toast.error("Could not start AI session");
+      setState("IDLE");
     },
   });
 
@@ -129,6 +148,12 @@ export default function DataHubPage() {
   });
 
   const selectedCount = useMemo(() => selectedIds.length, [selectedIds.length]);
+
+  useEffect(() => {
+    return () => {
+      streamCleanupRef.current?.();
+    };
+  }, []);
 
   return (
     <div>
@@ -209,6 +234,8 @@ export default function DataHubPage() {
                 size="sm"
                 variant="secondary"
                 onClick={() => {
+                  streamCleanupRef.current?.();
+                  streamCleanupRef.current = null;
                   clear();
                   setGenerated("");
                 }}
@@ -236,7 +263,10 @@ export default function DataHubPage() {
                   size="sm"
                   onClick={() => {
                     setSelectedRepoId(String(repo.id));
-                    startWorkflowMutation.mutate(String(repo.id));
+                    startSessionMutation.mutate({
+                      repoId: String(repo.id),
+                      intent: "analyze repo and generate post ideas",
+                    });
                   }}
                 >
                   {repo.name}
@@ -244,10 +274,17 @@ export default function DataHubPage() {
               ))}
           </div>
 
+          <div className="rounded-lg border border-border bg-surface-light/20 p-3 text-xs text-slate-400">
+            Session: <span className="text-slate-200">{sessionId ?? "none"}</span>
+            {" • "}
+            State: <span className="text-primary-300">{state}</span>
+            {startSessionMutation.isPending ? " • Opening stream..." : ""}
+          </div>
+
           <div className="rounded-lg border border-border bg-surface-light/20 p-4 min-h-[220px]">
             {messages.length === 0 ? (
               <p className="text-sm text-slate-400">
-                Select a repo to start the AI Q&A workflow.
+                Select a repo to start the AI orchestration stream.
               </p>
             ) : (
               <div className="space-y-3">
@@ -263,22 +300,54 @@ export default function DataHubPage() {
             )}
           </div>
 
-          <div className="flex gap-2">
-            {["Project showcase", "Professional", "Hiring managers"].map((preset) => (
-              <Button
-                key={preset}
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  pushMessage({ role: "user", text: preset });
-                  workflowResponseMutation.mutate(preset);
-                }}
-                disabled={!sessionId}
-              >
-                {preset}
-              </Button>
-            ))}
+          <div className="flex flex-wrap gap-2">
+            {actionSuggestions.length === 0 ? (
+              <p className="text-xs text-slate-500">
+                Action suggestions will appear during the stream.
+              </p>
+            ) : (
+              actionSuggestions.map((action) => (
+                <Button
+                  key={action}
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    if (!selectedRepoId) return;
+                    pushMessage({ role: "user", text: action });
+                    startSessionMutation.mutate({
+                      repoId: selectedRepoId,
+                      intent: action,
+                    });
+                  }}
+                >
+                  {action}
+                </Button>
+              ))
+            )}
           </div>
+
+          {memoryContext && (
+            <div className="rounded-lg border border-border bg-surface-light/20 p-4 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">
+                Memory Context
+              </p>
+              <p>Career Goal: {memoryContext.careerGoal}</p>
+              <p>Skills: {memoryContext.skills.join(", ")}</p>
+              <p>Tone: {memoryContext.preferredTone}</p>
+            </div>
+          )}
+
+          {finalOutput && (
+            <div className="rounded-lg border border-border bg-surface-light/30 p-4">
+              <p className="text-sm whitespace-pre-wrap text-slate-200">{finalOutput}</p>
+            </div>
+          )}
+
+          {streamError && (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+              <p className="text-sm text-red-300">{streamError}</p>
+            </div>
+          )}
 
           {generated && (
             <div className="rounded-lg border border-border bg-surface-light/30 p-4">

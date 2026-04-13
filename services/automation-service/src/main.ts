@@ -25,7 +25,7 @@ async function bootstrap(): Promise<void> {
   });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('CareerOS Automation Service')
+    .setTitle('CareerOS Forge Engine Automation Service')
     .setDescription('Application prep, scheduling, and outreach automation')
     .setVersion('1.0')
     .build();

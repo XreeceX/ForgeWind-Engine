@@ -8,15 +8,15 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: career_os
-      POSTGRES_PASSWORD: career_os_dev
-      POSTGRES_DB: career_os
+      POSTGRES_USER: careeros_forge
+      POSTGRES_PASSWORD: careeros_forge_dev
+      POSTGRES_DB: careeros_forge
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - career-os-network
+      - careeros-forge-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U career_os -d career_os"]
+      test: ["CMD-SHELL", "pg_isready -U careeros_forge -d careeros_forge"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,7 +30,7 @@ services:
     volumes:
       - redis-data:/data
     networks:
-      - career-os-network
+      - careeros-forge-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -44,16 +44,16 @@ services:
     ports:
       - "5050:80"
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@careeros.dev
+      PGADMIN_DEFAULT_EMAIL: admin@forgeengine.dev
       PGADMIN_DEFAULT_PASSWORD: admin
     networks:
-      - career-os-network
+      - careeros-forge-network
     depends_on:
       postgres:
         condition: service_healthy
 
 networks:
-  career-os-network:
+  careeros-forge-network:
     driver: bridge
 
 volumes:

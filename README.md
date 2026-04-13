@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 CareerOS
+# 🚀 CareerOS Forge Engine
 
 ### The AI-Powered Career Operating System
 
@@ -23,11 +23,11 @@
 
 ---
 
-## What is CareerOS?
+## What is CareerOS Forge Engine?
 
-CareerOS is a full-stack, production-grade **AI Career Operating System** built as a microservices monorepo. It combines the power of OpenAI's GPT-4o with a custom multi-agent architecture to automate and optimize every aspect of a modern career — from LinkedIn profile optimization and resume parsing to intelligent job matching, content strategy, and outreach automation.
+CareerOS Forge Engine is a full-stack, production-grade **AI Career Operating System** built as a microservices monorepo. It combines the power of OpenAI's GPT-4o with a custom multi-agent architecture to automate and optimize every aspect of a modern career — from LinkedIn profile optimization and resume parsing to intelligent job matching, content strategy, and outreach automation.
 
-Unlike simple career tools that solve a single problem, CareerOS treats your career as a **system** — an interconnected set of inputs (skills, experience, goals) that feed into intelligent engines producing actionable outputs (optimized profiles, matched jobs, generated content, networking strategies). Six specialized AI agents coordinate across domains, each with dedicated tools and reasoning capabilities, orchestrated through a central gateway.
+Unlike simple career tools that solve a single problem, CareerOS Forge Engine treats your career as a **system** — an interconnected set of inputs (skills, experience, goals) that feed into intelligent engines producing actionable outputs (optimized profiles, matched jobs, generated content, networking strategies). Six specialized AI agents coordinate across domains, each with dedicated tools and reasoning capabilities, orchestrated through a central gateway.
 
 The platform is engineered with the same patterns used in production systems at scale: event-driven microservices, an API gateway for routing and auth, vector databases for semantic search, job queues for async processing, and infrastructure-as-code for reproducible deployments to AWS via Terraform and Kubernetes.
 
@@ -218,10 +218,10 @@ The gateway (`apps/api-gateway`) is the single entry point for all client reques
 
 | Package | Purpose |
 |---------|---------|
-| `@career-os/shared-types` | TypeScript interfaces, enums, and API envelope types across all services |
-| `@career-os/config` | Zod-validated environment schemas and application constants |
-| `@career-os/utils` | Logger (Pino), nanoid generation, `Result<T, E>` type, retry utilities |
-| `@career-os/agent-core` | BaseAgent framework, LLMClient (OpenAI), agent execution types |
+| `@careeros-forge/shared-types` | TypeScript interfaces, enums, and API envelope types across all services |
+| `@careeros-forge/config` | Zod-validated environment schemas and application constants |
+| `@careeros-forge/utils` | Logger (Pino), nanoid generation, `Result<T, E>` type, retry utilities |
+| `@careeros-forge/agent-core` | BaseAgent framework, LLMClient (OpenAI), agent execution types |
 
 ---
 
@@ -264,7 +264,7 @@ The gateway (`apps/api-gateway`) is the single entry point for all client reques
 ## 📁 Project Structure
 
 ```
-career-os/
+careeros-forge/
 ├── apps/
 │   ├── web/                          # Next.js 14 frontend
 │   │   ├── src/
@@ -310,7 +310,7 @@ career-os/
 │   │   └── docker-compose.yml        # PostgreSQL 16, Redis 7, pgAdmin
 │   ├── k8s/
 │   │   ├── namespace.yaml
-│   │   ├── ingress.yaml              # api.careeros.dev with TLS
+│   │   ├── ingress.yaml              # api.forgeengine.dev with TLS
 │   │   ├── configmap.yaml
 │   │   ├── secrets.yaml
 │   │   └── deployments/              # api-gateway, user-service
@@ -348,8 +348,8 @@ career-os/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/career-os.git
-cd career-os
+git clone https://github.com/your-username/careeros-forge.git
+cd careeros-forge
 ```
 
 ### 2. Install dependencies
@@ -368,13 +368,13 @@ Edit `.env` with your credentials:
 
 ```env
 # Required
-DATABASE_URL=postgresql://career_os:career_os_dev@localhost:5432/career_os
+DATABASE_URL=postgresql://careeros_forge:careeros_forge_dev@localhost:5432/careeros_forge
 OPENAI_API_KEY=sk-...
 
 # Optional
 REDIS_URL=redis://localhost:6379
 PINECONE_API_KEY=...
-PINECONE_INDEX=career-os
+PINECONE_INDEX=careeros-forge
 JWT_SECRET=your-secret-key
 LINKEDIN_CLIENT_ID=...
 LINKEDIN_CLIENT_SECRET=...
@@ -472,7 +472,7 @@ curl -X POST http://localhost:4000/api/v1/content/generate \
 
 ## 🤖 AI Agents
 
-CareerOS features six specialized AI agents, each built on the `BaseAgent` framework from `@career-os/agent-core`. Agents use OpenAI's GPT-4o with function calling to autonomously reason about tasks and invoke domain-specific tools.
+CareerOS Forge Engine features six specialized AI agents, each built on the `BaseAgent` framework from `@careeros-forge/agent-core`. Agents use OpenAI's GPT-4o with function calling to autonomously reason about tasks and invoke domain-specific tools.
 
 ### How Agents Work
 
@@ -553,9 +553,9 @@ pnpm format        # Prettier formatting
    {
      "name": "my-service",
      "dependencies": {
-       "@career-os/shared-types": "workspace:*",
-       "@career-os/config": "workspace:*",
-       "@career-os/utils": "workspace:*"
+       "@careeros-forge/shared-types": "workspace:*",
+       "@careeros-forge/config": "workspace:*",
+       "@careeros-forge/utils": "workspace:*"
      }
    }
    ```
@@ -574,8 +574,8 @@ pnpm format        # Prettier formatting
 
 - **Strict TypeScript** — `noUncheckedIndexedAccess`, `strictNullChecks`, `noImplicitAny`
 - **Zod validation** — All environment variables validated at startup
-- **Result type** — Use `Result<T, E>` from `@career-os/utils` for error handling
-- **API envelope** — All responses wrapped in `ApiResponse<T>` from `@career-os/shared-types`
+- **Result type** — Use `Result<T, E>` from `@careeros-forge/utils` for error handling
+- **API envelope** — All responses wrapped in `ApiResponse<T>` from `@careeros-forge/shared-types`
 - **Pino logging** — Structured JSON logging across all services
 - **Husky + lint-staged** — Pre-commit hooks for linting and formatting
 
@@ -602,7 +602,7 @@ kubectl apply -f infra/k8s/deployments/
 kubectl apply -f infra/k8s/ingress.yaml
 ```
 
-- **Ingress** configured for `api.careeros.dev` with TLS via cert-manager
+- **Ingress** configured for `api.forgeengine.dev` with TLS via cert-manager
 - **Health probes** on each deployment for automated restarts
 - **Resource limits** defined per container
 

@@ -10,6 +10,7 @@ import { ProfileModule } from './modules/profile/profile.module';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { ContentModule } from './modules/content/content.module';
 import { AgentsModule } from './modules/agents/agents.module';
+import { AiSessionModule } from './modules/ai-session/ai-session.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AgentsModule } from './modules/agents/agents.module';
     JobsModule,
     ContentModule,
     AgentsModule,
+    AiSessionModule,
   ],
   providers: [
     {

@@ -18,6 +18,9 @@ export interface AgentMemory {
   conversationHistory: Message[];
   shortTermContext: Record<string, unknown>;
   retrievedDocuments: Document[];
+  sessionContext?: unknown;
+  contextPackage?: unknown;
+  personalizationContext?: unknown;
 }
 
 export interface AgentContext {

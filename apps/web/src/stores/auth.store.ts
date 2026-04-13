@@ -51,6 +51,6 @@ export const useAuthStore = create<AuthState>()(
           user: state.user ? { ...state.user, ...updates } : null,
         })),
     }),
-    { name: "career-os-auth" }
+    { name: "careeros-forge-auth" }
   )
 );

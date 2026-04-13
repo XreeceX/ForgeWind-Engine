@@ -25,7 +25,7 @@ async function bootstrap(): Promise<void> {
   });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('CareerOS Analytics Service')
+    .setTitle('CareerOS Forge Engine Analytics Service')
     .setDescription('Career analytics, tracking, feedback, and reporting')
     .setVersion('1.0')
     .build();

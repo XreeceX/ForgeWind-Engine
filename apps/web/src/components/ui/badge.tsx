@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import type { HTMLAttributes } from "react";
 
 type BadgeVariant =
   | "default"
@@ -34,5 +35,39 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
     >
       {children}
     </span>
+  );
+}
+
+type StatusVariant = "online" | "busy" | "offline" | "warning";
+
+interface StatusIndicatorProps extends HTMLAttributes<HTMLSpanElement> {
+  status?: StatusVariant;
+  pulse?: boolean;
+}
+
+const statusStyles: Record<StatusVariant, string> = {
+  online: "bg-success",
+  busy: "bg-danger",
+  offline: "bg-slate-500",
+  warning: "bg-warning",
+};
+
+export function StatusIndicator({
+  status = "online",
+  pulse = true,
+  className,
+  ...props
+}: StatusIndicatorProps) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-2.5 w-2.5 rounded-full",
+        statusStyles[status],
+        pulse && "animate-pulse",
+        className
+      )}
+      aria-label={`status-${status}`}
+      {...props}
+    />
   );
 }

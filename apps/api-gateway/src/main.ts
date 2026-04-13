@@ -28,8 +28,8 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('CareerOS API')
-    .setDescription('AI Career Operating System — unified API gateway')
+    .setTitle('CareerOS Forge Engine API')
+    .setDescription('CareerOS Forge Engine — unified API gateway')
     .setVersion('0.1.0')
     .addBearerAuth()
     .build();

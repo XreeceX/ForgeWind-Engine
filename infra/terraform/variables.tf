@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "Name of the project, used for resource naming"
   type        = string
-  default     = "careeros"
+  default     = "careeros-forge"
 }
 
 variable "aws_region" {
@@ -30,13 +30,13 @@ variable "db_instance_class" {
 variable "db_name" {
   description = "Name of the PostgreSQL database"
   type        = string
-  default     = "career_os"
+  default     = "careeros_forge"
 }
 
 variable "db_username" {
   description = "Master username for the RDS instance"
   type        = string
-  default     = "career_os"
+  default     = "careeros_forge"
   sensitive   = true
 }
 

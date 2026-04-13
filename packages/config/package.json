@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/config",
+  "name": "@careeros-forge-engine/config",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",

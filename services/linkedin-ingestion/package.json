@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/linkedin-ingestion",
+  "name": "@careeros-forge-engine/linkedin-ingestion",
   "version": "0.1.0",
   "private": true,
   "scripts": {

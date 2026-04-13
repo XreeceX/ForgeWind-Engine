@@ -1,8 +1,8 @@
 {
-  "name": "career-os",
+  "name": "careeros-forge-engine",
   "version": "0.1.0",
   "private": true,
-  "description": "AI Career Operating System — profile optimization, job intelligence, skill gap analysis, and autonomous career assistance",
+  "description": "CareerOS Forge Engine — profile optimization, job intelligence, skill gap analysis, and autonomous career assistance",
   "author": "reece",
   "license": "MIT",
   "engines": {

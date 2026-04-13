@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/content-engine",
+  "name": "@careeros-forge-engine/content-engine",
   "version": "0.1.0",
   "private": true,
   "scripts": {

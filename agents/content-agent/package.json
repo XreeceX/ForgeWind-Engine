@@ -1,5 +1,5 @@
 {
-  "name": "@career-os/content-agent",
+  "name": "@careeros-forge-engine/content-agent",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",
@@ -10,8 +10,8 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@career-os/agent-core": "workspace:*",
-    "@career-os/shared-types": "workspace:*",
+    "@careeros-forge-engine/agent-core": "workspace:*",
+    "@careeros-forge-engine/shared-types": "workspace:*",
     "openai": "^4.70.0",
     "pino": "^9.0.0"
   },

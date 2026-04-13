@@ -5,13 +5,13 @@ import {
   type AgentContext,
   type AgentTool,
   type ToolParameters,
-} from "@career-os/agent-core";
+} from "@careeros-forge-engine/agent-core";
 import type {
   Job,
   ExperienceLevel,
   LinkedInProfile,
   CareerGoals,
-} from "@career-os/shared-types";
+} from "@careeros-forge-engine/shared-types";
 
 interface JobSearchResult {
   jobs: ScoredJob[];

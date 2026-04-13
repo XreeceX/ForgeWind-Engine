@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: careeros-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: career_os
+      POSTGRES_PASSWORD: career_os_dev
+      POSTGRES_DB: career_os
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - career-os-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U career_os -d career_os"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: careeros-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - career-os-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: careeros-pgadmin
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@careeros.dev
+      PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - career-os-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+networks:
+  career-os-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:

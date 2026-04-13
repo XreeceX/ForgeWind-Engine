@@ -1,0 +1,21 @@
+{
+  "name": "@career-os/content-agent",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "lint": "eslint src/"
+  },
+  "dependencies": {
+    "@career-os/agent-core": "workspace:*",
+    "@career-os/shared-types": "workspace:*",
+    "openai": "^4.70.0",
+    "pino": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

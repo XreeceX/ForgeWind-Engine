@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum RemotePreference {
+  REMOTE
+  HYBRID
+  ONSITE
+  ANY
+}
+
+enum AuthProvider {
+  LOCAL
+  LINKEDIN
+  GOOGLE
+}
+
+enum ApplicationStatus {
+  SAVED
+  APPLIED
+  SCREENING
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String?
+  firstName    String
+  lastName     String
+  avatarUrl    String?
+  linkedinUrl  String?
+  githubUrl    String?
+  portfolioUrl String?
+  role         UserRole  @default(FREE)
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  authProviders    AuthProvider[]       @default([LOCAL])
+  careerGoals      CareerGoal?
+  preferences      UserPreference?
+  resumes          Resume[]
+  applications     Application[]
+  agentTasks       AgentTask[]
+  savedJobs        SavedJob[]
+  linkedinProfile  LinkedInProfileData?
+  contentHistory   ContentHistory[]
+  skillAssessments SkillAssessment[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model CareerGoal {
+  id               String           @id @default(uuid())
+  userId           String           @unique
+  targetRole       String?
+  targetIndustries String[]
+  targetCompanies  String[]
+  salaryMin        Int?
+  salaryMax        Int?
+  salaryCurrency   String           @default("GBP")
+  willingToRelocate Boolean         @default(false)
+  remotePreference RemotePreference @default(ANY)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("career_goals")
+}
+
+model UserPreference {
+  id                   String   @id @default(uuid())
+  userId               String   @unique
+  emailNotifications   Boolean  @default(true)
+  jobAlerts            Boolean  @default(true)
+  weeklyDigest         Boolean  @default(true)
+  contentSuggestions   Boolean  @default(true)
+  preferredContentTone String   @default("professional")
+  timezone             String   @default("Europe/London")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+model Resume {
+  id         String   @id @default(uuid())
+  userId     String
+  fileName   String
+  fileUrl    String
+  parsedData Json?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("resumes")
+}
+
+model LinkedInProfileData {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  headline       String?
+  about          String?
+  experiences    Json?
+  education      Json?
+  skills         Json?
+  certifications Json?
+  rawData        Json?
+  analyzedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("linkedin_profiles")
+}
+
+model Application {
+  id        String            @id @default(uuid())
+  userId    String
+  jobTitle  String
+  company   String
+  jobUrl    String?
+  status    ApplicationStatus @default(SAVED)
+  notes     String?
+  appliedAt DateTime?
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("applications")
+}
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  userId    String
+  jobId     String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@map("saved_jobs")
+}
+
+model AgentTask {
+  id          String    @id @default(uuid())
+  userId      String
+  agentType   String
+  status      String    @default("PENDING")
+  input       Json
+  result      Json?
+  error       String?
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("agent_tasks")
+}
+
+model ContentHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  prompt    String
+  content   String
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("content_history")
+}
+
+model SkillAssessment {
+  id              String   @id @default(uuid())
+  userId          String
+  skillName       String
+  currentLevel    String
+  targetLevel     String?
+  gapScore        Float?
+  recommendations Json?
+  assessedAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("skill_assessments")
+}

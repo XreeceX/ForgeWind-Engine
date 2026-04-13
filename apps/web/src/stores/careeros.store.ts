@@ -41,6 +41,16 @@ export interface MemoryContext {
   preferredTone: string;
 }
 
+export type UIMode = "cinematic" | "work";
+
+export type NarrativeSectionId =
+  | "identity"
+  | "data"
+  | "analysis"
+  | "output"
+  | "creation"
+  | "opportunity";
+
 interface CareerOSState {
   userProfile: UserProfile;
   repositories: RepositorySummary[];
@@ -49,6 +59,9 @@ interface CareerOSState {
   generatedContent: GeneratedContentItem[];
   memoryContext: MemoryContext;
   commandPaletteOpen: boolean;
+  uiMode: UIMode;
+  activeNarrativeSection: NarrativeSectionId;
+  chatOverlayOpen: boolean;
   setSelectedRepository: (repoId: string) => void;
   setAIStatus: (status: AIAnalysisState["status"]) => void;
   setAIFocus: (focus: string) => void;
@@ -56,6 +69,9 @@ interface CareerOSState {
   pushGeneratedContent: (item: Omit<GeneratedContentItem, "id" | "createdAt">) => void;
   updateMemoryContext: (updates: Partial<MemoryContext>) => void;
   setCommandPaletteOpen: (open: boolean) => void;
+  setUIMode: (mode: UIMode) => void;
+  setActiveNarrativeSection: (section: NarrativeSectionId) => void;
+  setChatOverlayOpen: (open: boolean) => void;
 }
 
 const now = new Date().toISOString();
@@ -128,6 +144,9 @@ export const useCareerOSStore = create<CareerOSState>()(
         preferredTone: "Technical and concise",
       },
       commandPaletteOpen: false,
+      uiMode: "cinematic",
+      activeNarrativeSection: "identity",
+      chatOverlayOpen: false,
       setSelectedRepository: (selectedRepositoryId) => set({ selectedRepositoryId }),
       setAIStatus: (status) =>
         set((state) => ({
@@ -172,6 +191,9 @@ export const useCareerOSStore = create<CareerOSState>()(
           },
         })),
       setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
+      setUIMode: (uiMode) => set({ uiMode }),
+      setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
+      setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),
     { name: "careeros-web-state" },
   ),

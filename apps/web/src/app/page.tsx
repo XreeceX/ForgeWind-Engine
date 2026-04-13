@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { CareerOSExperience } from "@/components/cinematic/careeros-experience";
 
 export default function Home() {
-  redirect("/overview");
+  return <CareerOSExperience />;
 }

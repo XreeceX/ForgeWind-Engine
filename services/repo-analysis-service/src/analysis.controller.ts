@@ -10,6 +10,7 @@ interface AnalyzeRepoBody {
     name: string;
     description?: string | null;
     language?: string | null;
+    stars?: number | null;
     metadata?: Record<string, unknown>;
   }>;
 }

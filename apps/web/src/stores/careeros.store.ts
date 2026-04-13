@@ -89,6 +89,7 @@ const initialRepositories: RepositorySummary[] = [
     summary: "Connectors that ingest GitHub and resume context into memory.",
   },
 ];
+const defaultSelectedRepositoryId = initialRepositories[0]?.id ?? "";
 
 export const useCareerOSStore = create<CareerOSState>()(
   persist(
@@ -101,7 +102,7 @@ export const useCareerOSStore = create<CareerOSState>()(
         primaryGoal: "Move into a staff-level backend role in 2026",
       },
       repositories: initialRepositories,
-      selectedRepositoryId: initialRepositories[0].id,
+      selectedRepositoryId: defaultSelectedRepositoryId,
       aiAnalysis: {
         status: "ready",
         focus: "Role-fit and content signal quality",

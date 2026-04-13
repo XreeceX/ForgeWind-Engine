@@ -7,6 +7,7 @@ import {
   User,
   Briefcase,
   PenTool,
+  Database,
   TrendingUp,
   Users,
   FileText,
@@ -23,6 +24,7 @@ import { useAuthStore } from "@/stores/auth.store";
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "Profile", icon: User, href: "/profile" },
+  { label: "Data Hub", icon: Database, href: "/data-hub" },
   { label: "Jobs", icon: Briefcase, href: "/jobs" },
   { label: "Content", icon: PenTool, href: "/content" },
   { label: "Skills", icon: TrendingUp, href: "/skills" },
@@ -52,7 +54,7 @@ export function Sidebar() {
             <Zap className="h-5 w-5 text-white" />
           </div>
           {sidebarOpen && (
-            <span className="text-lg font-bold gradient-text">CareerOS</span>
+            <span className="text-lg font-bold gradient-text">Forge Engine</span>
           )}
         </Link>
         <button

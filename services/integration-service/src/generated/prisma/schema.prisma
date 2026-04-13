@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ExternalAccount {
+  id          String   @id @default(uuid())
+  userId      String
+  provider    String
+  accessToken String
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, provider])
+  @@index([userId, provider])
+  @@map("external_accounts")
+}
+
+model Repository {
+  id           String   @id @default(uuid())
+  userId       String
+  githubRepoId String
+  name         String
+  fullName     String
+  description  String?
+  language     String?
+  stars        Int      @default(0)
+  isSelected   Boolean  @default(false)
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, githubRepoId])
+  @@index([userId])
+  @@map("repositories")
+}
+
+model Document {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  url       String
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("documents")
+}

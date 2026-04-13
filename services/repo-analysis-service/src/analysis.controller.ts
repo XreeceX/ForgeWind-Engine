@@ -1,19 +1,6 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { AnalysisService } from './analysis.service';
-
-interface AnalyzeRepoBody {
-  userId: string;
-  repositoryIds?: string[];
-  repos?: Array<{
-    id?: string;
-    fullName?: string;
-    name: string;
-    description?: string | null;
-    language?: string | null;
-    stars?: number | null;
-    metadata?: Record<string, unknown>;
-  }>;
-}
+import { AnalyzeRepoBodyDto } from './dto/analyze-repo.dto';
 
 @Controller()
 export class AnalysisController {
@@ -21,9 +8,14 @@ export class AnalysisController {
 
   @Post('analyze-repo')
   async analyzeRepo(
-    @Body() body: AnalyzeRepoBody,
+    @Body() body: AnalyzeRepoBodyDto,
   ): Promise<{ userId: string; analyses: unknown[] }> {
     const repos = body.repos ?? [];
+    if (repos.length === 0) {
+      throw new BadRequestException(
+        'Request must include a non-empty repos array. repositoryIds-only requests are not supported by this endpoint.',
+      );
+    }
     const analyses = await Promise.all(
       repos.map((repo) => this.analysisService.analyzeRepository(repo)),
     );

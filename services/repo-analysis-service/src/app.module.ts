@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { AnalysisController } from './analysis.controller';
 import { AnalysisService } from './analysis.service';
-import { AiProvider } from './ai-provider';
 
 @Module({
   imports: [
@@ -14,6 +13,6 @@ import { AiProvider } from './ai-provider';
     HttpModule,
   ],
   controllers: [AnalysisController],
-  providers: [AnalysisService, AiProvider],
+  providers: [AnalysisService],
 })
 export class AppModule {}

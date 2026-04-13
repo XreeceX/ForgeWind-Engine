@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
-import { AiProvider, RepositoryInsight } from './ai-provider';
+import { runRepoAnalysisGraph } from './graph/repo-analysis.graph';
+import { RepoAnalysisState } from './types/repo-analysis.types';
 
 interface AnalyzeRepositoryInput {
   id?: string;
@@ -15,12 +16,9 @@ interface AnalyzeRepositoryInput {
 
 @Injectable()
 export class AnalysisService {
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly aiProvider: AiProvider,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
-  async analyzeRepository(repoData: AnalyzeRepositoryInput): Promise<RepositoryInsight> {
+  async analyzeRepository(repoData: AnalyzeRepositoryInput): Promise<RepoAnalysisState> {
     const [owner, repoName] = (repoData.fullName ?? '').split('/');
     const accessToken = repoData.metadata?.['accessToken'] as string | undefined;
     const readme =
@@ -47,22 +45,25 @@ export class AnalysisService {
       ...languages,
     ].filter((value, index, array) => !!value && array.indexOf(value) === index);
 
-    return this.aiProvider.analyzeRepository({
-      name: repoData.name,
-      fullName: repoData.fullName ?? repoData.name,
-      description: repoData.description ?? '',
-      readme,
-      languages: normalizedLanguages,
-      stars: repoData.stars ?? repoMeta?.stars ?? 0,
-      commits,
-      fileTreeSummary: this.summarizeFileTree(fileTree),
-      keyFiles: this.extractKeyFiles(fileTree),
-      includeDifferentiationScore: Boolean(
-        repoData.metadata?.['advancedMode'] ?? repoData.metadata?.['includeDifferentiationScore'],
-      ),
+    const initialState: RepoAnalysisState = {
+      repoData: {
+        id: repoData.id,
+        name: repoData.name,
+        fullName: repoData.fullName ?? repoData.name,
+        description: repoData.description ?? '',
+        readme,
+        languages: normalizedLanguages,
+        stars: repoData.stars ?? repoMeta?.stars ?? 0,
+        commits,
+        fileTreeSummary: this.summarizeFileTree(fileTree),
+        keyFiles: this.extractKeyFiles(fileTree),
+      },
       tone: String(repoData.metadata?.['tone'] ?? 'professional'),
       audience: String(repoData.metadata?.['audience'] ?? 'hiring managers'),
-    });
+      errors: [],
+    };
+
+    return runRepoAnalysisGraph(initialState);
   }
 
   private async fetchReadme(

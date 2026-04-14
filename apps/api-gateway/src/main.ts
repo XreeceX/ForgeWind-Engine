@@ -37,10 +37,10 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
 
-  const port = process.env.PORT ?? 8090;
-  await app.listen(port);
+  const port = Number(process.env.PORT ?? 8090);
+  await app.listen(port, '0.0.0.0');
   logger.log(`API Gateway listening on port ${port}`);
-  logger.log(`Swagger docs available at http://localhost:${port}/api/docs`);
+  logger.log(`Swagger docs available at /api/docs`);
 }
 
 bootstrap();

@@ -17,7 +17,7 @@
 
 **Transform your career trajectory with AI-driven profile optimization, intelligent job matching, automated content strategy, and a multi-agent system that works for you 24/7.**
 
-[Getting Started](#-getting-started) · [Architecture](#-architecture-overview) · [API Docs](docs/API.md) · [Contributing](#-contributing)
+[Getting Started](#-getting-started) · [Architecture](#-architecture-overview) · [API Docs](docs/API.md) · [Option A Deploy](docs/DEPLOYMENT_OPTION_A.md) · [Contributing](#-contributing)
 
 </div>
 
@@ -582,6 +582,13 @@ pnpm format        # Prettier formatting
 ---
 
 ## 🚢 Deployment
+
+### Option A (Recommended for quick public demo)
+
+Deploy the frontend to Vercel and host backend services on Railway/Render. This is the fastest way to get a live URL without local infrastructure dependencies.
+
+- Frontend guide: [docs/DEPLOYMENT_OPTION_A.md](docs/DEPLOYMENT_OPTION_A.md)
+- Make sure `NEXT_PUBLIC_API_URL` points to your hosted API gateway (`https://<api-domain>/api/v1`)
 
 ### Docker Compose (Development)
 

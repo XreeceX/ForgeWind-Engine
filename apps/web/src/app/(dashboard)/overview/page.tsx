@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { RepoCard } from "@/components/dashboard/repo-card";
 import { OverviewStatGrid } from "@/components/dashboard/overview-stat-grid";
@@ -30,7 +31,13 @@ export default function OverviewPage() {
       <OverviewStatGrid repoCount={repositories.length} contentCount={generatedContent.length} />
 
       <div className="grid gap-6 xl:grid-cols-3">
-        <Card className="xl:col-span-2 p-5">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="xl:col-span-2"
+        >
+          <Card className="cinematic-card p-5">
           <p className="text-sm font-semibold text-white">Repository intelligence</p>
           <p className="mb-4 text-xs text-slate-400">Select a repository to scope every AI panel across CareerOS.</p>
           <div className="grid gap-3 md:grid-cols-2">
@@ -43,18 +50,28 @@ export default function OverviewPage() {
               />
             ))}
           </div>
-        </Card>
+          </Card>
+        </motion.div>
 
-        <div className="space-y-4">
-          <InsightCard
-            title="Pipeline confidence"
-            insight={`Analysis confidence is ${healthQuery.data?.confidence ?? 0}%. Selected repository health drives job and content fit scoring.`}
-          />
-          <InsightCard
-            title="Career score trend"
-            insight={`Current score: ${healthQuery.data?.score ?? 0}. Improve with more quantified outcomes and architecture-focused content.`}
-          />
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08, duration: 0.48, ease: [0.16, 1, 0.3, 1] }}
+          className="space-y-4"
+        >
+          <div className="cinematic-card rounded-xl">
+            <InsightCard
+              title="Pipeline confidence"
+              insight={`Analysis confidence is ${healthQuery.data?.confidence ?? 0}%. Selected repository health drives job and content fit scoring.`}
+            />
+          </div>
+          <div className="cinematic-card rounded-xl">
+            <InsightCard
+              title="Career score trend"
+              insight={`Current score: ${healthQuery.data?.score ?? 0}. Improve with more quantified outcomes and architecture-focused content.`}
+            />
+          </div>
+        </motion.div>
       </div>
     </div>
   );

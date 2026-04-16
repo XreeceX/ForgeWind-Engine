@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { Command, Sparkles } from "lucide-react";
+import { Command, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCareerOSStore } from "@/stores/careeros.store";
 
@@ -37,7 +37,11 @@ const routeLabels: Record<string, { title: string; subtitle: string }> = {
   },
 };
 
-export function TopNav() {
+interface TopNavProps {
+  onOpenSidebar: () => void;
+}
+
+export function TopNav({ onOpenSidebar }: TopNavProps) {
   const pathname = usePathname();
   const userProfile = useCareerOSStore((state) => state.userProfile);
   const setCommandPaletteOpen = useCareerOSStore((state) => state.setCommandPaletteOpen);
@@ -48,24 +52,34 @@ export function TopNav() {
   );
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-background/75 backdrop-blur-xl">
-      <div className="flex h-16 items-center justify-between px-6">
-        <div>
-          <p className="text-sm font-semibold text-white">{label.title}</p>
-          <p className="text-xs text-slate-400">{label.subtitle}</p>
+    <header className="sticky top-0 z-30 px-4 pb-2 pt-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between rounded-2xl border border-white/75 bg-white/72 px-4 shadow-sm backdrop-blur-xl">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={onOpenSidebar}
+            className="rounded-lg border border-border/70 p-2 text-slate-500 transition-colors hover:bg-white lg:hidden"
+            aria-label="Open sidebar"
+          >
+            <Menu className="h-4 w-4" />
+          </button>
+          <div>
+            <p className="text-sm font-semibold text-foreground">{label.title}</p>
+            <p className="text-xs text-slate-500">{label.subtitle}</p>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
           <Button size="sm" variant="secondary" onClick={() => setCommandPaletteOpen(true)}>
             <Command className="h-3.5 w-3.5" />
             Command
-            <span className="rounded border border-border-light px-1.5 py-0 text-[11px] text-slate-400">Ctrl/Cmd+K</span>
+            <span className="rounded border border-border px-1.5 py-0 text-[11px] text-slate-500">Ctrl/Cmd+K</span>
           </Button>
-          <div className="ml-2 flex items-center gap-2 rounded-lg border border-border bg-surface-light/60 px-3 py-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-primary-300" />
+          <div className="ml-1 hidden items-center gap-2 rounded-xl border border-border bg-white/80 px-3 py-1.5 sm:flex">
+            <Sparkles className="h-3.5 w-3.5 text-violet-500" />
             <div>
-              <p className="text-xs font-medium text-slate-200">{userProfile.name}</p>
-              <p className="text-[11px] text-slate-400">{userProfile.role}</p>
+              <p className="text-xs font-medium text-slate-800">{userProfile.name}</p>
+              <p className="text-[11px] text-slate-500">{userProfile.role}</p>
             </div>
           </div>
         </div>

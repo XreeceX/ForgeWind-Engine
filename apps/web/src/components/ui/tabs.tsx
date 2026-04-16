@@ -46,7 +46,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
   return (
     <div
       className={cn(
-        "flex gap-1 rounded-lg border border-border bg-surface/50 p-1",
+        "flex gap-1 rounded-xl border border-border bg-white/80 p-1.5 shadow-xs backdrop-blur-sm",
         className
       )}
       role="tablist"
@@ -63,12 +63,12 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
           aria-selected={activeTab === tab.value}
           aria-controls={`tab-panel-${tab.value}`}
           className={cn(
-            "relative rounded-md px-4 py-2.5 text-sm font-medium transition-all duration-200",
+            "relative rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-300",
             tab.disabled && "cursor-not-allowed opacity-40",
             activeTab === tab.value
-              ? "bg-surface-light text-primary-300 shadow-xs"
-              : "text-slate-400 hover:text-slate-200",
-            !tab.disabled && activeTab !== tab.value && "hover:bg-surface/70"
+              ? "premium-border bg-white text-violet-600 shadow-xs"
+              : "text-slate-500 hover:text-slate-900",
+            !tab.disabled && activeTab !== tab.value && "hover:bg-slate-50"
           )}
         >
           <span className="flex items-center gap-2">
@@ -78,8 +78,8 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
                 className={cn(
                   "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
                   activeTab === tab.value
-                    ? "bg-primary-500/20 text-primary-200"
-                    : "bg-surface-lighter text-slate-500"
+                    ? "bg-violet-100 text-violet-700"
+                    : "bg-slate-100 text-slate-500"
                 )}
               >
                 {tab.count}

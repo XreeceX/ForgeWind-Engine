@@ -36,19 +36,19 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-slate-200"
+            className="block text-sm font-medium text-slate-700"
           >
             {label}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+            <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
               {leftIcon}
             </div>
           )}
           {endIcon && (
-            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+            <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
               {endIcon}
             </div>
           )}
@@ -57,8 +57,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             aria-invalid={Boolean(error)}
             className={cn(
-              "h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-white shadow-xs transition-all",
-              "placeholder:text-slate-500 focus:border-primary-500/70 focus:outline-none focus:ring-2 focus:ring-primary-500/30",
+              "h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-300",
+              "placeholder:text-slate-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-violet-300/45 focus:shadow-[0_0_0_1px_rgba(59,130,246,0.28),0_0_0_4px_rgba(139,92,246,0.12)]",
               error &&
                 "border-danger/50 focus:border-danger/70 focus:ring-danger/30",
               leftIcon && "pl-10",
@@ -69,11 +69,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
         {error && (
-          <p className="text-xs text-red-300" role="alert">
+          <p className="text-xs text-red-500" role="alert">
             {error}
           </p>
         )}
-        {showHint && <p className="text-xs text-slate-400">{hint}</p>}
+        {showHint && <p className="text-xs text-slate-500">{hint}</p>}
       </div>
     );
   }

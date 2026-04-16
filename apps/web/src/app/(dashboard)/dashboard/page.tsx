@@ -142,7 +142,7 @@ export default function DashboardPage() {
         subtitle={`Welcome back, ${user?.name?.split(" ")[0] ?? "there"}`}
       />
 
-      <div className="p-6 space-y-6">
+      <div className="space-y-8 p-2 sm:p-4">
         {/* Top section: Career Score + Stats */}
         <div className="grid grid-cols-12 gap-6">
           {/* Career Score */}
@@ -150,12 +150,12 @@ export default function DashboardPage() {
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary-400" />
-                <h2 className="text-lg font-semibold text-white">
+                <h2 className="text-lg font-semibold text-slate-900">
                   Career Score
                 </h2>
               </div>
               <ScoreRing score={76} size={160} strokeWidth={10} label="/ 100" />
-              <p className="text-sm text-slate-400 max-w-xs">
+              <p className="max-w-xs text-sm text-slate-500">
                 Your career readiness score based on profile strength, skills,
                 and market positioning.
               </p>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between px-6 pt-5 pb-3">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-primary-400" />
-                <h3 className="text-base font-semibold text-white">
+                <h3 className="text-base font-semibold text-slate-900">
                   Recent AI Activity
                 </h3>
               </div>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
               {recentActivity.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start gap-3 rounded-lg px-3 py-3 transition-colors hover:bg-surface-light/50"
+                  className="flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-violet-50/50"
                 >
                   <div className="mt-0.5">
                     {item.status === "completed" ? (
@@ -236,7 +236,7 @@ export default function DashboardPage() {
                         {item.status}
                       </Badge>
                     </div>
-                    <p className="text-sm text-slate-300 mt-0.5">
+                    <p className="mt-0.5 text-sm text-slate-600">
                       {item.action}
                     </p>
                   </div>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
           <div className="col-span-12 lg:col-span-5 space-y-4">
             <div className="flex items-center gap-2 px-1">
               <Zap className="h-5 w-5 text-amber-400" />
-              <h3 className="text-base font-semibold text-white">
+              <h3 className="text-base font-semibold text-slate-900">
                 Quick Actions
               </h3>
             </div>
@@ -268,7 +268,7 @@ export default function DashboardPage() {
                     >
                       <action.icon className={`h-5 w-5 ${action.color}`} />
                     </div>
-                    <p className="text-sm font-medium text-white group-hover:text-primary-300 transition-colors">
+                    <p className="text-sm font-medium text-slate-900 transition-colors group-hover:text-violet-600">
                       {action.label}
                     </p>
                     <p className="text-xs text-slate-500 mt-0.5">
@@ -285,10 +285,10 @@ export default function DashboardPage() {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-base font-semibold text-white">
+              <h3 className="text-base font-semibold text-slate-900">
                 Weekly Progress
               </h3>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-slate-500">
                 Career score and activity trends
               </p>
             </div>
@@ -315,7 +315,7 @@ export default function DashboardPage() {
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(71,85,105,0.12)" />
               <XAxis
                 dataKey="day"
                 axisLine={false}

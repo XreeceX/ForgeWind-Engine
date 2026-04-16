@@ -9,9 +9,9 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  default: "panel",
-  elevated: "panel-elevated",
-  interactive: "panel-interactive",
+  default: "panel premium-border",
+  elevated: "panel-elevated premium-border",
+  interactive: "panel-interactive premium-border",
 };
 
 export function Card({
@@ -77,7 +77,7 @@ export function CardTitle({
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("text-base font-semibold text-white", className)} {...props}>
+    <h3 className={cn("text-base font-semibold text-slate-900", className)} {...props}>
       {children}
     </h3>
   );
@@ -89,7 +89,7 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-slate-400", className)} {...props}>
+    <p className={cn("text-sm text-slate-500", className)} {...props}>
       {children}
     </p>
   );

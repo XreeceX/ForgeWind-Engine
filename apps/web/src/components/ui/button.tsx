@@ -14,13 +14,13 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "border border-primary-500 bg-primary-600 text-white shadow-glow-primary hover:bg-primary-500 hover:shadow-lg active:bg-primary-700",
+    "border border-transparent bg-gradient-to-r from-blue-500 via-violet-500 to-pink-500 text-white shadow-glow-primary hover:brightness-105 hover:shadow-lg active:brightness-95",
   secondary:
-    "border border-border bg-surface-light text-slate-100 shadow-xs hover:border-border-light hover:bg-surface-lighter",
+    "premium-border bg-white text-slate-700 shadow-xs hover:text-slate-900",
   ghost:
-    "border border-transparent text-slate-300 hover:border-border hover:bg-surface-light hover:text-white",
+    "border border-transparent text-slate-600 hover:border-border hover:bg-white hover:text-slate-900",
   danger:
-    "border border-danger/25 bg-danger/12 text-red-200 hover:border-danger/45 hover:bg-danger/20",
+    "border border-danger/25 bg-danger/10 text-red-600 hover:border-danger/45 hover:bg-danger/20",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -47,7 +47,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all duration-200 ease-out",
+        "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all duration-300 ease-out",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
         "disabled:pointer-events-none disabled:opacity-50",
         variantStyles[variant],

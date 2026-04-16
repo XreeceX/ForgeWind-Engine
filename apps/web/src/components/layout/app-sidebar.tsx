@@ -84,13 +84,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 className={cn(
                   "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-300",
                   active
-                    ? "bg-white text-foreground shadow-sm ring-1 ring-slate-200"
+                    ? "bg-violet-100/70 text-foreground shadow-sm ring-1 ring-violet-200/70"
                     : "text-slate-500 hover:bg-white/80 hover:text-slate-900",
                 )}
               >
-                {active && (
-                  <span className="absolute inset-y-2 left-1 w-0.5 rounded-full bg-violet-400/70" />
-                )}
                 <item.icon
                   className={cn(
                     "h-4.5 w-4.5 transition-colors",

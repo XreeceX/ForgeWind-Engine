@@ -89,7 +89,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 )}
               >
                 {active && (
-                  <span className="absolute inset-y-2 left-0 w-1 rounded-full bg-gradient-to-b from-blue-500 via-violet-500 to-pink-500 shadow-[0_0_14px_rgba(99,102,241,0.45)]" />
+                  <span className="absolute inset-y-2 left-1 w-0.5 rounded-full bg-violet-400/70" />
                 )}
                 <item.icon
                   className={cn(

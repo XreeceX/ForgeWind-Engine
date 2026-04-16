@@ -339,14 +339,7 @@ body {
 }
 
 @layer base {
-  :where(
-    button,
-    a,
-    input,
-    textarea,
-    select,
-    [class*="border"]
-  ) {
+  :where(*, *::before, *::after) {
     border-radius: max(var(--radius-md), 0.75rem);
   }
 }

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Bell, Search, ChevronDown, LogOut, User, Settings } from "lucide-react";
+import Link from "next/link";
+import { Bell, Search, ChevronDown, LogOut, User, Settings, Home } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { signOut as nextAuthSignOut } from "next-auth/react";
 import { useAppStore } from "@/stores/app.store";
@@ -41,12 +42,22 @@ export function Header({ title, subtitle }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-30 mb-4 flex h-16 items-center justify-between rounded-2xl border border-white/80 bg-white/75 px-4 shadow-sm backdrop-blur-xl sm:px-6">
-      {/* Left: Title */}
-      <div>
-        <h1 className="text-xl font-semibold text-slate-900">{title}</h1>
-        {subtitle && (
-          <p className="text-sm text-slate-500">{subtitle}</p>
-        )}
+      {/* Left: Home + Title */}
+      <div className="flex min-w-0 items-start gap-3">
+        <Link
+          href="/"
+          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-slate-500 transition-colors hover:border-border-light hover:bg-surface-light hover:text-slate-900"
+          title="ForgeWind home"
+          aria-label="ForgeWind home"
+        >
+          <Home className="h-5 w-5" />
+        </Link>
+        <div className="min-w-0">
+          <h1 className="text-xl font-semibold text-slate-900">{title}</h1>
+          {subtitle && (
+            <p className="text-sm text-slate-500">{subtitle}</p>
+          )}
+        </div>
       </div>
 
       {/* Right: Actions */}

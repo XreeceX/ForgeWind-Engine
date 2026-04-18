@@ -1,8 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Command, Menu, Sparkles } from "lucide-react";
+import { Command, Home, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useForgeWindStore } from "@/stores/forgewind.store";
 
@@ -63,7 +64,16 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
           >
             <Menu className="h-4 w-4" />
           </button>
-          <div>
+          <Link
+            href="/"
+            title="ForgeWind home — cinematic & workspace"
+            aria-label="Home"
+            className="inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-transparent px-2 text-xs font-medium text-slate-600 transition-colors hover:border-border hover:bg-white hover:text-slate-900 sm:px-2.5"
+          >
+            <Home className="h-4 w-4" />
+            <span className="hidden sm:inline">Home</span>
+          </Link>
+          <div className="min-w-0">
             <p className="text-sm font-semibold text-foreground">{label.title}</p>
             <p className="text-xs text-slate-500">{label.subtitle}</p>
           </div>

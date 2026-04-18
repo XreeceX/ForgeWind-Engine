@@ -8,6 +8,7 @@ import {
   Database,
   FileText,
   FolderGit2,
+  Home,
   LayoutDashboard,
   MemoryStick,
   Settings,
@@ -19,6 +20,7 @@ import { cn } from "@/lib/cn";
 import { useForgeWindStore } from "@/stores/forgewind.store";
 
 const primaryNav = [
+  { href: "/", label: "Home", icon: Home },
   { href: "/overview", label: "Overview", icon: LayoutDashboard },
   { href: "/data-hub", label: "Data Hub", icon: Database },
   { href: "/ai-studio", label: "AI Studio", icon: BrainCircuit },
@@ -55,15 +57,20 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
         )}
       >
         <div className="mb-6 flex items-center justify-between gap-3 px-2">
-          <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            onClick={onClose}
+            className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-1 py-1 transition-colors hover:bg-white/80"
+            title="Back to ForgeWind home"
+          >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl ring-1 ring-border/50 shadow-sm">
               <ForgeWindLogo size={40} className="h-10 w-10" />
             </div>
-            <div>
+            <div className="min-w-0 text-left">
               <p className="text-sm font-semibold text-foreground">ForgeWind</p>
               <p className="text-xs text-slate-500">Intelligence layer</p>
             </div>
-          </div>
+          </Link>
           <button
             type="button"
             onClick={onClose}

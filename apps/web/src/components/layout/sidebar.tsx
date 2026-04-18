@@ -49,7 +49,7 @@ export function Sidebar() {
     >
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-4 border-b border-border">
-        <Link href="/dashboard" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3" title="ForgeWind home">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg ring-1 ring-border/60">
             <ForgeWindLogo size={36} className="h-9 w-9" />
           </div>

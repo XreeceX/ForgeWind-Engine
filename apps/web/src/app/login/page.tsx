@@ -1,7 +1,6 @@
 "use client";
 
 import { Suspense, useState } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { AuthCard } from "@/components/auth/auth-card";
@@ -19,7 +18,6 @@ type FieldErrors = Partial<{ username: string; password: string }>;
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const registered = searchParams.get("registered") === "1";
   const callbackUrl = searchParams.get("callbackUrl");
 
   const login = useAuthStore((s) => s.login);
@@ -72,14 +70,10 @@ function LoginForm() {
         <div className="mb-8 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary-600">Sign in</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">Welcome back</h1>
-          <p className="mt-1.5 text-sm text-slate-600">Access your ForgeWind workspace.</p>
-        </div>
-
-        {registered ? (
-          <p className="mb-6 border border-accent-200 bg-accent-50 px-3 py-2 text-center text-xs text-accent-900">
-            Account created — sign in with your username and password.
+          <p className="mt-1.5 text-sm text-slate-600">
+            Development access only. Public registration is disabled.
           </p>
-        ) : null}
+        </div>
 
         <form noValidate onSubmit={onSubmit} className="space-y-5">
           <AuthInput
@@ -112,25 +106,9 @@ function LoginForm() {
           <AuthButton loading={loading}>{loading ? "Signing in…" : "Sign in"}</AuthButton>
         </form>
 
-        <div className="mt-8 space-y-3 text-center text-sm text-slate-600">
-          <div>
-            <Link
-              href="/forgot-password"
-              className="text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline"
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <p>
-            No account?{" "}
-            <Link
-              href="/signup"
-              className="font-medium text-primary-600 underline-offset-4 transition-colors hover:text-primary-700 hover:underline"
-            >
-              Create one
-            </Link>
-          </p>
-        </div>
+        <p className="mt-8 text-center text-xs text-slate-500">
+          Single shared development account. Credentials are distributed outside this app.
+        </p>
       </AuthCard>
     </AuthPageShell>
   );

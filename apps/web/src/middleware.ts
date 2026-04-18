@@ -41,7 +41,6 @@ function isBlockedBotUserAgent(userAgent: string): boolean {
 /** Paths that skip both bot handling quirks and auth (always allowed through if not bot). */
 const PUBLIC_PATH_PREFIXES = [
   "/login",
-  "/signup",
   "/forgot-password",
   "/api/auth",
 ] as const;
@@ -66,6 +65,10 @@ export async function middleware(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/signup" || pathname.startsWith("/signup/")) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
 
   if (isPublicPath(pathname)) {
     return NextResponse.next();

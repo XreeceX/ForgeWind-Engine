@@ -105,7 +105,7 @@ export function Sidebar() {
       <div className="border-t border-border p-4">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-primary-400 text-sm font-semibold">
-            {user?.name
+            {(user?.name ?? "User")
               .split(" ")
               .map((n) => n[0])
               .join("") ?? "U"}

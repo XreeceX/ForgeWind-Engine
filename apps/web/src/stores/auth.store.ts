@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
+export interface User {
   id: string;
   email: string;
   name: string;
@@ -10,7 +10,7 @@ interface User {
   linkedinConnected: boolean;
 }
 
-interface AuthState {
+export interface AuthState {
   user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
@@ -23,17 +23,10 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: {
-        id: "1",
-        email: "alex.chen@example.com",
-        name: "Alex Chen",
-        avatar: undefined,
-        headline: "Senior Software Engineer | AI Enthusiast",
-        linkedinConnected: true,
-      },
-      accessToken: "mock-token",
-      refreshToken: "mock-refresh",
-      isAuthenticated: true,
+      user: null,
+      accessToken: null,
+      refreshToken: null,
+      isAuthenticated: false,
 
       login: (user, accessToken, refreshToken) =>
         set({ user, accessToken, refreshToken, isAuthenticated: true }),
@@ -51,6 +44,6 @@ export const useAuthStore = create<AuthState>()(
           user: state.user ? { ...state.user, ...updates } : null,
         })),
     }),
-    { name: "careeros-forge-auth" }
+    { name: "careeros-forge-auth-v2" }
   )
 );

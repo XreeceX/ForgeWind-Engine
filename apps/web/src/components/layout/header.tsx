@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Bell, Search, ChevronDown, LogOut, User, Settings } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { signOut as nextAuthSignOut } from "next-auth/react";
 import { useAppStore } from "@/stores/app.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { formatDistanceToNow } from "date-fns";
@@ -143,7 +144,7 @@ export function Header({ title, subtitle }: HeaderProps) {
             className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-1.5 transition-colors hover:bg-slate-50"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-500/20 text-primary-400 text-xs font-semibold">
-              {user?.name
+              {(user?.name ?? "User")
                 .split(" ")
                 .map((n) => n[0])
                 .join("") ?? "U"}
@@ -176,7 +177,10 @@ export function Header({ title, subtitle }: HeaderProps) {
                   Settings
                 </a>
                 <button
-                  onClick={logout}
+                  onClick={async () => {
+                    await nextAuthSignOut({ redirect: false });
+                    logout();
+                  }}
                   className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-400 hover:bg-red-500/10"
                 >
                   <LogOut className="h-4 w-4" />

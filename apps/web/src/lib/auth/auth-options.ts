@@ -1,11 +1,11 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getNextAuthSecret } from "@/lib/auth/auth-secret";
+import { DEMO_USER } from "@/lib/auth/demo-user";
 import {
-  DEMO_USER,
   getForgeWindDemoAuth,
   timingSafeStringEqual,
-} from "@/lib/auth/demo-user";
+} from "@/lib/auth/forge-wind-demo-credentials";
 
 export const authOptions: NextAuthOptions = {
   secret: getNextAuthSecret(),

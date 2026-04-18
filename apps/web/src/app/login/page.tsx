@@ -81,12 +81,14 @@ function LoginForm() {
           </p>
         ) : null}
 
-        <form onSubmit={onSubmit} className="space-y-5">
+        <form noValidate onSubmit={onSubmit} className="space-y-5">
           <AuthInput
             label="Username"
             name="username"
             type="text"
+            inputMode="text"
             autoComplete="username"
+            spellCheck={false}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             error={fieldErrors.username}

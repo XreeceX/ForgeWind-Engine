@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { site } from "@/config/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -8,9 +9,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "ForgeWind — AI career intelligence",
+  title: `${site.product} — career intelligence workspace`,
   description:
-    "A quiet-first look at what we’re building: clarity, momentum, and a sharper career signal.",
+    "ForgeWind turns repository context and profile signal into momentum: narratives, matches, and a calmer career operating system.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

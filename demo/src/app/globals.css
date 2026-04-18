@@ -3,12 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --bg: #050508;
-  --fg: #f4f4f5;
+  --bg: #f8f9ff;
+  --fg: #1a1c20;
+  --muted: #5c6370;
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {

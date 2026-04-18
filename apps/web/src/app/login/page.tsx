@@ -11,6 +11,7 @@ import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { CareerOSAuthMark } from "@/components/auth/careeros-auth-mark";
 import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/auth/demo-user";
 import { isValidEmail, meetsPasswordPolicy } from "@/lib/auth/validate";
+import { safeCallbackPath } from "@/lib/auth/safe-callback-path";
 import { syncDemoSessionToStore } from "@/lib/auth/sync-auth-store";
 import { useAuthStore } from "@/stores/auth.store";
 
@@ -20,6 +21,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const registered = searchParams.get("registered") === "1";
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const login = useAuthStore((s) => s.login);
 
@@ -57,7 +59,7 @@ function LoginForm() {
       }
 
       syncDemoSessionToStore(login);
-      router.push("/dashboard");
+      router.push(safeCallbackPath(callbackUrl, "/dashboard"));
       router.refresh();
     } finally {
       setLoading(false);

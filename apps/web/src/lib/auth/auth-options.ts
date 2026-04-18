@@ -1,14 +1,10 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { getNextAuthSecret } from "@/lib/auth/auth-secret";
 import { DEMO_EMAIL, DEMO_PASSWORD, DEMO_USER } from "@/lib/auth/demo-user";
 
-/** Set NEXTAUTH_SECRET in production; fallback is demo/local only. */
-function authSecret(): string {
-  return process.env.NEXTAUTH_SECRET ?? "careeros-demo-nextauth-secret-change-in-env";
-}
-
 export const authOptions: NextAuthOptions = {
-  secret: authSecret(),
+  secret: getNextAuthSecret(),
   session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
   pages: { signIn: "/login" },
   providers: [

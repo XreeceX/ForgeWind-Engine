@@ -1,27 +1,37 @@
 import Image from "next/image";
 import { mailtoCollaborate, site } from "@/config/site";
 
+/** Intrinsic dimensions (from assets) so layout matches screenshots without cropping. */
 const shots = {
-  sidebar: {
-    src: "/forge-sidebar.png",
-    alt: "ForgeWind sidebar navigation with Intelligence layer and active repository",
+  hero: {
+    src: "/forge-cinematic-hero.png",
+    alt: "ForgeWind cinematic hero with work mode toggle",
+    w: 1024,
+    h: 493,
   },
   workspace: {
     src: "/forge-workspace.png",
     alt: "ForgeWind workspace showing repository intelligence cards and agent state",
+    w: 1024,
+    h: 461,
   },
   contentJobs: {
     src: "/forge-content-jobs.png",
     alt: "Generated LinkedIn-ready content and opportunity feed with match scores",
+    w: 1024,
+    h: 353,
   },
-  hero: {
-    src: "/forge-cinematic-hero.png",
-    alt: "ForgeWind cinematic hero with work mode toggle",
+  sidebar: {
+    src: "/forge-sidebar.png",
+    alt: "ForgeWind sidebar navigation with Intelligence layer and active repository",
+    w: 437,
+    h: 1024,
   },
 } as const;
 
 export default function Home() {
   const mailto = mailtoCollaborate();
+  const hasContactCtas = Boolean(mailto || site.linkedInUrl);
 
   return (
     <div id="top" className="min-h-screen bg-hero-wash">
@@ -84,19 +94,18 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="relative">
-            <div className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-card">
-              <div className="relative aspect-[4/3] w-full md:aspect-[5/4]">
-                <Image
-                  src={shots.hero.src}
-                  alt={shots.hero.alt}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 768px) 100vw, 45vw"
-                  priority
-                />
-              </div>
-            </div>
+          <div className="flex min-w-0 items-center justify-center">
+            <figure className="w-full overflow-hidden rounded-2xl border border-line bg-white shadow-card">
+              <Image
+                src={shots.hero.src}
+                alt={shots.hero.alt}
+                width={shots.hero.w}
+                height={shots.hero.h}
+                className="h-auto w-full object-contain object-top"
+                sizes="(max-width: 768px) 100vw, 45vw"
+                priority
+              />
+            </figure>
           </div>
         </section>
 
@@ -106,21 +115,21 @@ export default function Home() {
               eyebrow="Repository intelligence"
               title="Your stack, read as a story"
               body="Wire the repos that matter. ForgeWind highlights health, active focus, and the threads that show how you ship — so decisions stay evidence-led."
-              image={shots.workspace}
+              shot={shots.workspace}
               imageFirst={false}
             />
             <Article
               eyebrow="Narrative & matches"
               title="From measurable work to posts — and roles that fit the proof"
               body="Turn real commits and architecture choices into content that sounds like you, alongside opportunity signals scored from repository context — not keyword stuffing."
-              image={shots.contentJobs}
+              shot={shots.contentJobs}
               imageFirst
             />
             <Article
               eyebrow="Intelligence layer"
               title="One calm surface"
               body="Mode, agent state, and your active repository stay in view. Less tab-hopping; more clarity on what to do next."
-              image={shots.sidebar}
+              shot={shots.sidebar}
               imageFirst={false}
             />
           </div>
@@ -142,46 +151,37 @@ export default function Home() {
               integration, critique the UX, or explore working with us — we&apos;d love to hear from
               you. Thoughtful notes beat generic pitches.
             </p>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              {mailto ? (
-                <a
-                  href={mailto}
-                  className="inline-flex min-w-[12rem] items-center justify-center rounded-full bg-ink px-8 py-3 text-sm font-medium text-white shadow-card transition hover:bg-ink/90"
-                >
-                  Email the team
-                </a>
-              ) : (
-                <p className="max-w-md rounded-2xl border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
-                  Add <code className="rounded bg-white/80 px-1.5 py-0.5 text-xs">NEXT_PUBLIC_CONTACT_EMAIL</code>{" "}
-                  in Vercel (or <code className="rounded bg-white/80 px-1.5 py-0.5 text-xs">.env.local</code>) to
-                  enable one-tap email.
-                </p>
-              )}
-              {site.linkedInUrl ? (
-                <a
-                  href={site.linkedInUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-w-[12rem] items-center justify-center rounded-full border border-line bg-white px-8 py-3 text-sm font-medium text-ink shadow-sm transition hover:border-indigo-300 hover:text-indigo-700"
-                >
-                  Message on LinkedIn
-                </a>
-              ) : (
-                <span className="text-sm text-mist">
-                  Set <code className="text-ink">NEXT_PUBLIC_LINKEDIN_URL</code> to show your LinkedIn
-                  profile or company page.
-                </span>
-              )}
-            </div>
+            {hasContactCtas ? (
+              <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+                {mailto ? (
+                  <a
+                    href={mailto}
+                    className="inline-flex min-w-[12rem] items-center justify-center rounded-full bg-ink px-8 py-3 text-sm font-medium text-white shadow-card transition hover:bg-ink/90"
+                  >
+                    Email the team
+                  </a>
+                ) : null}
+                {site.linkedInUrl ? (
+                  <a
+                    href={site.linkedInUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-w-[12rem] items-center justify-center rounded-full border border-line bg-white px-8 py-3 text-sm font-medium text-ink shadow-sm transition hover:border-indigo-300 hover:text-indigo-700"
+                  >
+                    Message on LinkedIn
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </section>
 
         <footer id="contact" className="border-t border-line bg-white">
-          <div className="mx-auto max-w-6xl px-5 py-14 md:flex md:items-start md:justify-between md:gap-12 md:px-8">
-            <div className="max-w-lg space-y-3">
+          <div className="mx-auto max-w-3xl space-y-6 px-5 py-14 md:px-8">
+            <div className="space-y-3">
               <p className="text-sm font-semibold text-ink">Contact & company</p>
               <p className="text-sm leading-relaxed text-mist">
-                <span className="font-medium text-ink">{site.legalEntity}</span>
+                <span className="font-medium text-ink">{site.product}</span>
                 <br />
                 {site.location}. This site is a public preview; the product is under active
                 development.
@@ -192,36 +192,9 @@ export default function Home() {
                 builders and operators.
               </p>
             </div>
-            <div className="mt-10 shrink-0 space-y-3 md:mt-0">
-              <p className="text-xs font-semibold uppercase tracking-wider text-mist">Reach</p>
-              <ul className="space-y-2 text-sm">
-                {mailto ? (
-                  <li>
-                    <a className="text-indigo-600 hover:underline" href={mailto}>
-                      {site.contactEmail}
-                    </a>
-                  </li>
-                ) : null}
-                {site.linkedInUrl ? (
-                  <li>
-                    <a
-                      className="text-indigo-600 hover:underline"
-                      href={site.linkedInUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      LinkedIn
-                    </a>
-                  </li>
-                ) : null}
-                {!mailto && !site.linkedInUrl ? (
-                  <li className="text-mist">Configure public env vars above to list contact links.</li>
-                ) : null}
-              </ul>
-              <p className="pt-4 text-xs text-mist">
-                © {site.year} {site.product}. All rights reserved.
-              </p>
-            </div>
+            <p className="border-t border-line pt-6 text-xs text-mist">
+              © {site.year} {site.product}. All rights reserved.
+            </p>
           </div>
         </footer>
       </main>
@@ -233,37 +206,36 @@ function Article({
   eyebrow,
   title,
   body,
-  image,
+  shot,
   imageFirst,
 }: {
   eyebrow: string;
   title: string;
   body: string;
-  image: { src: string; alt: string };
+  shot: { src: string; alt: string; w: number; h: number };
   imageFirst: boolean;
 }) {
   const bodyCol = (
-    <div className="flex flex-col justify-center space-y-4">
+    <div className="flex min-w-0 flex-col justify-center space-y-4">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-500">{eyebrow}</p>
       <h3 className="text-2xl font-semibold text-ink md:text-3xl">{title}</h3>
       <p className="text-pretty text-lg leading-relaxed text-mist">{body}</p>
     </div>
   );
   const imgCol = (
-    <div className="relative overflow-hidden rounded-2xl border border-line bg-white shadow-card">
-      <div className="relative aspect-[16/10] w-full">
-        <Image
-          src={image.src}
-          alt={image.alt}
-          fill
-          className="object-cover object-top"
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
-      </div>
-    </div>
+    <figure className="flex min-w-0 justify-center overflow-hidden rounded-2xl border border-line bg-slate-50/80 shadow-card md:justify-stretch">
+      <Image
+        src={shot.src}
+        alt={shot.alt}
+        width={shot.w}
+        height={shot.h}
+        className="h-auto w-full max-w-full object-contain object-top"
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
+    </figure>
   );
   return (
-    <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-14">
+    <div className="grid min-w-0 gap-10 md:grid-cols-2 md:items-center md:gap-14">
       {imageFirst ? (
         <>
           {imgCol}

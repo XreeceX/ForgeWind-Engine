@@ -1,10 +1,8 @@
 /**
- * Public site copy & contact. Override in Vercel: Project → Settings → Environment Variables
- * NEXT_PUBLIC_CONTACT_EMAIL, NEXT_PUBLIC_LINKEDIN_URL
+ * Optional public contact links (set in Vercel env if you use them).
  */
 export const site = {
   product: "ForgeWind",
-  legalEntity: "ForgeWind / CareerOS Forge",
   location: "Remote-first",
   year: 2026,
 

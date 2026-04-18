@@ -8,7 +8,7 @@ import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
-import { isValidUsername, meetsPasswordPolicy } from "@/lib/auth/validate";
+import { isValidUsername } from "@/lib/auth/validate";
 import { safeCallbackPath } from "@/lib/auth/safe-callback-path";
 import { syncDemoSessionToStore } from "@/lib/auth/sync-auth-store";
 import { useAuthStore } from "@/stores/auth.store";
@@ -36,8 +36,6 @@ function LoginForm() {
     if (!username.trim()) next.username = "Username is required";
     else if (!isValidUsername(username)) next.username = "Enter a valid username";
     if (!password) next.password = "Password is required";
-    else if (!meetsPasswordPolicy(password))
-      next.password = "Password must be at least 8 characters";
 
     setFieldErrors(next);
     if (Object.keys(next).length > 0) return;

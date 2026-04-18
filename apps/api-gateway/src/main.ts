@@ -39,8 +39,8 @@ async function bootstrap() {
   );
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('CareerOS Forge Engine API')
-    .setDescription('CareerOS Forge Engine — unified API gateway')
+    .setTitle('ForgeWind Engine API')
+    .setDescription('ForgeWind Engine — unified API gateway')
     .setVersion('0.1.0')
     .addBearerAuth()
     .build();

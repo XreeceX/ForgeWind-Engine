@@ -6,7 +6,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
-import { CareerOSAuthMark } from "@/components/auth/careeros-auth-mark";
+import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
 import { isValidEmail } from "@/lib/auth/validate";
 
 export default function ForgotPasswordPage() {
@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <AuthPageShell>
-      <CareerOSAuthMark />
+      <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Reset access</p>

@@ -6,13 +6,13 @@ import { RepoCard } from "@/components/dashboard/repo-card";
 import { OverviewStatGrid } from "@/components/dashboard/overview-stat-grid";
 import { InsightCard } from "@/components/ai-studio/insight-card";
 import { Card } from "@/components/ui/card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function OverviewPage() {
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
-  const setSelectedRepository = useCareerOSStore((state) => state.setSelectedRepository);
-  const generatedContent = useCareerOSStore((state) => state.generatedContent);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
+  const setSelectedRepository = useForgeWindStore((state) => state.setSelectedRepository);
+  const generatedContent = useForgeWindStore((state) => state.generatedContent);
 
   const healthQuery = useQuery({
     queryKey: ["career-health", selectedRepositoryId],
@@ -39,7 +39,7 @@ export default function OverviewPage() {
         >
           <Card className="cinematic-card p-5">
           <p className="text-sm font-semibold text-white">Repository intelligence</p>
-          <p className="mb-4 text-xs text-slate-400">Select a repository to scope every AI panel across CareerOS.</p>
+          <p className="mb-4 text-xs text-slate-400">Select a repository to scope every AI panel across ForgeWind.</p>
           <div className="grid gap-3 md:grid-cols-2">
             {repositories.map((repo) => (
               <RepoCard

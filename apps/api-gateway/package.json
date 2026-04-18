@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/api-gateway",
+  "name": "@forgewind-engine/api-gateway",
   "version": "0.1.0",
   "private": true,
   "scripts": {

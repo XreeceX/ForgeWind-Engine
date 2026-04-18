@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/cn";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 const primaryNav = [
   { href: "/overview", label: "Overview", icon: LayoutDashboard },
@@ -34,8 +34,8 @@ interface AppSidebarProps {
 
 export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const pathname = usePathname();
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
-  const repositories = useCareerOSStore((state) => state.repositories);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
+  const repositories = useForgeWindStore((state) => state.repositories);
   const selectedRepo = repositories.find((repo) => repo.id === selectedRepositoryId);
 
   return (
@@ -59,8 +59,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               <BrainCircuit className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-foreground">CareerOS</p>
-              <p className="text-xs text-slate-500">Forge Engine</p>
+              <p className="text-sm font-semibold text-foreground">ForgeWind</p>
+              <p className="text-xs text-slate-500">Intelligence layer</p>
             </div>
           </div>
           <button

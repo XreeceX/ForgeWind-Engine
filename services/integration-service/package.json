@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/integration-service",
+  "name": "@forgewind-engine/integration-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {

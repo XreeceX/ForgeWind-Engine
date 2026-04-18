@@ -4,11 +4,11 @@ import { useMemo } from "react";
 import { usePathname } from "next/navigation";
 import { Command, Menu, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 const routeLabels: Record<string, { title: string; subtitle: string }> = {
   "/overview": {
-    title: "CareerOS Overview",
+    title: "ForgeWind Overview",
     subtitle: "Live operating view of your AI career pipeline.",
   },
   "/data-hub": {
@@ -43,11 +43,11 @@ interface TopNavProps {
 
 export function TopNav({ onOpenSidebar }: TopNavProps) {
   const pathname = usePathname();
-  const userProfile = useCareerOSStore((state) => state.userProfile);
-  const setCommandPaletteOpen = useCareerOSStore((state) => state.setCommandPaletteOpen);
+  const userProfile = useForgeWindStore((state) => state.userProfile);
+  const setCommandPaletteOpen = useForgeWindStore((state) => state.setCommandPaletteOpen);
 
   const label = useMemo(
-    () => routeLabels[pathname] ?? { title: "CareerOS", subtitle: "Career operations workspace" },
+    () => routeLabels[pathname] ?? { title: "ForgeWind", subtitle: "Career operations workspace" },
     [pathname],
   );
 

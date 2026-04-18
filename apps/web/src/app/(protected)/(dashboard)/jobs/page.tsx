@@ -3,11 +3,11 @@
 import { useMemo } from "react";
 import { JobMatchCard, type JobMatch } from "@/components/jobs/job-match-card";
 import { Card } from "@/components/ui/card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function JobsPage() {
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
 
   const matches = useMemo<JobMatch[]>(() => {

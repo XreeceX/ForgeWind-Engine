@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/analytics-service",
+  "name": "@forgewind-engine/analytics-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {

@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 CareerOS Forge Engine
+# 🚀 ForgeWind Engine
 
 ### The AI-Powered Career Operating System
 
@@ -23,11 +23,11 @@
 
 ---
 
-## What is CareerOS Forge Engine?
+## What is ForgeWind Engine?
 
-CareerOS Forge Engine is a full-stack, production-grade **AI Career Operating System** built as a microservices monorepo. It combines the power of OpenAI's GPT-4o with a custom multi-agent architecture to automate and optimize every aspect of a modern career — from LinkedIn profile optimization and resume parsing to intelligent job matching, content strategy, and outreach automation.
+ForgeWind Engine is a full-stack, production-grade **AI Career Operating System** built as a microservices monorepo. It combines the power of OpenAI's GPT-4o with a custom multi-agent architecture to automate and optimize every aspect of a modern career — from LinkedIn profile optimization and resume parsing to intelligent job matching, content strategy, and outreach automation.
 
-Unlike simple career tools that solve a single problem, CareerOS Forge Engine treats your career as a **system** — an interconnected set of inputs (skills, experience, goals) that feed into intelligent engines producing actionable outputs (optimized profiles, matched jobs, generated content, networking strategies). Six specialized AI agents coordinate across domains, each with dedicated tools and reasoning capabilities, orchestrated through a central gateway.
+Unlike simple career tools that solve a single problem, ForgeWind Engine treats your career as a **system** — an interconnected set of inputs (skills, experience, goals) that feed into intelligent engines producing actionable outputs (optimized profiles, matched jobs, generated content, networking strategies). Six specialized AI agents coordinate across domains, each with dedicated tools and reasoning capabilities, orchestrated through a central gateway.
 
 The platform is engineered with the same patterns used in production systems at scale: event-driven microservices, an API gateway for routing and auth, vector databases for semantic search, job queues for async processing, and infrastructure-as-code for reproducible deployments to AWS via Terraform and Kubernetes.
 
@@ -218,10 +218,10 @@ The gateway (`apps/api-gateway`) is the single entry point for all client reques
 
 | Package | Purpose |
 |---------|---------|
-| `@careeros-forge/shared-types` | TypeScript interfaces, enums, and API envelope types across all services |
-| `@careeros-forge/config` | Zod-validated environment schemas and application constants |
-| `@careeros-forge/utils` | Logger (Pino), nanoid generation, `Result<T, E>` type, retry utilities |
-| `@careeros-forge/agent-core` | BaseAgent framework, LLMClient (OpenAI), agent execution types |
+| `@forgewind-engine/shared-types` | TypeScript interfaces, enums, and API envelope types across all services |
+| `@forgewind-engine/config` | Zod-validated environment schemas and application constants |
+| `@forgewind-engine/utils` | Logger (Pino), nanoid generation, `Result<T, E>` type, retry utilities |
+| `@forgewind-engine/agent-core` | BaseAgent framework, LLMClient (OpenAI), agent execution types |
 
 ---
 
@@ -264,7 +264,7 @@ The gateway (`apps/api-gateway`) is the single entry point for all client reques
 ## 📁 Project Structure
 
 ```
-careeros-forge/
+forgewind/
 ├── apps/
 │   ├── web/                          # Next.js 14 frontend
 │   │   ├── src/
@@ -348,8 +348,8 @@ careeros-forge/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/careeros-forge.git
-cd careeros-forge
+git clone https://github.com/your-username/forgewind.git
+cd forgewind
 ```
 
 ### 2. Install dependencies
@@ -368,13 +368,13 @@ Edit `.env` with your credentials:
 
 ```env
 # Required
-DATABASE_URL=postgresql://careeros_forge:careeros_forge_dev@localhost:5432/careeros_forge
+DATABASE_URL=postgresql://forgewind:forgewind_dev@localhost:5432/forgewind
 OPENAI_API_KEY=sk-...
 
 # Optional
 REDIS_URL=redis://localhost:6379
 PINECONE_API_KEY=...
-PINECONE_INDEX=careeros-forge
+PINECONE_INDEX=forgewind
 JWT_SECRET=your-secret-key
 LINKEDIN_CLIENT_ID=...
 LINKEDIN_CLIENT_SECRET=...
@@ -472,7 +472,7 @@ curl -X POST http://localhost:4000/api/v1/content/generate \
 
 ## 🤖 AI Agents
 
-CareerOS Forge Engine features six specialized AI agents, each built on the `BaseAgent` framework from `@careeros-forge/agent-core`. Agents use OpenAI's GPT-4o with function calling to autonomously reason about tasks and invoke domain-specific tools.
+ForgeWind Engine features six specialized AI agents, each built on the `BaseAgent` framework from `@forgewind-engine/agent-core`. Agents use OpenAI's GPT-4o with function calling to autonomously reason about tasks and invoke domain-specific tools.
 
 ### How Agents Work
 
@@ -553,9 +553,9 @@ pnpm format        # Prettier formatting
    {
      "name": "my-service",
      "dependencies": {
-       "@careeros-forge/shared-types": "workspace:*",
-       "@careeros-forge/config": "workspace:*",
-       "@careeros-forge/utils": "workspace:*"
+       "@forgewind-engine/shared-types": "workspace:*",
+       "@forgewind-engine/config": "workspace:*",
+       "@forgewind-engine/utils": "workspace:*"
      }
    }
    ```
@@ -574,8 +574,8 @@ pnpm format        # Prettier formatting
 
 - **Strict TypeScript** — `noUncheckedIndexedAccess`, `strictNullChecks`, `noImplicitAny`
 - **Zod validation** — All environment variables validated at startup
-- **Result type** — Use `Result<T, E>` from `@careeros-forge/utils` for error handling
-- **API envelope** — All responses wrapped in `ApiResponse<T>` from `@careeros-forge/shared-types`
+- **Result type** — Use `Result<T, E>` from `@forgewind-engine/utils` for error handling
+- **API envelope** — All responses wrapped in `ApiResponse<T>` from `@forgewind-engine/shared-types`
 - **Pino logging** — Structured JSON logging across all services
 - **Husky + lint-staged** — Pre-commit hooks for linting and formatting
 
@@ -725,6 +725,6 @@ This project is licensed under the [MIT License](LICENSE).
 
 **Built with purpose by engineers who believe careers deserve better tools.**
 
-[⬆ Back to Top](#-careeros)
+[⬆ Back to Top](#-forgewind-engine)
 
 </div>

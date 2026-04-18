@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export function CareerOSAuthMark() {
+export function ForgeWindAuthMark() {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -13,10 +13,10 @@ export function CareerOSAuthMark() {
     >
       <Link href="/" className="group inline-block">
         <span className="text-xl font-semibold tracking-tight text-slate-50 md:text-2xl">
-          Career<span className="gradient-text">OS</span>
+          Forge<span className="gradient-text">Wind</span>
         </span>
         <p className="mt-2 text-xs uppercase tracking-[0.28em] text-slate-400 transition-colors group-hover:text-primary-300">
-          career operating system
+          AI career intelligence
         </p>
       </Link>
     </motion.div>

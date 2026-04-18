@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: careeros-forge-config
-  namespace: careeros-forge
+  name: forgewind-config
+  namespace: forgewind
   labels:
-    app.kubernetes.io/part-of: careeros-forge
+    app.kubernetes.io/part-of: forgewind
 data:
   NODE_ENV: "production"
   LOG_LEVEL: "info"
-  POSTGRES_HOST: "careeros-forge-postgres"
+  POSTGRES_HOST: "forgewind-postgres"
   POSTGRES_PORT: "5432"
-  POSTGRES_DB: "careeros_forge"
-  REDIS_HOST: "careeros-forge-redis"
+  POSTGRES_DB: "forgewind"
+  REDIS_HOST: "forgewind-redis"
   REDIS_PORT: "6379"
   API_GATEWAY_PORT: "4000"
   USER_SERVICE_PORT: "4001"

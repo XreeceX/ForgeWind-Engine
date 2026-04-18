@@ -7,7 +7,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
-import { CareerOSAuthMark } from "@/components/auth/careeros-auth-mark";
+import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
 import { isValidEmail, meetsPasswordPolicy } from "@/lib/auth/validate";
 
 type FieldErrors = Partial<{
@@ -52,11 +52,11 @@ export default function SignupPage() {
 
   return (
     <AuthPageShell>
-      <CareerOSAuthMark />
+      <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Create account</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50">Join CareerOS</h1>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50">Join ForgeWind</h1>
           <p className="mt-1.5 text-sm text-slate-400">Demo signup — no email is sent.</p>
         </div>
 

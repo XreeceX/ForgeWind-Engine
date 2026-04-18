@@ -29,10 +29,10 @@ importers:
 
   agents/content-agent:
     dependencies:
-      '@careeros-forge-engine/agent-core':
+      '@forgewind-engine/agent-core':
         specifier: workspace:*
         version: link:../../packages/agent-core
-      '@careeros-forge-engine/shared-types':
+      '@forgewind-engine/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       openai:
@@ -48,10 +48,10 @@ importers:
 
   agents/job-agent:
     dependencies:
-      '@careeros-forge-engine/agent-core':
+      '@forgewind-engine/agent-core':
         specifier: workspace:*
         version: link:../../packages/agent-core
-      '@careeros-forge-engine/shared-types':
+      '@forgewind-engine/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       openai:
@@ -67,10 +67,10 @@ importers:
 
   agents/outreach-agent:
     dependencies:
-      '@careeros-forge-engine/agent-core':
+      '@forgewind-engine/agent-core':
         specifier: workspace:*
         version: link:../../packages/agent-core
-      '@careeros-forge-engine/shared-types':
+      '@forgewind-engine/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       openai:
@@ -86,10 +86,10 @@ importers:
 
   agents/profile-agent:
     dependencies:
-      '@careeros-forge-engine/agent-core':
+      '@forgewind-engine/agent-core':
         specifier: workspace:*
         version: link:../../packages/agent-core
-      '@careeros-forge-engine/shared-types':
+      '@forgewind-engine/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       openai:
@@ -105,10 +105,10 @@ importers:
 
   agents/skill-gap-agent:
     dependencies:
-      '@careeros-forge-engine/agent-core':
+      '@forgewind-engine/agent-core':
         specifier: workspace:*
         version: link:../../packages/agent-core
-      '@careeros-forge-engine/shared-types':
+      '@forgewind-engine/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       openai:
@@ -124,10 +124,10 @@ importers:
 
   agents/trend-agent:
     dependencies:
-      '@careeros-forge-engine/agent-core':
+      '@forgewind-engine/agent-core':
         specifier: workspace:*
         version: link:../../packages/agent-core
-      '@careeros-forge-engine/shared-types':
+      '@forgewind-engine/shared-types':
         specifier: workspace:*
         version: link:../../packages/shared-types
       openai:

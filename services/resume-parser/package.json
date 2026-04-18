@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/resume-parser",
+  "name": "@forgewind-engine/resume-parser",
   "version": "0.1.0",
   "private": true,
   "scripts": {

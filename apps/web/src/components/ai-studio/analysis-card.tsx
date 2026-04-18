@@ -1,6 +1,6 @@
 import { BrainCircuit } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import type { AIAnalysisState } from "@/stores/careeros.store";
+import type { AIAnalysisState } from "@/stores/forgewind.store";
 
 interface AnalysisCardProps {
   analysis: AIAnalysisState;

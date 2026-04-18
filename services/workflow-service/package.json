@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/workflow-service",
+  "name": "@forgewind-engine/workflow-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {

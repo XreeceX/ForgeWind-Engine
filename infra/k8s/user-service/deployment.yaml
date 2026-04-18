@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service
-  namespace: careeros-forge
+  namespace: forgewind
   labels:
     app: user-service
-    app.kubernetes.io/part-of: careeros-forge
+    app.kubernetes.io/part-of: forgewind
 spec:
   replicas: 2
   selector:
@@ -18,15 +18,15 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: careeros-forge/user-service:latest
+          image: forgewind/user-service:latest
           ports:
             - containerPort: 4001
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: careeros-forge-config
+                name: forgewind-config
             - secretRef:
-                name: careeros-forge-secrets
+                name: forgewind-secrets
           resources:
             requests:
               cpu: "100m"

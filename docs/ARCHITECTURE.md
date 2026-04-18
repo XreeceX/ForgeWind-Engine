@@ -1,6 +1,6 @@
-# CareerOS Forge Engine — Architecture Deep Dive
+# ForgeWind Engine — Architecture Deep Dive
 
-> This document provides a comprehensive look at the system architecture, design decisions, patterns, and tradeoffs behind CareerOS Forge Engine.
+> This document provides a comprehensive look at the system architecture, design decisions, patterns, and tradeoffs behind ForgeWind Engine.
 
 ---
 
@@ -25,7 +25,7 @@
 
 ## Overview
 
-CareerOS Forge Engine is a **distributed microservices system** organized as a TypeScript monorepo. It comprises:
+ForgeWind Engine is a **distributed microservices system** organized as a TypeScript monorepo. It comprises:
 
 - **1 frontend** application (Next.js 14)
 - **1 API gateway** (NestJS) serving as the single entry point
@@ -43,7 +43,7 @@ All packages are managed by **pnpm workspaces** with **Turborepo** orchestrating
 | Principle | Implementation |
 |-----------|----------------|
 | **Separation of Concerns** | Each microservice owns a single domain (users, jobs, content, etc.) with its own data access patterns |
-| **Type Safety End-to-End** | Shared TypeScript interfaces (`@careeros-forge/shared-types`) ensure consistent contracts from frontend to backend |
+| **Type Safety End-to-End** | Shared TypeScript interfaces (`@forgewind-engine/shared-types`) ensure consistent contracts from frontend to backend |
 | **Configuration as Code** | Zod schemas validate all environment variables at startup; Terraform defines all infrastructure |
 | **Fail Gracefully** | `Result<T, E>` type for explicit error handling; agent confidence scores for AI uncertainty |
 | **AI as a First-Class Citizen** | Dedicated agent framework, not an afterthought — structured tool calling, token tracking, iteration limits |
@@ -265,7 +265,7 @@ Async job processing and outreach orchestration:
 
 ### Framework Architecture
 
-The agent system is built on `@careeros-forge/agent-core`, which provides:
+The agent system is built on `@forgewind-engine/agent-core`, which provides:
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -428,7 +428,7 @@ User Action → API Gateway → Service
 
 ## Shared Packages
 
-### @careeros-forge/shared-types
+### @forgewind-engine/shared-types
 
 The single source of truth for all TypeScript interfaces used across the monorepo:
 
@@ -444,7 +444,7 @@ The single source of truth for all TypeScript interfaces used across the monorep
 
 **Design decision:** Types are interfaces (not classes) to avoid runtime dependencies. This package has zero production dependencies — it's pure type definitions compiled away at build time.
 
-### @careeros-forge/config
+### @forgewind-engine/config
 
 Environment configuration with runtime validation:
 
@@ -456,7 +456,7 @@ Environment configuration with runtime validation:
 
 **Constants** include `API_VERSION`, pagination defaults, `MAX_FILE_SIZE` (10MB), `AGENT_TIMEOUT_MS`, rate limit values, and `EMBEDDING_DIMENSIONS` (3072).
 
-### @careeros-forge/utils
+### @forgewind-engine/utils
 
 Runtime utilities shared across all services:
 
@@ -468,7 +468,7 @@ Runtime utilities shared across all services:
 | `retry()` | Configurable retry with exponential backoff |
 | `validate()` | Generic Zod-based validation helper |
 
-### @careeros-forge/agent-core
+### @forgewind-engine/agent-core
 
 The AI agent framework (detailed in [Multi-Agent AI System](#multi-agent-ai-system)):
 
@@ -589,7 +589,7 @@ services:
   pgadmin:      # pgAdmin 4, port 5050
 ```
 
-Persistent volumes for Postgres and Redis data. All services on a shared `careeros-forge-network` bridge.
+Persistent volumes for Postgres and Redis data. All services on a shared `forgewind-network` bridge.
 
 ### Staging (Kubernetes)
 
@@ -597,7 +597,7 @@ Manifests in `infra/k8s/`:
 
 | Resource | Purpose |
 |----------|---------|
-| `namespace.yaml` | Isolates CareerOS Forge Engine resources in `careeros-forge` namespace |
+| `namespace.yaml` | Isolates ForgeWind Engine resources in `forgewind` namespace |
 | `configmap.yaml` | Non-secret configuration (ports, hostnames, `NODE_ENV`) |
 | `secrets.yaml` | Base64-encoded secrets (DB credentials, JWT secret, API keys) |
 | `deployments/` | Pod specs for api-gateway and user-service with health probes |
@@ -645,7 +645,7 @@ Manifests in `infra/k8s/`:
 
 ### Logging
 
-All services use **Pino** for structured JSON logging via `@careeros-forge/utils`:
+All services use **Pino** for structured JSON logging via `@forgewind-engine/utils`:
 
 ```json
 {

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { AIResponseBlock } from "@/components/ai-studio/ai-response-block";
 import { PromptInputBox } from "@/components/ai-studio/prompt-input-box";
-import type { RepositorySummary } from "@/stores/careeros.store";
+import type { RepositorySummary } from "@/stores/forgewind.store";
 
 interface AIChatPanelProps {
   selectedRepository?: RepositorySummary;

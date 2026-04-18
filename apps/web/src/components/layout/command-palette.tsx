@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Command, Search } from "lucide-react";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 import { cn } from "@/lib/cn";
 
 type PaletteCommand = {
@@ -16,11 +16,11 @@ type PaletteCommand = {
 export function CommandPalette() {
   const pathname = usePathname();
   const router = useRouter();
-  const open = useCareerOSStore((state) => state.commandPaletteOpen);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
-  const setCommandPaletteOpen = useCareerOSStore((state) => state.setCommandPaletteOpen);
-  const setAIStatus = useCareerOSStore((state) => state.setAIStatus);
-  const setAIFocus = useCareerOSStore((state) => state.setAIFocus);
+  const open = useForgeWindStore((state) => state.commandPaletteOpen);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
+  const setCommandPaletteOpen = useForgeWindStore((state) => state.setCommandPaletteOpen);
+  const setAIStatus = useForgeWindStore((state) => state.setAIStatus);
+  const setAIFocus = useForgeWindStore((state) => state.setAIFocus);
   const [query, setQuery] = useState("");
 
   const commands = useMemo<PaletteCommand[]>(

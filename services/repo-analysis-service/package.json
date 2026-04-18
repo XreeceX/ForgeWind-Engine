@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/repo-analysis-service",
+  "name": "@forgewind-engine/repo-analysis-service",
   "version": "0.1.0",
   "private": true,
   "scripts": {

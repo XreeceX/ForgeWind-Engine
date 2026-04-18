@@ -1,6 +1,6 @@
-# CareerOS Forge Engine — API Reference
+# ForgeWind Engine — API Reference
 
-> Complete API documentation for all CareerOS Forge Engine microservices.
+> Complete API documentation for all ForgeWind Engine microservices.
 > All endpoints are prefixed with `/api/v1` and routed through the API Gateway at `http://localhost:4000`.
 
 ---
@@ -1517,7 +1517,7 @@ curl http://localhost:4000/api/v1/health
 For TypeScript clients, the shared types package provides full type safety:
 
 ```typescript
-import type { ApiResponse, Job, PaginatedResponse } from '@careeros-forge/shared-types';
+import type { ApiResponse, Job, PaginatedResponse } from '@forgewind-engine/shared-types';
 
 const response = await fetch('/api/v1/jobs?query=engineer');
 const data: PaginatedResponse<Job> = await response.json();

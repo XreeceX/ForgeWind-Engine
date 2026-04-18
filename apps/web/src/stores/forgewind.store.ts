@@ -51,7 +51,7 @@ export type NarrativeSectionId =
   | "creation"
   | "opportunity";
 
-interface CareerOSState {
+interface ForgeWindState {
   userProfile: UserProfile;
   repositories: RepositorySummary[];
   selectedRepositoryId: string;
@@ -78,13 +78,13 @@ const now = new Date().toISOString();
 
 const initialRepositories: RepositorySummary[] = [
   {
-    id: "repo-careeros-web",
-    name: "careeros-web",
-    fullName: "reece/careeros-web",
+    id: "repo-forgewind-web",
+    name: "forgewind-web",
+    fullName: "reece/forgewind-web",
     language: "TypeScript",
     stars: 41,
     healthScore: 88,
-    summary: "Main Next.js workspace powering CareerOS experiences.",
+    summary: "Main Next.js workspace powering ForgeWind experiences.",
   },
   {
     id: "repo-workflows",
@@ -107,7 +107,7 @@ const initialRepositories: RepositorySummary[] = [
 ];
 const defaultSelectedRepositoryId = initialRepositories[0]?.id ?? "";
 
-export const useCareerOSStore = create<CareerOSState>()(
+export const useForgeWindStore = create<ForgeWindState>()(
   persist(
     (set) => ({
       userProfile: {
@@ -195,6 +195,6 @@ export const useCareerOSStore = create<CareerOSState>()(
       setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
       setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),
-    { name: "careeros-web-state" },
+    { name: "forgewind-web-state" },
   ),
 );

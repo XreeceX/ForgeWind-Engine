@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function SettingsPage() {
-  const userProfile = useCareerOSStore((state) => state.userProfile);
-  const memoryContext = useCareerOSStore((state) => state.memoryContext);
-  const updateMemoryContext = useCareerOSStore((state) => state.updateMemoryContext);
+  const userProfile = useForgeWindStore((state) => state.userProfile);
+  const memoryContext = useForgeWindStore((state) => state.memoryContext);
+  const updateMemoryContext = useForgeWindStore((state) => state.updateMemoryContext);
   const [tone, setTone] = useState(memoryContext.preferredTone);
 
   return (

@@ -25,7 +25,7 @@ export class EmailService {
       const info = await this.transporter.sendMail({
         from: this.config.get<string>(
           'SMTP_FROM',
-          'noreply@careeros-forge-engine.app',
+          'noreply@forgewind-engine.app',
         ),
         to: params.to,
         subject: params.subject,

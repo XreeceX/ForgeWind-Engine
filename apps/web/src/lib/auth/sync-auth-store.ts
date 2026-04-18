@@ -8,7 +8,7 @@ export function syncDemoSessionToStore(login: AuthState["login"]) {
       id: DEMO_USER.id,
       email: DEMO_USER.email,
       name: DEMO_USER.name,
-      headline: "CareerOS demo session",
+      headline: "ForgeWind demo session",
       linkedinConnected: DEMO_USER.linkedinConnected,
     },
     "demo-access-token",

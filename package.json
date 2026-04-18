@@ -1,8 +1,8 @@
 {
-  "name": "careeros-forge-engine",
+  "name": "forgewind-engine",
   "version": "0.1.0",
   "private": true,
-  "description": "CareerOS Forge Engine — profile optimization, job intelligence, skill gap analysis, and autonomous career assistance",
+  "description": "ForgeWind Engine — profile optimization, job intelligence, skill gap analysis, and autonomous career assistance",
   "author": "reece",
   "license": "MIT",
   "engines": {

@@ -5,12 +5,12 @@ import { RepoCard } from "@/components/dashboard/repo-card";
 import { AnalysisDrawer } from "@/components/data-hub/analysis-drawer";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function DataHubPage() {
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
-  const setSelectedRepository = useCareerOSStore((state) => state.setSelectedRepository);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
+  const setSelectedRepository = useForgeWindStore((state) => state.setSelectedRepository);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const selectedRepo = repositories.find((repo) => repo.id === selectedRepositoryId);

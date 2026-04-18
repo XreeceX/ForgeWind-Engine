@@ -1,5 +1,5 @@
-import { CareerOSExperience } from "@/components/cinematic/careeros-experience";
+import { ForgeWindExperience } from "@/components/cinematic/forgewind-experience";
 
 export default function Home() {
-  return <CareerOSExperience />;
+  return <ForgeWindExperience />;
 }

@@ -5,7 +5,7 @@ import {
   type AgentContext,
   type AgentTool,
   type ToolParameters,
-} from "@careeros-forge-engine/agent-core";
+} from "@forgewind-engine/agent-core";
 
 interface IndustryTrendAnalysis {
   industry: string;

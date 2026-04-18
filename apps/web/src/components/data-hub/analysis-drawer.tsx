@@ -3,7 +3,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import type { RepositorySummary } from "@/stores/careeros.store";
+import type { RepositorySummary } from "@/stores/forgewind.store";
 
 interface AnalysisDrawerProps {
   open: boolean;

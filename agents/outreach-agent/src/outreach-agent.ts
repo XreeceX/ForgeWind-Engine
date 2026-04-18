@@ -5,8 +5,8 @@ import {
   type AgentContext,
   type AgentTool,
   type ToolParameters,
-} from "@careeros-forge-engine/agent-core";
-import type { LinkedInProfile, Job } from "@careeros-forge-engine/shared-types";
+} from "@forgewind-engine/agent-core";
+import type { LinkedInProfile, Job } from "@forgewind-engine/shared-types";
 
 interface ColdEmail {
   subject: string;

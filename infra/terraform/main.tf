@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "careeros-forge-terraform-state"
+    bucket         = "forgewind-terraform-state"
     key            = "infra/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "careeros-forge-terraform-locks"
+    dynamodb_table = "forgewind-terraform-locks"
     encrypt        = true
   }
 }

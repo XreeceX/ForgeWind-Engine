@@ -2,12 +2,12 @@
 
 import { MemoryInsightCard, type MemoryInsight } from "@/components/memory/memory-insight-card";
 import { Card } from "@/components/ui/card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function MemoryPage() {
-  const memoryContext = useCareerOSStore((state) => state.memoryContext);
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
+  const memoryContext = useForgeWindStore((state) => state.memoryContext);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
 
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
 

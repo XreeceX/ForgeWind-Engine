@@ -3,13 +3,13 @@
 import { ContentPreviewCard } from "@/components/content/content-preview-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function ContentPage() {
-  const generatedContent = useCareerOSStore((state) => state.generatedContent);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const pushGeneratedContent = useCareerOSStore((state) => state.pushGeneratedContent);
+  const generatedContent = useForgeWindStore((state) => state.generatedContent);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const pushGeneratedContent = useForgeWindStore((state) => state.pushGeneratedContent);
 
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
 

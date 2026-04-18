@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/config",
+  "name": "@forgewind-engine/config",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",

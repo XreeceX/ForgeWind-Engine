@@ -1,7 +1,7 @@
 import { CalendarDays } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import type { GeneratedContentItem } from "@/stores/careeros.store";
+import type { GeneratedContentItem } from "@/stores/forgewind.store";
 
 interface ContentPreviewCardProps {
   content: GeneratedContentItem;

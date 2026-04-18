@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/shared-types",
+  "name": "@forgewind-engine/shared-types",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",

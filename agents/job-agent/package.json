@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/job-agent",
+  "name": "@forgewind-engine/job-agent",
   "version": "0.1.0",
   "private": true,
   "main": "./dist/index.js",
@@ -10,8 +10,8 @@
     "lint": "eslint src/"
   },
   "dependencies": {
-    "@careeros-forge-engine/agent-core": "workspace:*",
-    "@careeros-forge-engine/shared-types": "workspace:*",
+    "@forgewind-engine/agent-core": "workspace:*",
+    "@forgewind-engine/shared-types": "workspace:*",
     "openai": "^4.70.0",
     "pino": "^9.0.0"
   },

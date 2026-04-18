@@ -8,7 +8,7 @@ import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
-import { CareerOSAuthMark } from "@/components/auth/careeros-auth-mark";
+import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
 import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/auth/demo-user";
 import { isValidEmail, meetsPasswordPolicy } from "@/lib/auth/validate";
 import { safeCallbackPath } from "@/lib/auth/safe-callback-path";
@@ -68,12 +68,12 @@ function LoginForm() {
 
   return (
     <AuthPageShell>
-      <CareerOSAuthMark />
+      <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Sign in</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50">Welcome back</h1>
-          <p className="mt-1.5 text-sm text-slate-400">Access your CareerOS workspace.</p>
+          <p className="mt-1.5 text-sm text-slate-400">Access your ForgeWind workspace.</p>
         </div>
 
         {registered ? (
@@ -149,7 +149,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <AuthPageShell>
-          <CareerOSAuthMark />
+          <ForgeWindAuthMark />
           <AuthCard>
             <p className="text-center text-sm text-slate-400">Loading…</p>
           </AuthCard>

@@ -3,34 +3,34 @@ version: "3.9"
 services:
   postgres:
     image: postgres:16
-    container_name: careeros-postgres
+    container_name: forgewind-postgres
     restart: unless-stopped
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: careeros_forge
-      POSTGRES_PASSWORD: careeros_forge_dev
-      POSTGRES_DB: careeros_forge
+      POSTGRES_USER: forgewind
+      POSTGRES_PASSWORD: forgewind_dev
+      POSTGRES_DB: forgewind
     volumes:
       - postgres-data:/var/lib/postgresql/data
     networks:
-      - careeros-forge-network
+      - forgewind-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U careeros_forge -d careeros_forge"]
+      test: ["CMD-SHELL", "pg_isready -U forgewind -d forgewind"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: careeros-redis
+    container_name: forgewind-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - redis-data:/data
     networks:
-      - careeros-forge-network
+      - forgewind-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -39,7 +39,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: careeros-pgadmin
+    container_name: forgewind-pgadmin
     restart: unless-stopped
     ports:
       - "5050:80"
@@ -47,13 +47,13 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@forgeengine.dev
       PGADMIN_DEFAULT_PASSWORD: admin
     networks:
-      - careeros-forge-network
+      - forgewind-network
     depends_on:
       postgres:
         condition: service_healthy
 
 networks:
-  careeros-forge-network:
+  forgewind-network:
     driver: bridge
 
 volumes:

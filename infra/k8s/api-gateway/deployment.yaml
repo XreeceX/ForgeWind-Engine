@@ -2,10 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-gateway
-  namespace: careeros-forge
+  namespace: forgewind
   labels:
     app: api-gateway
-    app.kubernetes.io/part-of: careeros-forge
+    app.kubernetes.io/part-of: forgewind
 spec:
   replicas: 2
   selector:
@@ -18,15 +18,15 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: careeros-forge/api-gateway:latest
+          image: forgewind/api-gateway:latest
           ports:
             - containerPort: 4000
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: careeros-forge-config
+                name: forgewind-config
             - secretRef:
-                name: careeros-forge-secrets
+                name: forgewind-secrets
           resources:
             requests:
               cpu: "100m"

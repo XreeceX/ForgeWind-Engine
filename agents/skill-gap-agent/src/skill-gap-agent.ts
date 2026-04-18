@@ -5,8 +5,8 @@ import {
   type AgentContext,
   type AgentTool,
   type ToolParameters,
-} from "@careeros-forge-engine/agent-core";
-import type { LinkedInProfile } from "@careeros-forge-engine/shared-types";
+} from "@forgewind-engine/agent-core";
+import type { LinkedInProfile } from "@forgewind-engine/shared-types";
 
 interface SkillGapAnalysis {
   currentSkills: SkillAssessment[];

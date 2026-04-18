@@ -4,7 +4,7 @@ import { getToken } from "next-auth/jwt";
 import { getNextAuthSecret } from "@/lib/auth/auth-secret";
 
 /**
- * CareerOS demo — Edge middleware (order matters)
+ * ForgeWind demo — Edge middleware (order matters)
  * 1) Block known AI / crawler / script user agents (plain 403)
  * 2) Allow static assets & explicit public routes
  * 3) Require NextAuth JWT for everything else → redirect to /login

@@ -54,7 +54,7 @@ export function Sidebar() {
             <Zap className="h-5 w-5 text-white" />
           </div>
           {sidebarOpen && (
-            <span className="text-lg font-bold gradient-text">Forge Engine</span>
+            <span className="text-lg font-bold gradient-text">ForgeWind</span>
           )}
         </Link>
         <button

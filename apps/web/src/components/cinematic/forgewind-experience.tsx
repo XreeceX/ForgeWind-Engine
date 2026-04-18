@@ -18,7 +18,7 @@ import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
-import { useCareerOSStore, type NarrativeSectionId } from "@/stores/careeros.store";
+import { useForgeWindStore, type NarrativeSectionId } from "@/stores/forgewind.store";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -50,23 +50,23 @@ const JOB_MATCHES: JobMatch[] = [
   },
 ];
 
-export function CareerOSExperience() {
+export function ForgeWindExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const userProfile = useCareerOSStore((state) => state.userProfile);
-  const memoryContext = useCareerOSStore((state) => state.memoryContext);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
-  const generatedContent = useCareerOSStore((state) => state.generatedContent);
-  const aiAnalysis = useCareerOSStore((state) => state.aiAnalysis);
-  const uiMode = useCareerOSStore((state) => state.uiMode);
-  const activeNarrativeSection = useCareerOSStore((state) => state.activeNarrativeSection);
-  const chatOverlayOpen = useCareerOSStore((state) => state.chatOverlayOpen);
-  const setSelectedRepository = useCareerOSStore((state) => state.setSelectedRepository);
-  const setUIMode = useCareerOSStore((state) => state.setUIMode);
-  const setActiveNarrativeSection = useCareerOSStore((state) => state.setActiveNarrativeSection);
-  const setChatOverlayOpen = useCareerOSStore((state) => state.setChatOverlayOpen);
-  const pushGeneratedContent = useCareerOSStore((state) => state.pushGeneratedContent);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const userProfile = useForgeWindStore((state) => state.userProfile);
+  const memoryContext = useForgeWindStore((state) => state.memoryContext);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
+  const generatedContent = useForgeWindStore((state) => state.generatedContent);
+  const aiAnalysis = useForgeWindStore((state) => state.aiAnalysis);
+  const uiMode = useForgeWindStore((state) => state.uiMode);
+  const activeNarrativeSection = useForgeWindStore((state) => state.activeNarrativeSection);
+  const chatOverlayOpen = useForgeWindStore((state) => state.chatOverlayOpen);
+  const setSelectedRepository = useForgeWindStore((state) => state.setSelectedRepository);
+  const setUIMode = useForgeWindStore((state) => state.setUIMode);
+  const setActiveNarrativeSection = useForgeWindStore((state) => state.setActiveNarrativeSection);
+  const setChatOverlayOpen = useForgeWindStore((state) => state.setChatOverlayOpen);
+  const pushGeneratedContent = useForgeWindStore((state) => state.pushGeneratedContent);
 
   const selectedRepository = useMemo(
     () => repositories.find((repo) => repo.id === selectedRepositoryId),
@@ -148,7 +148,7 @@ export function CareerOSExperience() {
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border-light bg-panel-elevated/70 p-4">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Work Mode</p>
-              <h1 className="mt-1 text-2xl font-semibold text-white">CareerOS workspace</h1>
+              <h1 className="mt-1 text-2xl font-semibold text-white">ForgeWind workspace</h1>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="secondary" onClick={() => setChatOverlayOpen(true)}>
@@ -208,7 +208,7 @@ export function CareerOSExperience() {
         <Modal
           open={chatOverlayOpen}
           onClose={() => setChatOverlayOpen(false)}
-          title="CareerOS AI Copilot"
+          title="ForgeWind AI Copilot"
           size="lg"
         >
           <AIChatPanel selectedRepository={selectedRepository} />
@@ -236,7 +236,7 @@ export function CareerOSExperience() {
 
       <header className="section-copy px-6 pb-10 pt-24 md:px-12">
         <div className="mx-auto max-w-6xl">
-          <p className="text-xs uppercase tracking-[0.25em] text-primary-300">CareerOS cinematic system</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-primary-300">ForgeWind cinematic system</p>
           <AnimatedTextReveal
             text="A scroll-driven AI operating system that transforms profile data into strategic career momentum."
             className="mt-4 max-w-4xl text-3xl font-semibold leading-tight text-white md:text-6xl"
@@ -249,7 +249,7 @@ export function CareerOSExperience() {
           id="identity"
           label="Identity Layer"
           title="Who is the user?"
-          description="CareerOS starts by grounding every decision in your profile, role target, and narrative intent."
+          description="ForgeWind starts by grounding every decision in your profile, role target, and narrative intent."
           active={activeNarrativeSection === "identity"}
         >
           <div className="section-card grid h-full gap-3">
@@ -409,7 +409,7 @@ export function CareerOSExperience() {
       <Modal
         open={chatOverlayOpen}
         onClose={() => setChatOverlayOpen(false)}
-        title="CareerOS AI Copilot"
+        title="ForgeWind AI Copilot"
         size="lg"
       >
         <AIChatPanel selectedRepository={selectedRepository} />

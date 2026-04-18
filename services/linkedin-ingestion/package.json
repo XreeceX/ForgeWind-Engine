@@ -1,5 +1,5 @@
 {
-  "name": "@careeros-forge-engine/linkedin-ingestion",
+  "name": "@forgewind-engine/linkedin-ingestion",
   "version": "0.1.0",
   "private": true,
   "scripts": {

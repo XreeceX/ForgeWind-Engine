@@ -4,14 +4,14 @@ import { AIChatPanel } from "@/components/ai-studio/ai-chat-panel";
 import { AnalysisCard } from "@/components/ai-studio/analysis-card";
 import { ContextPanel } from "@/components/ai-studio/context-panel";
 import { InsightCard } from "@/components/ai-studio/insight-card";
-import { useCareerOSStore } from "@/stores/careeros.store";
+import { useForgeWindStore } from "@/stores/forgewind.store";
 
 export default function AIStudioPage() {
-  const userProfile = useCareerOSStore((state) => state.userProfile);
-  const memoryContext = useCareerOSStore((state) => state.memoryContext);
-  const aiAnalysis = useCareerOSStore((state) => state.aiAnalysis);
-  const repositories = useCareerOSStore((state) => state.repositories);
-  const selectedRepositoryId = useCareerOSStore((state) => state.selectedRepositoryId);
+  const userProfile = useForgeWindStore((state) => state.userProfile);
+  const memoryContext = useForgeWindStore((state) => state.memoryContext);
+  const aiAnalysis = useForgeWindStore((state) => state.aiAnalysis);
+  const repositories = useForgeWindStore((state) => state.repositories);
+  const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
 
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
 

@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import type { MemoryContext, RepositorySummary, UserProfile } from "@/stores/careeros.store";
+import type { MemoryContext, RepositorySummary, UserProfile } from "@/stores/forgewind.store";
 
 interface ContextPanelProps {
   userProfile: UserProfile;

@@ -1,7 +1,7 @@
 import { GitFork, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import type { RepositorySummary } from "@/stores/careeros.store";
+import type { RepositorySummary } from "@/stores/forgewind.store";
 import { cn } from "@/lib/cn";
 
 interface RepoCardProps {

@@ -15,8 +15,8 @@ import {
   Bot,
   Settings,
   ChevronLeft,
-  Zap,
 } from "lucide-react";
+import { ForgeWindLogo } from "@/components/brand/forgewind-logo";
 import { cn } from "@/lib/cn";
 import { useAppStore } from "@/stores/app.store";
 import { useAuthStore } from "@/stores/auth.store";
@@ -50,8 +50,8 @@ export function Sidebar() {
       {/* Logo */}
       <div className="flex h-16 items-center justify-between px-4 border-b border-border">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-primary">
-            <Zap className="h-5 w-5 text-white" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg ring-1 ring-border/60">
+            <ForgeWindLogo size={36} className="h-9 w-9" />
           </div>
           {sidebarOpen && (
             <span className="text-lg font-bold gradient-text">ForgeWind</span>

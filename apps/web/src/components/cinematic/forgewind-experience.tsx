@@ -14,6 +14,7 @@ import { ScrollSection } from "@/components/cinematic/ScrollSection";
 import { ContentPreviewCard } from "@/components/content/content-preview-card";
 import { RepoCard } from "@/components/dashboard/repo-card";
 import { JobMatchCard, type JobMatch } from "@/components/jobs/job-match-card";
+import { ForgeWindLogo } from "@/components/brand/forgewind-logo";
 import { AppShell } from "@/components/layout/app-shell";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -223,6 +224,13 @@ export function ForgeWindExperience() {
 
       <div className="fixed inset-x-0 top-0 z-40 h-1 bg-surface-light/65">
         <motion.div className="h-full bg-gradient-to-r from-primary-400 to-accent-400" style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }} />
+      </div>
+
+      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/80 px-2 py-1.5 backdrop-blur-xl">
+        <div className="overflow-hidden rounded-lg ring-1 ring-white/10">
+          <ForgeWindLogo size={28} priority />
+        </div>
+        <span className="hidden pr-1 text-sm font-semibold text-white sm:inline">ForgeWind</span>
       </div>
 
       <div className="fixed right-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/80 p-1 backdrop-blur-xl">

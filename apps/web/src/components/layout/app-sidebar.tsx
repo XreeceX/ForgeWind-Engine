@@ -14,6 +14,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { ForgeWindLogo } from "@/components/brand/forgewind-logo";
 import { cn } from "@/lib/cn";
 import { useForgeWindStore } from "@/stores/forgewind.store";
 
@@ -55,8 +56,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       >
         <div className="mb-6 flex items-center justify-between gap-3 px-2">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 via-violet-500 to-pink-500 shadow-glow-primary">
-              <BrainCircuit className="h-5 w-5 text-white" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl ring-1 ring-border/50 shadow-sm">
+              <ForgeWindLogo size={40} className="h-10 w-10" />
             </div>
             <div>
               <p className="text-sm font-semibold text-foreground">ForgeWind</p>

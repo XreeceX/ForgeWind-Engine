@@ -9,13 +9,12 @@ import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
-import { DEMO_EMAIL, DEMO_PASSWORD } from "@/lib/auth/demo-user";
-import { isValidEmail, meetsPasswordPolicy } from "@/lib/auth/validate";
+import { isValidUsername, meetsPasswordPolicy } from "@/lib/auth/validate";
 import { safeCallbackPath } from "@/lib/auth/safe-callback-path";
 import { syncDemoSessionToStore } from "@/lib/auth/sync-auth-store";
 import { useAuthStore } from "@/stores/auth.store";
 
-type FieldErrors = Partial<{ email: string; password: string }>;
+type FieldErrors = Partial<{ username: string; password: string }>;
 
 function LoginForm() {
   const router = useRouter();
@@ -25,7 +24,7 @@ function LoginForm() {
 
   const login = useAuthStore((s) => s.login);
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -36,8 +35,8 @@ function LoginForm() {
     setSubmitError(null);
 
     const next: FieldErrors = {};
-    if (!email.trim()) next.email = "Email is required";
-    else if (!isValidEmail(email)) next.email = "Enter a valid email";
+    if (!username.trim()) next.username = "Username is required";
+    else if (!isValidUsername(username)) next.username = "Enter a valid username";
     if (!password) next.password = "Password is required";
     else if (!meetsPasswordPolicy(password))
       next.password = "Password must be at least 8 characters";
@@ -48,7 +47,7 @@ function LoginForm() {
     setLoading(true);
     try {
       const result = await signIn("credentials", {
-        email: email.trim(),
+        username: username.trim(),
         password,
         redirect: false,
       });
@@ -78,19 +77,19 @@ function LoginForm() {
 
         {registered ? (
           <p className="mb-6 border border-accent-200 bg-accent-50 px-3 py-2 text-center text-xs text-accent-900">
-            Account created — sign in with your email and password.
+            Account created — sign in with your username and password.
           </p>
         ) : null}
 
         <form onSubmit={onSubmit} className="space-y-5">
           <AuthInput
-            label="Email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={fieldErrors.email}
+            label="Username"
+            name="username"
+            type="text"
+            autoComplete="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            error={fieldErrors.username}
           />
           <AuthInput
             label="Password"
@@ -107,15 +106,6 @@ function LoginForm() {
               {submitError}
             </p>
           ) : null}
-
-          <div className="border border-border bg-surface-light px-3 py-3 text-left text-xs text-slate-600">
-            <p className="font-medium text-slate-800">Demo credentials</p>
-            <p className="mt-2 font-mono text-[11px] leading-relaxed text-slate-600">
-              <span className="text-slate-500">Email</span> {DEMO_EMAIL}
-              <br />
-              <span className="text-slate-500">Password</span> {DEMO_PASSWORD}
-            </p>
-          </div>
 
           <AuthButton loading={loading}>{loading ? "Signing in…" : "Sign in"}</AuthButton>
         </form>

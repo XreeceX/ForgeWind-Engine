@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #050508;
+  --fg: #f4f4f5;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-[var(--bg)] text-[var(--fg)] antialiased;
+}

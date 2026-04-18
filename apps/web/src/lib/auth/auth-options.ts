@@ -1,7 +1,11 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getNextAuthSecret } from "@/lib/auth/auth-secret";
-import { DEMO_EMAIL, DEMO_PASSWORD, DEMO_USER } from "@/lib/auth/demo-user";
+import {
+  DEMO_USER,
+  getForgeWindDemoAuth,
+  timingSafeStringEqual,
+} from "@/lib/auth/demo-user";
 
 export const authOptions: NextAuthOptions = {
   secret: getNextAuthSecret(),
@@ -11,17 +15,18 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const email = credentials?.email?.trim().toLowerCase();
+        const username = credentials?.username?.trim().toLowerCase();
         const password = credentials?.password;
 
-        if (!email || !password) return null;
-        if (email !== DEMO_EMAIL.toLowerCase() || password !== DEMO_PASSWORD) {
-          return null;
-        }
+        if (!username || !password) return null;
+
+        const { username: expectedUser, password: expectedPassword } = getForgeWindDemoAuth();
+        if (username !== expectedUser.toLowerCase()) return null;
+        if (!timingSafeStringEqual(password, expectedPassword)) return null;
 
         return {
           id: DEMO_USER.id,

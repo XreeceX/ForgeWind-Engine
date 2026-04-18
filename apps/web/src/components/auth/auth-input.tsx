@@ -16,7 +16,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
       <div className="space-y-2">
         <label
           htmlFor={fieldId}
-          className="block text-xs font-medium uppercase tracking-[0.2em] text-primary-300"
+          className="block text-xs font-medium uppercase tracking-[0.18em] text-slate-500"
         >
           {label}
         </label>
@@ -24,12 +24,12 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
           ref={ref}
           id={fieldId}
           className={cn(
-            "h-11 w-full rounded-xl border bg-white/[0.03] px-3.5 text-sm text-slate-50 placeholder:text-slate-500",
+            "h-11 w-full border border-border bg-white px-3.5 text-sm text-slate-900 placeholder:text-slate-400",
             "transition-colors duration-200",
-            "outline-none focus:border-primary-400/50 focus:ring-1 focus:ring-primary-400/25",
+            "outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400/30",
             error
               ? "border-danger/55 focus:border-danger/70 focus:ring-danger/20"
-              : "border-white/[0.1]",
+              : "",
             className
           )}
           aria-invalid={!!error}

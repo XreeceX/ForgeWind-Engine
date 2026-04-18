@@ -39,22 +39,22 @@ export default function ForgotPasswordPage() {
       <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Reset access</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50">Forgot password</h1>
-          <p className="mt-1.5 text-sm text-slate-400">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary-600">Reset access</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">Forgot password</h1>
+          <p className="mt-1.5 text-sm text-slate-600">
             Demo only — we don&apos;t send email. Enter any address to continue the flow.
           </p>
         </div>
 
         {sent ? (
           <div className="space-y-6 text-center">
-            <p className="rounded-xl border border-primary-500/25 bg-primary-500/10 px-3 py-3 text-sm text-slate-400">
+            <p className="border border-primary-200 bg-primary-50 px-3 py-3 text-sm text-slate-700">
               If this were production, we&apos;d email a reset link to{" "}
-              <span className="font-mono text-xs text-primary-200">{email}</span>.
+              <span className="font-mono text-xs text-primary-800">{email}</span>.
             </p>
             <Link
               href="/login"
-              className="inline-block text-sm font-medium text-primary-300 underline-offset-4 hover:text-primary-200 hover:underline"
+              className="inline-block text-sm font-medium text-primary-600 underline-offset-4 hover:text-primary-700 hover:underline"
             >
               Back to sign in
             </Link>
@@ -76,10 +76,10 @@ export default function ForgotPasswordPage() {
           </form>
         )}
 
-        <p className="mt-8 text-center text-sm text-slate-400">
+        <p className="mt-8 text-center text-sm text-slate-600">
           <Link
             href="/login"
-            className="font-medium text-primary-300 underline-offset-4 transition-colors hover:text-primary-200 hover:underline"
+            className="font-medium text-primary-600 underline-offset-4 transition-colors hover:text-primary-700 hover:underline"
           >
             ← Back to sign in
           </Link>

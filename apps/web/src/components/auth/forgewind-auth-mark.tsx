@@ -13,14 +13,14 @@ export function ForgeWindAuthMark() {
       className="mb-8 text-center"
     >
       <Link href="/" className="group inline-flex flex-col items-center gap-4">
-        <div className="overflow-hidden rounded-2xl ring-1 ring-white/15 shadow-lg">
-          <ForgeWindLogo size={72} priority className="rounded-2xl" />
+        <div className="overflow-hidden border border-border bg-panel shadow-sm ring-1 ring-border/60">
+          <ForgeWindLogo size={72} priority className="bg-white" />
         </div>
         <div>
-          <span className="text-xl font-semibold tracking-tight text-slate-50 md:text-2xl">
+          <span className="text-xl font-semibold tracking-tight text-slate-900 md:text-2xl">
             Forge<span className="gradient-text">Wind</span>
           </span>
-          <p className="mt-2 text-xs uppercase tracking-[0.28em] text-slate-400 transition-colors group-hover:text-primary-300">
+          <p className="mt-2 text-xs uppercase tracking-[0.28em] text-slate-500 transition-colors group-hover:text-primary-600">
             AI career intelligence
           </p>
         </div>

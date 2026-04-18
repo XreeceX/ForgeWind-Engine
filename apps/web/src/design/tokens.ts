@@ -101,12 +101,12 @@ export const designTokens: DesignTokenSchema = {
   },
   radius: {
     none: "0px",
-    sm: "0.5rem",
-    md: "0.75rem",
-    lg: "1rem",
-    xl: "1.25rem",
-    "2xl": "1.5rem",
-    full: "9999px",
+    sm: "0px",
+    md: "0px",
+    lg: "0px",
+    xl: "0px",
+    "2xl": "0px",
+    full: "0px",
   },
   shadows: {
     xs: "0 1px 2px 0 rgb(15 23 42 / 0.35)",

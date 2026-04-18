@@ -25,12 +25,11 @@ export function ProtectedSessionGate({ children }: { children: React.ReactNode }
     }
   }, [mounted, router, status]);
 
-  /* Layer 5: never render protected subtree until mount + confirmed session (avoids SSR HTML leak). */
   if (!mounted || status === "loading") {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#05060a] px-6">
-        <div className="h-1 w-48 max-w-full overflow-hidden rounded-full bg-slate-800">
-          <div className="h-full w-1/3 animate-pulse rounded-full bg-gradient-to-r from-primary-500 to-accent-500" />
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
+        <div className="h-1 w-48 max-w-full overflow-hidden bg-slate-200">
+          <div className="h-full w-1/3 animate-pulse bg-gradient-to-r from-primary-500 to-accent-500" />
         </div>
         <p className="mt-6 text-sm text-slate-500">Verifying session…</p>
       </div>
@@ -39,7 +38,7 @@ export function ProtectedSessionGate({ children }: { children: React.ReactNode }
 
   if (status === "unauthenticated") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#05060a] text-sm text-slate-500">
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-slate-500">
         Redirecting to sign in…
       </div>
     );
@@ -47,7 +46,7 @@ export function ProtectedSessionGate({ children }: { children: React.ReactNode }
 
   if (status !== "authenticated") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#05060a] text-sm text-slate-500">
+      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-slate-500">
         Verifying session…
       </div>
     );

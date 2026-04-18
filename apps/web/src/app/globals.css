@@ -37,13 +37,14 @@
   --border-light: 220 30% 89%;
   --ring: 240 82% 66%;
   --overlay: 220 47% 11% / 0.25;
+  /* Squared UI — all radii zero; use borders/shadows for depth */
   --radius-none: 0px;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1.5rem;
-  --radius-full: 9999px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-full: 0px;
   --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
   --shadow-sm: 0 12px 32px -20px rgb(15 23 42 / 0.2);
   --shadow-md: 0 24px 60px -28px rgb(15 23 42 / 0.22);
@@ -107,7 +108,7 @@ body {
 
 *::-webkit-scrollbar-thumb {
   background: hsl(var(--border));
-  border-radius: 3px;
+  border-radius: 0;
 }
 
 *::-webkit-scrollbar-thumb:hover {
@@ -338,8 +339,4 @@ body {
   color: rgb(71 85 105);
 }
 
-@layer base {
-  :where(*, *::before, *::after) {
-    border-radius: max(var(--radius-md), 0.75rem);
-  }
-}
+/* Intentionally no global border-radius — all corners come from --radius-* (0) */

@@ -2,22 +2,21 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { DepthBackground } from "@/components/cinematic/DepthBackground";
+import { CinematicBackdrop } from "@/components/layout/cinematic-backdrop";
 
 interface AuthPageShellProps {
   children: React.ReactNode;
 }
 
+/** Matches dashboard shell: light surface, same backdrop as AppShell, squared controls */
 export function AuthPageShell({ children }: AuthPageShellProps) {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-[#05060a] text-slate-400">
-      <DepthBackground />
-
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(99,102,241,0.12),transparent)]" />
+    <div className="relative min-h-screen overflow-x-clip bg-background text-foreground">
+      <CinematicBackdrop />
 
       <Link
         href="/"
-        className="pointer-events-auto absolute left-4 top-5 z-20 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-4 py-2 text-xs font-medium text-slate-400 backdrop-blur-md transition-colors hover:border-white/15 hover:text-slate-50 md:left-8 md:top-7"
+        className="pointer-events-auto absolute left-4 top-5 z-20 inline-flex items-center gap-2 border border-border bg-panel/90 px-3 py-2 text-xs font-medium text-slate-600 shadow-sm backdrop-blur-md transition-colors hover:bg-panel-elevated hover:text-slate-900 md:left-8 md:top-7"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Back

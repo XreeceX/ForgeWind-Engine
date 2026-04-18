@@ -71,13 +71,13 @@ function LoginForm() {
       <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Sign in</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50">Welcome back</h1>
-          <p className="mt-1.5 text-sm text-slate-400">Access your ForgeWind workspace.</p>
+          <p className="text-xs uppercase tracking-[0.22em] text-primary-600">Sign in</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">Welcome back</h1>
+          <p className="mt-1.5 text-sm text-slate-600">Access your ForgeWind workspace.</p>
         </div>
 
         {registered ? (
-          <p className="mb-6 rounded-xl border border-accent-500/25 bg-accent-500/10 px-3 py-2 text-center text-xs text-accent-200">
+          <p className="mb-6 border border-accent-200 bg-accent-50 px-3 py-2 text-center text-xs text-accent-900">
             Account created — sign in with your email and password.
           </p>
         ) : null}
@@ -108,9 +108,9 @@ function LoginForm() {
             </p>
           ) : null}
 
-          <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-3 py-3 text-left text-xs text-slate-400">
-            <p className="font-medium text-primary-200/90">Demo credentials</p>
-            <p className="mt-2 font-mono text-[11px] leading-relaxed text-slate-400">
+          <div className="border border-border bg-surface-light px-3 py-3 text-left text-xs text-slate-600">
+            <p className="font-medium text-slate-800">Demo credentials</p>
+            <p className="mt-2 font-mono text-[11px] leading-relaxed text-slate-600">
               <span className="text-slate-500">Email</span> {DEMO_EMAIL}
               <br />
               <span className="text-slate-500">Password</span> {DEMO_PASSWORD}
@@ -120,11 +120,11 @@ function LoginForm() {
           <AuthButton loading={loading}>{loading ? "Signing in…" : "Sign in"}</AuthButton>
         </form>
 
-        <div className="mt-8 space-y-3 text-center text-sm text-slate-400">
+        <div className="mt-8 space-y-3 text-center text-sm text-slate-600">
           <div>
             <Link
               href="/forgot-password"
-              className="text-slate-400 underline-offset-4 transition-colors hover:text-slate-50 hover:underline"
+              className="text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline"
             >
               Forgot password?
             </Link>
@@ -133,7 +133,7 @@ function LoginForm() {
             No account?{" "}
             <Link
               href="/signup"
-              className="font-medium text-primary-300 underline-offset-4 transition-colors hover:text-primary-200 hover:underline"
+              className="font-medium text-primary-600 underline-offset-4 transition-colors hover:text-primary-700 hover:underline"
             >
               Create one
             </Link>
@@ -151,7 +151,7 @@ export default function LoginPage() {
         <AuthPageShell>
           <ForgeWindAuthMark />
           <AuthCard>
-            <p className="text-center text-sm text-slate-400">Loading…</p>
+            <p className="text-center text-sm text-slate-600">Loading…</p>
           </AuthCard>
         </AuthPageShell>
       }

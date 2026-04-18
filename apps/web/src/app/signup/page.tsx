@@ -55,9 +55,9 @@ export default function SignupPage() {
       <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Create account</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-50">Join ForgeWind</h1>
-          <p className="mt-1.5 text-sm text-slate-400">Demo signup — no email is sent.</p>
+          <p className="text-xs uppercase tracking-[0.22em] text-primary-600">Create account</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">Join ForgeWind</h1>
+          <p className="mt-1.5 text-sm text-slate-600">Demo signup — no email is sent.</p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-5">
@@ -101,11 +101,11 @@ export default function SignupPage() {
           <AuthButton loading={loading}>{loading ? "Creating account…" : "Create account"}</AuthButton>
         </form>
 
-        <p className="mt-8 text-center text-sm text-slate-400">
+        <p className="mt-8 text-center text-sm text-slate-600">
           Already have an account?{" "}
           <Link
             href="/login"
-            className="font-medium text-primary-300 underline-offset-4 transition-colors hover:text-primary-200 hover:underline"
+            className="font-medium text-primary-600 underline-offset-4 transition-colors hover:text-primary-700 hover:underline"
           >
             Sign in
           </Link>

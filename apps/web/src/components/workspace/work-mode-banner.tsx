@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ParticleCanvas } from "@/components/workspace/particle-canvas";
 import { cn } from "@/lib/cn";
@@ -8,15 +7,12 @@ import { cn } from "@/lib/cn";
 interface WorkModeBannerProps {
   onOpenChat: () => void;
   onGeneratePost: () => void;
-  /** Link or control that navigates to the cinematic home page */
-  cinematicHome: ReactNode;
   className?: string;
 }
 
 export function WorkModeBanner({
   onOpenChat,
   onGeneratePost,
-  cinematicHome,
   className,
 }: WorkModeBannerProps) {
   return (
@@ -26,7 +22,6 @@ export function WorkModeBanner({
         className,
       )}
     >
-      {/* Clip particles to rounded card only — banner overflow must not clip the rotating Generate Post ring */}
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden rounded-fw-card"
         aria-hidden
@@ -45,34 +40,10 @@ export function WorkModeBanner({
           <Button variant="secondary" size="md" onClick={onOpenChat}>
             Open AI Chat
           </Button>
-          <GeneratePostButton onClick={onGeneratePost} />
-          {cinematicHome}
+          <Button variant="primary" size="md" className="shrink-0" onClick={onGeneratePost}>
+            Generate Post
+          </Button>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function GeneratePostButton({ onClick }: { onClick: () => void }) {
-  return (
-    <div
-      className={cn(
-        "inline-flex shrink-0 overflow-hidden rounded-fw-btn p-[2px]",
-        "animate-fw-spin-slow bg-[conic-gradient(from_0deg,#F97316,#FED7AA,#EA580C,#F97316)]",
-      )}
-    >
-      <div className="animate-fw-spin-slow-reverse rounded-[6px] bg-fw-white">
-        <button
-          type="button"
-          onClick={onClick}
-          className={cn(
-            "block w-full min-w-[9.5rem] whitespace-nowrap px-5 py-2.5 text-center text-sm font-medium text-fw-orange",
-            "transition-colors duration-200 hover:bg-fw-orange-light",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2",
-          )}
-        >
-          Generate Post
-        </button>
       </div>
     </div>
   );

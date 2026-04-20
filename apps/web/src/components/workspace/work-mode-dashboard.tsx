@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { AIChatPanel } from "@/components/ai-studio/ai-chat-panel";
 import { ContentPreviewCard } from "@/components/content/content-preview-card";
@@ -81,7 +80,6 @@ export function WorkModeDashboard() {
         <WorkModeBanner
           onOpenChat={() => setChatOverlayOpen(true)}
           onGeneratePost={onGeneratePost}
-          cinematicHome={<CinematicHomeLink />}
         />
 
         <section className="space-y-3">
@@ -161,16 +159,5 @@ export function WorkModeDashboard() {
         <AIChatPanel selectedRepository={selectedRepository} />
       </Modal>
     </>
-  );
-}
-
-function CinematicHomeLink() {
-  return (
-    <Link
-      href="/"
-      className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-fw-btn border border-transparent bg-transparent px-5 text-sm font-medium text-fw-gray-400 transition-all duration-200 ease-out hover:text-fw-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
-    >
-      Cinematic Mode
-    </Link>
   );
 }

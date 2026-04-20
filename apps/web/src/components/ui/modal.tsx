@@ -75,7 +75,7 @@ export function Modal({
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
             className={cn(
-              "relative w-full rounded-xl border border-border bg-panel shadow-lg",
+              "relative w-full rounded-fw-modal border border-fw-gray-100 bg-fw-white shadow-sm",
               sizeStyles[size],
               className
             )}

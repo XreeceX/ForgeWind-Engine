@@ -28,22 +28,26 @@ export function Providers({ children }: { children: React.ReactNode }) {
           position="top-right"
           toastOptions={{
             duration: 4000,
+            className: "fw-toast",
             style: {
-              background: "#1a1a2e",
-              color: "#f1f5f9",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              borderRadius: "0.75rem",
+              background: "#FFFFFF",
+              color: "#1C1917",
+              border: "1px solid #E7E5E4",
+              borderRadius: "12px",
+              boxShadow: "0 8px 24px rgba(28, 25, 23, 0.08)",
+              padding: "12px 16px",
+              fontSize: "14px",
             },
             success: {
               iconTheme: {
-                primary: "#10b981",
-                secondary: "#f1f5f9",
+                primary: "#F97316",
+                secondary: "#FFFFFF",
               },
             },
             error: {
               iconTheme: {
-                primary: "#ef4444",
-                secondary: "#f1f5f9",
+                primary: "#EF4444",
+                secondary: "#FFFFFF",
               },
             },
           }}

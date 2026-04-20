@@ -35,8 +35,8 @@ export default function MemoryPage() {
   return (
     <div className="space-y-6">
       <Card className="p-5">
-        <p className="text-sm font-semibold text-white">Persistent memory context</p>
-        <p className="text-xs text-slate-400">Used by AI Studio and Content to keep outputs context-aware and consistent.</p>
+        <p className="text-sm font-semibold text-foreground">Persistent memory context</p>
+        <p className="text-xs text-muted-foreground">Used by AI Studio and Content to keep outputs context-aware and consistent.</p>
       </Card>
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {insights.map((insight) => (

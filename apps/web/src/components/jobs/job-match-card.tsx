@@ -19,11 +19,11 @@ export function JobMatchCard({ job }: JobMatchCardProps) {
   const variant = job.matchScore >= 85 ? "success" : job.matchScore >= 70 ? "primary" : "warning";
 
   return (
-    <Card className="p-4 transition-all duration-200 hover:border-border-light hover:bg-panel-elevated">
+    <Card className="rounded-fw-card border border-fw-gray-100 bg-fw-white p-4 transition-all duration-200 hover:border-fw-orange-mid hover:bg-fw-orange-light/20">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-white">{job.title}</p>
-          <div className="mt-1 flex flex-wrap gap-3 text-xs text-slate-400">
+          <p className="text-sm font-semibold text-fw-gray-900">{job.title}</p>
+          <div className="mt-1 flex flex-wrap gap-3 text-xs text-fw-gray-400">
             <span className="inline-flex items-center gap-1">
               <Building2 className="h-3.5 w-3.5" />
               {job.company}
@@ -36,8 +36,8 @@ export function JobMatchCard({ job }: JobMatchCardProps) {
         </div>
         <Badge variant={variant}>{job.matchScore}% match</Badge>
       </div>
-      <p className="mt-2 text-sm text-slate-300">{job.reason}</p>
-      <p className="mt-2 inline-flex items-center gap-1 text-xs text-slate-500">
+      <p className="mt-2 text-sm text-fw-gray-700">{job.reason}</p>
+      <p className="mt-2 inline-flex items-center gap-1 text-xs text-fw-gray-400">
         <Target className="h-3.5 w-3.5" />
         Skill alignment based on selected repository context
       </p>

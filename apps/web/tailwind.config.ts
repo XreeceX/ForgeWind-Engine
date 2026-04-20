@@ -7,6 +7,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        fw: {
+          orange: "#F97316",
+          "orange-light": "#FFF7ED",
+          "orange-mid": "#FED7AA",
+          deep: "#C2410C",
+          white: "#FFFFFF",
+          "off-white": "#FAFAF9",
+          "gray-50": "#F5F5F4",
+          "gray-100": "#E7E5E4",
+          "gray-400": "#A8A29E",
+          "gray-700": "#44403C",
+          "gray-900": "#1C1917",
+        },
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
         "muted-foreground": "hsl(var(--muted-foreground) / <alpha-value>)",
@@ -64,6 +77,9 @@ const config: Config = {
         xl: "var(--radius-xl)",
         "2xl": "var(--radius-2xl)",
         full: "var(--radius-full)",
+        "fw-btn": "8px",
+        "fw-card": "12px",
+        "fw-modal": "16px",
       },
       boxShadow: {
         xs: "var(--shadow-xs)",
@@ -72,6 +88,14 @@ const config: Config = {
         lg: "var(--shadow-lg)",
         "glow-primary": "var(--shadow-glow-primary)",
         "glow-accent": "var(--shadow-glow-accent)",
+        "fw-card-hover": "0 8px 24px rgba(249, 115, 22, 0.12)",
+      },
+      transitionDuration: {
+        DEFAULT: "200ms",
+        200: "200ms",
+      },
+      transitionTimingFunction: {
+        "fw-spring": "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
       animation: {
         "fade-in": "fadeIn var(--motion-duration-normal) var(--motion-ease-standard)",
@@ -79,10 +103,16 @@ const config: Config = {
           "slideUp var(--motion-duration-normal) var(--motion-ease-emphasized)",
         "slide-in-left":
           "slideInLeft var(--motion-duration-fast) var(--motion-ease-standard)",
-        "pulse-slow":
-          "pulse 3s var(--motion-ease-standard) infinite",
+        "pulse-slow": "pulse 3s var(--motion-ease-standard) infinite",
         shimmer: "shimmer 1.8s linear infinite",
         "score-fill": "scoreFill 1.5s ease-out forwards",
+        "fw-spin-slow": "fwSpin 2s linear infinite",
+        "fw-spin-slow-reverse": "fwSpin 2s linear infinite reverse",
+        "fw-pulse-ready": "fwPulseReady 1.5s ease-in-out infinite",
+        "fw-pulse-work": "fwPulseWork 0.8s ease-in-out infinite",
+        "fw-shimmer": "fwShimmer 1.6s ease-in-out infinite",
+        "fw-toast-in": "fwToastIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+        "fw-toast-bar": "fwToastBar 4s linear forwards",
       },
       keyframes: {
         fadeIn: {
@@ -104,6 +134,29 @@ const config: Config = {
         scoreFill: {
           "0%": { strokeDashoffset: "283" },
           "100%": { strokeDashoffset: "var(--score-offset)" },
+        },
+        fwSpin: {
+          to: { transform: "rotate(360deg)" },
+        },
+        fwPulseReady: {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.4", transform: "scale(0.92)" },
+        },
+        fwPulseWork: {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.35" },
+        },
+        fwShimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        fwToastIn: {
+          "0%": { opacity: "0", transform: "translateX(16px) scale(0.96)" },
+          "100%": { opacity: "1", transform: "translateX(0) scale(1)" },
+        },
+        fwToastBar: {
+          "0%": { transform: "scaleX(1)" },
+          "100%": { transform: "scaleX(0)" },
         },
       },
     },

@@ -14,18 +14,18 @@ export default function SettingsPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <Card className="p-5">
-        <p className="text-sm font-semibold text-white">User profile</p>
-        <p className="mt-1 text-sm text-slate-300">{userProfile.name}</p>
-        <p className="text-xs text-slate-400">{userProfile.headline}</p>
+        <p className="text-sm font-semibold text-foreground">User profile</p>
+        <p className="mt-1 text-sm text-fw-gray-700">{userProfile.name}</p>
+        <p className="text-xs text-muted-foreground">{userProfile.headline}</p>
       </Card>
 
       <Card className="p-5">
-        <p className="text-sm font-semibold text-white">Memory defaults</p>
-        <p className="mt-1 text-xs text-slate-500">Preferred tone influences AI generation across studio and content pages.</p>
+        <p className="text-sm font-semibold text-foreground">Memory defaults</p>
+        <p className="mt-1 text-xs text-muted-foreground">Preferred tone influences AI generation across studio and content pages.</p>
         <input
           value={tone}
           onChange={(event) => setTone(event.target.value)}
-          className="mt-3 h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-slate-100 outline-none focus:border-primary-500/40"
+          className="mt-3 h-10 w-full rounded-md border border-border bg-surface px-3 text-sm text-foreground outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-primary-500/25"
         />
         <div className="mt-3 flex justify-end">
           <Button

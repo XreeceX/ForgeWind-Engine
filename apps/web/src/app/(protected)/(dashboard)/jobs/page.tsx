@@ -44,8 +44,8 @@ export default function JobsPage() {
   return (
     <div className="space-y-6">
       <Card className="p-5">
-        <p className="text-sm font-semibold text-white">Role matching context</p>
-        <p className="text-xs text-slate-400">
+        <p className="text-sm font-semibold text-foreground">Role matching context</p>
+        <p className="text-xs text-muted-foreground">
           Matches are personalized from: {selectedRepository?.fullName ?? "No repository selected"}
         </p>
       </Card>

@@ -22,10 +22,10 @@ export function AuthButton({
       type={type}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex h-11 w-full items-center justify-center gap-2 border border-transparent",
-        "bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 text-sm font-semibold text-white shadow-glow-primary",
-        "transition duration-300 ease-out hover:brightness-105 active:brightness-95",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "inline-flex h-11 w-full items-center justify-center gap-2 rounded-fw-btn border border-transparent",
+        "bg-fw-orange text-sm font-semibold text-fw-white shadow-sm",
+        "transition duration-200 ease-out hover:bg-fw-deep active:scale-[0.99]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         className
       )}

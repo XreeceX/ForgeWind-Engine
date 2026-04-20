@@ -18,8 +18,8 @@ export default function ContentPage() {
       <Card className="p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-white">Context-aware content generation</p>
-            <p className="text-xs text-slate-400">
+            <p className="text-sm font-semibold text-foreground">Context-aware content generation</p>
+            <p className="text-xs text-muted-foreground">
               Current source: {selectedRepository?.fullName ?? "no repository selected"}
             </p>
           </div>

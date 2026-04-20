@@ -14,19 +14,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "border border-transparent bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 text-white shadow-glow-primary hover:brightness-105 hover:shadow-lg active:brightness-95",
+    "border border-transparent bg-fw-orange text-fw-white shadow-sm hover:bg-fw-deep active:scale-[0.98]",
   secondary:
-    "premium-border border-border bg-surface-light text-foreground shadow-xs hover:bg-surface-lighter",
+    "border border-fw-gray-100 bg-fw-white text-fw-gray-700 shadow-sm hover:bg-fw-gray-50",
   ghost:
-    "border border-transparent text-muted-foreground hover:border-border hover:bg-surface-light hover:text-foreground",
+    "border border-transparent bg-transparent text-fw-gray-400 hover:text-fw-orange",
   danger:
     "border border-danger/25 bg-danger/10 text-red-600 hover:border-danger/45 hover:bg-danger/20",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "h-8 gap-1.5 rounded-xl px-3 text-xs",
-  md: "h-10 gap-2 rounded-xl px-4 text-sm",
-  lg: "h-12 gap-2.5 rounded-2xl px-6 text-base",
+  sm: "h-8 gap-1.5 rounded-fw-btn px-3 text-xs font-medium",
+  md: "h-10 gap-2 rounded-fw-btn px-5 text-sm font-medium",
+  lg: "h-12 gap-2.5 rounded-fw-btn px-6 text-base font-medium",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -47,8 +47,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       disabled={disabled || loading}
       className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap font-medium transition-all duration-300 ease-out",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/45 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+        "inline-flex items-center justify-center whitespace-nowrap transition-all duration-200 ease-out",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         variantStyles[variant],
         sizeStyles[size],

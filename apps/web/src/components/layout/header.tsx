@@ -41,12 +41,12 @@ export function Header({ title, subtitle }: HeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 mb-4 flex h-16 items-center justify-between rounded-2xl border border-border/80 bg-panel/75 px-4 shadow-sm backdrop-blur-xl sm:px-6">
+    <header className="sticky top-0 z-30 mb-4 flex h-16 items-center justify-between rounded-fw-card border border-fw-gray-100 bg-fw-white px-4 shadow-sm sm:px-6">
       {/* Left: Home + Title */}
       <div className="flex min-w-0 items-start gap-3">
         <Link
           href="/"
-          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface-light text-muted-foreground transition-colors hover:border-border-light hover:bg-surface-lighter hover:text-foreground"
+          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-fw-btn border border-fw-gray-100 bg-fw-white text-fw-gray-400 transition-colors duration-200 hover:border-fw-orange-mid hover:bg-fw-gray-50 hover:text-fw-orange"
           title="ForgeWind home"
           aria-label="ForgeWind home"
         >

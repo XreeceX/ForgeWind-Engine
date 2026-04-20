@@ -153,10 +153,10 @@ function getLevelLabel(level: number): string {
 }
 
 function getLevelColor(level: number): string {
-  if (level >= 90) return "text-emerald-400";
-  if (level >= 75) return "text-primary-400";
-  if (level >= 50) return "text-amber-400";
-  return "text-red-400";
+  if (level >= 90) return "text-emerald-600";
+  if (level >= 75) return "text-primary-600";
+  if (level >= 50) return "text-amber-600";
+  return "text-red-600";
 }
 
 export default function SkillsPage() {
@@ -169,7 +169,7 @@ export default function SkillsPage() {
         <div>
           <div className="flex items-center gap-2 mb-4 px-1">
             <Star className="h-5 w-5 text-amber-400" />
-            <h3 className="text-base font-semibold text-white">
+            <h3 className="text-base font-semibold text-foreground">
               Current Skills
             </h3>
           </div>
@@ -178,10 +178,10 @@ export default function SkillsPage() {
               <Card key={skill.name} className="p-4" hover>
                 <div className="flex items-center justify-between mb-2">
                   <div>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-foreground">
                       {skill.name}
                     </p>
-                    <p className="text-xs text-slate-500">{skill.category}</p>
+                    <p className="text-xs text-muted-foreground">{skill.category}</p>
                   </div>
                   <span
                     className={cn(
@@ -205,7 +205,7 @@ export default function SkillsPage() {
                   size="sm"
                 />
                 <div className="flex justify-end mt-1">
-                  <span className="text-[10px] text-slate-500">
+                  <span className="text-[10px] text-muted-foreground">
                     {skill.level}/100
                   </span>
                 </div>
@@ -218,10 +218,10 @@ export default function SkillsPage() {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-5">
             <Target className="h-5 w-5 text-red-400" />
-            <h3 className="text-base font-semibold text-white">
+            <h3 className="text-base font-semibold text-foreground">
               Skill Gap Analysis
             </h3>
-            <span className="text-xs text-slate-500 ml-1">
+            <span className="text-xs text-muted-foreground ml-1">
               Based on your target roles
             </span>
           </div>
@@ -230,14 +230,14 @@ export default function SkillsPage() {
               <div key={item.skill} className="space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-white">
+                    <span className="text-sm font-medium text-foreground">
                       {item.skill}
                     </span>
                     <Badge variant={priorityConfig[item.priority].variant}>
                       {priorityConfig[item.priority].label}
                     </Badge>
                   </div>
-                  <span className="text-xs text-slate-500">
+                  <span className="text-xs text-muted-foreground">
                     Gap: {item.gap} pts
                   </span>
                 </div>
@@ -248,7 +248,7 @@ export default function SkillsPage() {
                       style={{ width: `${item.yourLevel}%` }}
                     />
                     <div
-                      className="absolute h-2 rounded-full border-2 border-dashed border-slate-500"
+                      className="absolute h-2 rounded-full border-2 border-dashed border-fw-gray-400"
                       style={{ width: `${item.demand}%` }}
                     />
                   </div>
@@ -256,7 +256,7 @@ export default function SkillsPage() {
                     <span className="text-[10px] text-primary-400">
                       You: {item.yourLevel}
                     </span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-muted-foreground">
                       Demand: {item.demand}
                     </span>
                   </div>
@@ -274,7 +274,7 @@ export default function SkillsPage() {
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-primary-400" />
-                  <h3 className="text-base font-semibold text-white">
+                  <h3 className="text-base font-semibold text-foreground">
                     Learning Path
                   </h3>
                 </div>
@@ -293,7 +293,7 @@ export default function SkillsPage() {
                         "relative z-10 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full",
                         item.status === "in_progress"
                           ? "bg-primary-500/20 text-primary-400"
-                          : "bg-surface-lighter text-slate-500"
+                          : "bg-surface-lighter text-muted-foreground"
                       )}
                     >
                       {item.status === "in_progress" ? (
@@ -304,7 +304,7 @@ export default function SkillsPage() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <h4 className="text-sm font-medium text-white">
+                        <h4 className="text-sm font-medium text-foreground">
                           {item.title}
                         </h4>
                         <Badge
@@ -319,7 +319,7 @@ export default function SkillsPage() {
                             : "Upcoming"}
                         </Badge>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {item.duration} &middot; {item.completedModules}/{item.modules}{" "}
                         modules
                       </p>
@@ -343,7 +343,7 @@ export default function SkillsPage() {
             <Card className="p-6">
               <div className="flex items-center gap-2 mb-5">
                 <Award className="h-5 w-5 text-amber-400" />
-                <h3 className="text-base font-semibold text-white">
+                <h3 className="text-base font-semibold text-foreground">
                   Certifications
                 </h3>
               </div>
@@ -355,10 +355,10 @@ export default function SkillsPage() {
                   >
                     <div className="flex items-start justify-between mb-1">
                       <div>
-                        <h4 className="text-sm font-medium text-white">
+                        <h4 className="text-sm font-medium text-foreground">
                           {cert.name}
                         </h4>
-                        <p className="text-xs text-slate-500">{cert.issuer}</p>
+                        <p className="text-xs text-muted-foreground">{cert.issuer}</p>
                       </div>
                       {cert.status === "earned" ? (
                         <Badge variant="success">
@@ -371,7 +371,7 @@ export default function SkillsPage() {
                       )}
                     </div>
                     {cert.status === "earned" && cert.date && (
-                      <p className="text-[10px] text-slate-500 mt-1">
+                      <p className="text-[10px] text-muted-foreground mt-1">
                         Earned {cert.date}
                       </p>
                     )}

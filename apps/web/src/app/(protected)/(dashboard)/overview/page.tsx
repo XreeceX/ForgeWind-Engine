@@ -38,8 +38,8 @@ export default function OverviewPage() {
           className="xl:col-span-2"
         >
           <Card className="cinematic-card p-5">
-          <p className="text-sm font-semibold text-white">Repository intelligence</p>
-          <p className="mb-4 text-xs text-slate-400">Select a repository to scope every AI panel across ForgeWind.</p>
+          <p className="text-sm font-semibold text-foreground">Repository intelligence</p>
+          <p className="mb-4 text-xs text-muted-foreground">Select a repository to scope every AI panel across ForgeWind.</p>
           <div className="grid gap-3 md:grid-cols-2">
             {repositories.map((repo) => (
               <RepoCard

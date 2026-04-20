@@ -18,8 +18,8 @@ export default function DataHubPage() {
   return (
     <div className="space-y-6">
       <Card className="p-5">
-        <p className="text-sm font-semibold text-white">Repository context sources</p>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm font-semibold text-foreground">Repository context sources</p>
+        <p className="text-sm text-muted-foreground">
           Select a repository to update context across AI Studio, Content, Jobs, and Memory.
         </p>
       </Card>
@@ -38,8 +38,8 @@ export default function DataHubPage() {
       <Card className="p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-semibold text-white">Current context target</p>
-            <p className="text-xs text-slate-400">{selectedRepo?.fullName ?? "No repository selected"}</p>
+            <p className="text-sm font-semibold text-foreground">Current context target</p>
+            <p className="text-xs text-muted-foreground">{selectedRepo?.fullName ?? "No repository selected"}</p>
           </div>
           <Button variant="secondary" onClick={() => setDrawerOpen(true)}>
             Open analysis drawer

@@ -68,7 +68,12 @@ export const designTokens: DesignTokenSchema = {
   typography: {
     fontFamily: {
       sans: ["var(--font-inter)", "Inter", "system-ui", "sans-serif"],
-      mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+      mono: [
+        "var(--font-jetbrains-mono)",
+        "JetBrains Mono",
+        "ui-monospace",
+        "monospace",
+      ],
     },
     fontSize: {
       xs: ["0.75rem", { lineHeight: "1rem", letterSpacing: "0.01em" }],

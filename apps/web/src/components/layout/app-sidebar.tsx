@@ -21,7 +21,7 @@ import { cn } from "@/lib/cn";
 import { useForgeWindStore } from "@/stores/forgewind.store";
 
 const primaryNav = [
-  { href: "/", label: "Home", icon: Home },
+  { href: "/forgewind-engine", label: "Home", icon: Home },
   { href: "/overview", label: "Overview", icon: LayoutDashboard },
   { href: "/data-hub", label: "Data Hub", icon: Database },
   { href: "/ai-studio", label: "AI Studio", icon: BrainCircuit },
@@ -106,9 +106,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           >
             {primaryNav.map((item) => {
               const active =
-                pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`));
-              const homeActive = item.href === "/" && pathname === "/";
-              const isActive = item.href === "/" ? homeActive : active;
+                pathname === item.href ||
+                (item.href !== "/forgewind-engine" && pathname.startsWith(`${item.href}/`));
+              const homeActive = item.href === "/forgewind-engine" && pathname === "/forgewind-engine";
+              const isActive = item.href === "/forgewind-engine" ? homeActive : active;
 
               return (
                 <motion.li key={item.href} variants={itemVariants}>

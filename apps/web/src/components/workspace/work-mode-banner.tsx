@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { ParticleCanvas } from "@/components/workspace/particle-canvas";
 import { cn } from "@/lib/cn";
@@ -7,14 +8,15 @@ import { cn } from "@/lib/cn";
 interface WorkModeBannerProps {
   onOpenChat: () => void;
   onGeneratePost: () => void;
-  onCinematic: () => void;
+  /** Link or control that navigates to the cinematic home page */
+  cinematicHome: ReactNode;
   className?: string;
 }
 
 export function WorkModeBanner({
   onOpenChat,
   onGeneratePost,
-  onCinematic,
+  cinematicHome,
   className,
 }: WorkModeBannerProps) {
   return (
@@ -44,9 +46,7 @@ export function WorkModeBanner({
             Open AI Chat
           </Button>
           <GeneratePostButton onClick={onGeneratePost} />
-          <Button variant="ghost" size="md" onClick={onCinematic}>
-            Cinematic Mode
-          </Button>
+          {cinematicHome}
         </div>
       </div>
     </div>

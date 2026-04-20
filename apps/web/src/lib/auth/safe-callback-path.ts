@@ -1,5 +1,5 @@
 /** Reject open redirects — only same-origin path segments allowed. */
-export function safeCallbackPath(searchValue: string | null, fallback = "/dashboard"): string {
+export function safeCallbackPath(searchValue: string | null, fallback = "/forgewind-engine"): string {
   if (!searchValue) return fallback;
   const path = searchValue.trim();
   if (!path.startsWith("/") || path.startsWith("//")) return fallback;

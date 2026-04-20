@@ -54,7 +54,7 @@ function LoginForm() {
       }
 
       syncDemoSessionToStore(login);
-      router.push(safeCallbackPath(callbackUrl, "/dashboard"));
+      router.push(safeCallbackPath(callbackUrl, "/forgewind-engine"));
       router.refresh();
     } finally {
       setLoading(false);

@@ -11,6 +11,7 @@ import { cn } from "@/lib/cn";
 function formatCrumb(segment: string) {
   if (segment === "ai-studio") return "AI Studio";
   if (segment === "data-hub") return "Data Hub";
+  if (segment === "forgewind-engine") return "ForgeWind Engine";
   return segment
     .split("-")
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))

@@ -41,8 +41,6 @@ export interface MemoryContext {
   preferredTone: string;
 }
 
-export type UIMode = "cinematic" | "work";
-
 export type NarrativeSectionId =
   | "identity"
   | "data"
@@ -59,7 +57,6 @@ interface ForgeWindState {
   generatedContent: GeneratedContentItem[];
   memoryContext: MemoryContext;
   commandPaletteOpen: boolean;
-  uiMode: UIMode;
   activeNarrativeSection: NarrativeSectionId;
   chatOverlayOpen: boolean;
   setSelectedRepository: (repoId: string) => void;
@@ -69,7 +66,6 @@ interface ForgeWindState {
   pushGeneratedContent: (item: Omit<GeneratedContentItem, "id" | "createdAt">) => void;
   updateMemoryContext: (updates: Partial<MemoryContext>) => void;
   setCommandPaletteOpen: (open: boolean) => void;
-  setUIMode: (mode: UIMode) => void;
   setActiveNarrativeSection: (section: NarrativeSectionId) => void;
   setChatOverlayOpen: (open: boolean) => void;
 }
@@ -144,7 +140,6 @@ export const useForgeWindStore = create<ForgeWindState>()(
         preferredTone: "Technical and concise",
       },
       commandPaletteOpen: false,
-      uiMode: "cinematic",
       activeNarrativeSection: "identity",
       chatOverlayOpen: false,
       setSelectedRepository: (selectedRepositoryId) => set({ selectedRepositoryId }),
@@ -191,7 +186,6 @@ export const useForgeWindStore = create<ForgeWindState>()(
           },
         })),
       setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
-      setUIMode: (uiMode) => set({ uiMode }),
       setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
       setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),

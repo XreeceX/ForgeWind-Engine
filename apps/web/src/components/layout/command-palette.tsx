@@ -26,6 +26,12 @@ export function CommandPalette() {
   const commands = useMemo<PaletteCommand[]>(
     () => [
       {
+        id: "go-forgewind-engine",
+        label: "ForgeWind Engine home",
+        subtitle: "Workspace dashboard (work mode)",
+        onSelect: () => router.push("/forgewind-engine"),
+      },
+      {
         id: "go-overview",
         label: "Go to Overview",
         subtitle: "View global career health",

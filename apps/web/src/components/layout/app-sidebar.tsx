@@ -52,7 +52,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       />
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 h-full w-[18.5rem] border-r border-border/70 bg-white/75 px-4 py-4 shadow-lg backdrop-blur-2xl transition-transform duration-300 lg:sticky lg:z-20 lg:h-screen lg:translate-x-0",
+          "fixed left-0 top-0 z-40 h-full w-[18.5rem] border-r border-border/80 bg-panel/85 px-4 py-4 shadow-lg backdrop-blur-2xl transition-transform duration-300 lg:sticky lg:z-20 lg:h-screen lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -60,7 +60,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           <Link
             href="/"
             onClick={onClose}
-            className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-1 py-1 transition-colors hover:bg-white/80"
+            className="flex min-w-0 flex-1 items-center gap-3 rounded-xl px-1 py-1 transition-colors hover:bg-surface-light/80"
             title="Back to ForgeWind home"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl ring-1 ring-border/50 shadow-sm">
@@ -68,13 +68,13 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             </div>
             <div className="min-w-0 text-left">
               <p className="text-sm font-semibold text-foreground">ForgeWind</p>
-              <p className="text-xs text-slate-500">Intelligence layer</p>
+              <p className="text-xs text-muted-foreground">AIML intelligence layer</p>
             </div>
           </Link>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-border/70 p-1.5 text-slate-500 transition-colors hover:bg-white lg:hidden"
+            className="rounded-lg border border-border/70 p-1.5 text-muted-foreground transition-colors hover:bg-surface-light lg:hidden"
             aria-label="Close sidebar"
           >
             <X className="h-4 w-4" />
@@ -92,14 +92,14 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 className={cn(
                   "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-300",
                   active
-                    ? "bg-violet-100/70 text-foreground shadow-sm ring-1 ring-violet-200/70"
-                    : "text-slate-500 hover:bg-white/80 hover:text-slate-900",
+                    ? "bg-primary-500/15 text-foreground shadow-sm ring-1 ring-primary-500/35"
+                    : "text-muted-foreground hover:bg-surface-light/90 hover:text-foreground",
                 )}
               >
                 <item.icon
                   className={cn(
                     "h-4.5 w-4.5 transition-colors",
-                    active ? "text-violet-500" : "text-slate-400 group-hover:text-slate-600",
+                    active ? "text-primary-400" : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
                 <span className="font-medium">{item.label}</span>
@@ -109,14 +109,14 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
         </nav>
 
         <Card className="mt-6 p-4">
-          <p className="text-[11px] uppercase tracking-wide text-slate-500">Active repository</p>
+          <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Active repository</p>
           <div className="mt-2 flex items-start gap-2.5">
-            <FolderGit2 className="mt-0.5 h-4 w-4 text-violet-500" />
+            <FolderGit2 className="mt-0.5 h-4 w-4 text-primary-400" />
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-900">
+              <p className="truncate text-sm font-medium text-foreground">
                 {selectedRepo?.fullName ?? "None selected"}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground">
                 {selectedRepo?.summary ?? "Select a repository in Data Hub."}
               </p>
             </div>

@@ -77,7 +77,7 @@ export function CardTitle({
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("text-base font-semibold text-slate-900", className)} {...props}>
+    <h3 className={cn("text-base font-semibold text-foreground", className)} {...props}>
       {children}
     </h3>
   );
@@ -89,7 +89,7 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-slate-500", className)} {...props}>
+    <p className={cn("text-sm text-muted-foreground", className)} {...props}>
       {children}
     </p>
   );

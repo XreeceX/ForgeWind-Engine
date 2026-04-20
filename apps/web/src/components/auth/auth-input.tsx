@@ -16,7 +16,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
       <div className="space-y-2">
         <label
           htmlFor={fieldId}
-          className="block text-xs font-medium uppercase tracking-[0.18em] text-slate-500"
+          className="block text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground"
         >
           {label}
         </label>
@@ -24,7 +24,7 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
           ref={ref}
           id={fieldId}
           className={cn(
-            "h-11 w-full border border-border bg-white px-3.5 text-sm text-slate-900 placeholder:text-slate-400",
+            "h-11 w-full border border-border bg-surface-light px-3.5 text-sm text-foreground placeholder:text-muted-foreground",
             "transition-colors duration-200",
             "outline-none focus:border-primary-400 focus:ring-1 focus:ring-primary-400/30",
             error

@@ -82,14 +82,14 @@ export function Modal({
           >
             {title && (
               <div className="flex items-center justify-between border-b border-border px-6 py-4">
-                <h2 id={titleId} className="text-lg font-semibold text-white">
+                <h2 id={titleId} className="text-lg font-semibold text-foreground">
                   {title}
                 </h2>
                 {showCloseButton && (
                   <button
                     type="button"
                     onClick={onClose}
-                    className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition-colors hover:bg-surface-light hover:text-white"
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-surface-light hover:text-foreground"
                     aria-label="Close modal"
                   >
                     <X className="h-4 w-4" />

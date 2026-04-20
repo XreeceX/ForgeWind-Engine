@@ -122,9 +122,9 @@ function CustomTooltip({ active, payload, label }: {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-border bg-surface px-3 py-2 shadow-xl">
-      <p className="text-xs font-medium text-slate-400">{label}</p>
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
       {payload.map((entry) => (
-        <p key={entry.dataKey} className="text-sm font-semibold text-white">
+        <p key={entry.dataKey} className="text-sm font-semibold text-foreground">
           {entry.dataKey === "score" ? "Score" : "Apps"}: {entry.value}
         </p>
       ))}
@@ -150,12 +150,12 @@ export default function DashboardPage() {
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary-400" />
-                <h2 className="text-lg font-semibold text-slate-900">
+                <h2 className="text-lg font-semibold text-foreground">
                   Career Score
                 </h2>
               </div>
               <ScoreRing score={76} size={160} strokeWidth={10} label="/ 100" />
-              <p className="max-w-xs text-sm text-slate-500">
+              <p className="max-w-xs text-sm text-muted-foreground">
                 Your career readiness score based on profile strength, skills,
                 and market positioning.
               </p>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between px-6 pt-5 pb-3">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-primary-400" />
-                <h3 className="text-base font-semibold text-slate-900">
+                <h3 className="text-base font-semibold text-foreground">
                   Recent AI Activity
                 </h3>
               </div>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
               {recentActivity.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-violet-50/50"
+                  className="flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-primary-500/10"
                 >
                   <div className="mt-0.5">
                     {item.status === "completed" ? (
@@ -236,11 +236,11 @@ export default function DashboardPage() {
                         {item.status}
                       </Badge>
                     </div>
-                    <p className="mt-0.5 text-sm text-slate-600">
+                    <p className="mt-0.5 text-sm text-muted-foreground">
                       {item.action}
                     </p>
                   </div>
-                  <span className="flex-shrink-0 text-xs text-slate-500">
+                  <span className="flex-shrink-0 text-xs text-muted-foreground">
                     {item.time}
                   </span>
                 </div>
@@ -252,7 +252,7 @@ export default function DashboardPage() {
           <div className="col-span-12 lg:col-span-5 space-y-4">
             <div className="flex items-center gap-2 px-1">
               <Zap className="h-5 w-5 text-amber-400" />
-              <h3 className="text-base font-semibold text-slate-900">
+              <h3 className="text-base font-semibold text-foreground">
                 Quick Actions
               </h3>
             </div>
@@ -268,10 +268,10 @@ export default function DashboardPage() {
                     >
                       <action.icon className={`h-5 w-5 ${action.color}`} />
                     </div>
-                    <p className="text-sm font-medium text-slate-900 transition-colors group-hover:text-violet-600">
+                    <p className="text-sm font-medium text-foreground transition-colors group-hover:text-primary-400">
                       {action.label}
                     </p>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       {action.description}
                     </p>
                   </Card>
@@ -285,21 +285,21 @@ export default function DashboardPage() {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-base font-semibold text-slate-900">
+              <h3 className="text-base font-semibold text-foreground">
                 Weekly Progress
               </h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 Career score and activity trends
               </p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="h-2.5 w-2.5 rounded-full bg-primary-500" />
-                <span className="text-xs text-slate-400">Score</span>
+                <span className="text-xs text-muted-foreground">Score</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                <span className="text-xs text-slate-400">Applications</span>
+                <span className="text-xs text-muted-foreground">Applications</span>
               </div>
             </div>
           </div>
@@ -307,31 +307,31 @@ export default function DashboardPage() {
             <AreaChart data={weeklyData}>
               <defs>
                 <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  <stop offset="5%" stopColor="#f97316" stopOpacity={0.35} />
+                  <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="appsGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(71,85,105,0.12)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.14)" />
               <XAxis
                 dataKey="day"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: "#64748b" }}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: "#64748b" }}
+                tick={{ fontSize: 12, fill: "#94a3b8" }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"
                 dataKey="score"
-                stroke="#6366f1"
+                stroke="#f97316"
                 strokeWidth={2}
                 fill="url(#scoreGrad)"
               />

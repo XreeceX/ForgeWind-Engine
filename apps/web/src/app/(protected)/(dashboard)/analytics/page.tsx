@@ -39,9 +39,9 @@ const scoreTrend = [
 ];
 
 const funnelData = [
-  { stage: "Viewed", count: 47, color: "#6366f1" },
-  { stage: "Applied", count: 12, color: "#8b5cf6" },
-  { stage: "Screened", count: 8, color: "#a78bfa" },
+  { stage: "Viewed", count: 47, color: "#ea580c" },
+  { stage: "Applied", count: 12, color: "#f97316" },
+  { stage: "Screened", count: 8, color: "#fb923c" },
   { stage: "Interview", count: 5, color: "#10b981" },
   { stage: "Offer", count: 2, color: "#34d399" },
 ];
@@ -103,9 +103,9 @@ function ChartTooltip({
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-border bg-surface px-3 py-2 shadow-xl">
-      <p className="text-xs font-medium text-slate-400">{label}</p>
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
       {payload.map((entry) => (
-        <p key={entry.dataKey} className="text-sm font-semibold text-white">
+        <p key={entry.dataKey} className="text-sm font-semibold text-foreground">
           {entry.value}
         </p>
       ))}
@@ -162,7 +162,7 @@ export default function AnalyticsPage() {
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-primary-400" />
-                <h3 className="text-base font-semibold text-white">
+                <h3 className="text-base font-semibold text-foreground">
                   Career Score Trend
                 </h3>
               </div>
@@ -175,8 +175,8 @@ export default function AnalyticsPage() {
               <AreaChart data={scoreTrend}>
                 <defs>
                   <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -184,19 +184,19 @@ export default function AnalyticsPage() {
                   dataKey="week"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: "#64748b" }}
+                  tick={{ fontSize: 12, fill: "#94a3b8" }}
                 />
                 <YAxis
                   domain={[40, 100]}
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: "#64748b" }}
+                  tick={{ fontSize: 12, fill: "#94a3b8" }}
                 />
                 <Tooltip content={<ChartTooltip />} />
                 <Area
                   type="monotone"
                   dataKey="score"
-                  stroke="#6366f1"
+                  stroke="#f97316"
                   strokeWidth={2.5}
                   fill="url(#scoreGradient)"
                 />
@@ -208,7 +208,7 @@ export default function AnalyticsPage() {
           <Card className="col-span-12 lg:col-span-5 p-6">
             <div className="flex items-center gap-2 mb-6">
               <BarChart3 className="h-5 w-5 text-primary-400" />
-              <h3 className="text-base font-semibold text-white">
+              <h3 className="text-base font-semibold text-foreground">
                 Application Funnel
               </h3>
             </div>
@@ -219,7 +219,7 @@ export default function AnalyticsPage() {
                   type="number"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: "#64748b" }}
+                  tick={{ fontSize: 12, fill: "#94a3b8" }}
                 />
                 <YAxis
                   type="category"
@@ -244,7 +244,7 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-12 gap-6">
           {/* Heatmap */}
           <Card className="col-span-12 lg:col-span-5 p-6">
-            <h3 className="text-base font-semibold text-white mb-4">
+            <h3 className="mb-4 text-base font-semibold text-foreground">
               Weekly Activity
             </h3>
             <div className="space-y-2">
@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
                 {["W1", "W2", "W3", "W4"].map((w) => (
                   <span
                     key={w}
-                    className="text-center text-[10px] text-slate-500"
+                    className="text-center text-[10px] text-muted-foreground"
                   >
                     {w}
                   </span>
@@ -260,7 +260,7 @@ export default function AnalyticsPage() {
               </div>
               {heatmapData.map((row) => (
                 <div key={row.day} className="flex items-center gap-1">
-                  <span className="w-10 text-right text-xs text-slate-500">
+                  <span className="w-10 text-right text-xs text-muted-foreground">
                     {row.day}
                   </span>
                   <div className="grid grid-cols-4 gap-1 flex-1 ml-2">
@@ -275,14 +275,14 @@ export default function AnalyticsPage() {
                 </div>
               ))}
               <div className="flex items-center justify-end gap-1 mt-3">
-                <span className="text-[10px] text-slate-500">Less</span>
+                <span className="text-[10px] text-muted-foreground">Less</span>
                 {[0, 2, 4, 6, 7].map((v) => (
                   <div
                     key={v}
                     className={`h-3 w-3 rounded-sm ${getHeatColor(v)}`}
                   />
                 ))}
-                <span className="text-[10px] text-slate-500">More</span>
+                <span className="text-[10px] text-muted-foreground">More</span>
               </div>
             </div>
           </Card>
@@ -291,7 +291,7 @@ export default function AnalyticsPage() {
           <Card className="col-span-12 lg:col-span-7 p-6">
             <div className="flex items-center gap-2 mb-5">
               <Lightbulb className="h-5 w-5 text-amber-400" />
-              <h3 className="text-base font-semibold text-white">
+              <h3 className="text-base font-semibold text-foreground">
                 AI Insights
               </h3>
             </div>
@@ -302,7 +302,7 @@ export default function AnalyticsPage() {
                   className="rounded-lg border border-border p-4 transition-colors hover:border-border-light"
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="text-sm font-medium text-white">
+                    <h4 className="text-sm font-medium text-foreground">
                       {insight.title}
                     </h4>
                     <Badge
@@ -313,7 +313,7 @@ export default function AnalyticsPage() {
                       {insight.type === "positive" ? "Positive" : "Attention"}
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-400 mb-2">
+                  <p className="mb-2 text-xs text-muted-foreground">
                     {insight.description}
                   </p>
                   <p className="text-xs text-primary-400 font-medium">

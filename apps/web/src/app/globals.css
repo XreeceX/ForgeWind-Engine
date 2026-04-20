@@ -3,40 +3,42 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 33% 99%;
-  --foreground: 218 47% 11%;
-  --muted-foreground: 220 16% 44%;
-  --surface: 0 0% 100%;
-  --surface-light: 220 24% 98%;
-  --surface-lighter: 220 30% 96%;
-  --panel: 0 0% 100%;
-  --panel-elevated: 220 27% 98%;
-  --primary-50: 228 100% 97%;
-  --primary-100: 231 96% 92%;
-  --primary-200: 230 94% 86%;
-  --primary-300: 229 93% 76%;
-  --primary-400: 238 90% 67%;
-  --primary-500: 246 84% 62%;
-  --primary-600: 251 82% 57%;
-  --primary-700: 254 74% 52%;
-  --primary-800: 244 58% 42%;
-  --primary-900: 246 53% 31%;
-  --primary-950: 247 55% 18%;
-  --accent-100: 182 78% 92%;
-  --accent-200: 182 72% 83%;
-  --accent-300: 182 74% 68%;
-  --accent-400: 183 75% 52%;
-  --accent-500: 184 78% 43%;
-  --accent-600: 185 82% 36%;
-  --accent-700: 185 80% 26%;
-  --success: 160 70% 40%;
+  --background: 220 18% 5%;
+  --foreground: 40 15% 97%;
+  --muted-foreground: 220 12% 58%;
+  --surface: 220 16% 7%;
+  --surface-light: 220 14% 10%;
+  --surface-lighter: 220 13% 14%;
+  --panel: 220 15% 8%;
+  --panel-elevated: 220 14% 11%;
+  /* Orange primary (AIML accent) */
+  --primary-50: 30 100% 97%;
+  --primary-100: 28 100% 92%;
+  --primary-200: 26 96% 82%;
+  --primary-300: 24 94% 68%;
+  --primary-400: 22 92% 56%;
+  --primary-500: 21 90% 48%;
+  --primary-600: 20 88% 42%;
+  --primary-700: 18 82% 34%;
+  --primary-800: 16 75% 26%;
+  --primary-900: 14 70% 18%;
+  --primary-950: 12 65% 12%;
+  /* Warm secondary (amber-white highlights) */
+  --accent-100: 38 92% 90%;
+  --accent-200: 36 88% 78%;
+  --accent-300: 34 85% 62%;
+  --accent-400: 32 88% 52%;
+  --accent-500: 30 90% 44%;
+  --accent-600: 28 85% 36%;
+  --accent-700: 26 78% 28%;
+  --success: 152 65% 40%;
   --warning: 38 92% 50%;
-  --danger: 358 79% 61%;
-  --info: 199 89% 58%;
-  --border: 222 28% 84%;
-  --border-light: 220 30% 89%;
-  --ring: 240 82% 66%;
-  --overlay: 220 47% 11% / 0.25;
+  --danger: 358 79% 58%;
+  --info: 199 80% 52%;
+  --border: 220 12% 20%;
+  --border-light: 220 10% 28%;
+  --ring: 22 92% 56%;
+  --overlay: 220 25% 2% / 0.65;
   /* Squared UI — all radii zero; use borders/shadows for depth */
   --radius-none: 0px;
   --radius-sm: 0px;
@@ -45,14 +47,14 @@
   --radius-xl: 0px;
   --radius-2xl: 0px;
   --radius-full: 0px;
-  --shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
-  --shadow-sm: 0 12px 32px -20px rgb(15 23 42 / 0.2);
-  --shadow-md: 0 24px 60px -28px rgb(15 23 42 / 0.22);
-  --shadow-lg: 0 28px 80px -28px rgb(15 23 42 / 0.26);
-  --shadow-glow-primary: 0 0 0 1px rgb(99 102 241 / 0.2),
-    0 18px 40px -24px rgb(99 102 241 / 0.42);
-  --shadow-glow-accent: 0 0 0 1px rgb(20 184 166 / 0.2),
-    0 18px 40px -24px rgb(20 184 166 / 0.35);
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+  --shadow-sm: 0 12px 32px -20px rgb(0 0 0 / 0.45);
+  --shadow-md: 0 24px 60px -28px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 28px 80px -28px rgb(0 0 0 / 0.55);
+  --shadow-glow-primary: 0 0 0 1px rgb(249 115 22 / 0.22),
+    0 18px 40px -24px rgb(249 115 22 / 0.35);
+  --shadow-glow-accent: 0 0 0 1px rgb(253 186 116 / 0.2),
+    0 18px 40px -24px rgb(253 186 116 / 0.28);
   --motion-duration-fast: 150ms;
   --motion-duration-normal: 220ms;
   --motion-duration-slow: 320ms;
@@ -63,25 +65,25 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 body {
   background:
-    radial-gradient(circle at 15% -10%, rgb(59 130 246 / 0.14), transparent 35%),
-    radial-gradient(circle at 90% 0%, rgb(236 72 153 / 0.12), transparent 30%),
-    radial-gradient(circle at 50% 120%, rgb(14 165 233 / 0.08), transparent 42%),
+    radial-gradient(circle at 12% -8%, rgb(249 115 22 / 0.12), transparent 38%),
+    radial-gradient(circle at 88% 4%, rgb(253 186 116 / 0.08), transparent 32%),
+    radial-gradient(circle at 48% 108%, rgb(234 88 12 / 0.06), transparent 44%),
     repeating-linear-gradient(
       -45deg,
-      rgb(15 23 42 / 0.012) 0px,
-      rgb(15 23 42 / 0.012) 1px,
+      rgb(255 255 255 / 0.02) 0px,
+      rgb(255 255 255 / 0.02) 1px,
       transparent 1px,
       transparent 12px
     ),
     repeating-linear-gradient(
       45deg,
-      rgb(148 163 184 / 0.012) 0px,
-      rgb(148 163 184 / 0.012) 1px,
+      rgb(255 255 255 / 0.018) 0px,
+      rgb(255 255 255 / 0.018) 1px,
       transparent 1px,
       transparent 14px
     ),
@@ -136,12 +138,12 @@ body {
     background-image:
       linear-gradient(
         to right,
-        hsl(var(--primary-400) / 0.12) 1px,
+        hsl(var(--primary-400) / 0.14) 1px,
         transparent 1px
       ),
       linear-gradient(
         to bottom,
-        hsl(var(--primary-400) / 0.12) 1px,
+        hsl(var(--primary-400) / 0.14) 1px,
         transparent 1px
       );
     background-size: 48px 48px;
@@ -157,12 +159,12 @@ body {
       radial-gradient(
         130% 80% at 50% 0%,
         transparent 54%,
-        hsl(var(--background) / 0.6) 100%
+        hsl(var(--background) / 0.75) 100%
       ),
       radial-gradient(
         110% 90% at 50% 100%,
         transparent 58%,
-        hsl(var(--background) / 0.7) 100%
+        hsl(var(--background) / 0.85) 100%
       );
   }
 
@@ -172,11 +174,17 @@ body {
     animation: film-grain 6s linear infinite;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .cinematic-grain {
+      animation: none;
+    }
+  }
+
   .cinematic-card {
     border: 1.5px solid hsl(var(--border));
     border-radius: var(--radius-xl);
-    background: linear-gradient(170deg, hsl(var(--panel-elevated) / 0.92), hsl(var(--panel) / 0.96));
-    box-shadow: 0 20px 50px -30px rgb(2 6 23 / 0.2);
+    background: linear-gradient(170deg, hsl(var(--panel-elevated) / 0.94), hsl(var(--panel) / 0.98));
+    box-shadow: 0 20px 50px -30px rgb(0 0 0 / 0.45);
     backdrop-filter: blur(12px);
     transform: translateZ(0);
     transition:
@@ -188,8 +196,8 @@ body {
   .cinematic-card:hover {
     transform: perspective(1000px) rotateX(2deg) translateY(-2px) translateZ(10px);
     box-shadow:
-      0 24px 60px -28px rgb(2 6 23 / 0.24),
-      0 0 0 1px hsl(var(--primary-400) / 0.2);
+      0 24px 60px -28px rgb(0 0 0 / 0.5),
+      0 0 0 1px hsl(var(--primary-400) / 0.28);
   }
 
   .glass {
@@ -221,9 +229,9 @@ body {
   .gradient-primary {
     background: linear-gradient(
       135deg,
-      #2563eb,
-      #7c3aed 54%,
-      #ec4899
+      hsl(var(--primary-700)),
+      hsl(var(--primary-500)) 48%,
+      hsl(var(--accent-400))
     );
   }
 
@@ -238,9 +246,9 @@ body {
   .gradient-text {
     background: linear-gradient(
       135deg,
-      #3b82f6,
-      #8b5cf6 55%,
-      #ec4899
+      hsl(var(--primary-300)),
+      hsl(var(--primary-500)) 45%,
+      hsl(var(--accent-300))
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -276,19 +284,52 @@ body {
     border: 1px solid transparent;
     background:
       linear-gradient(hsl(var(--panel)), hsl(var(--panel))) padding-box,
-      linear-gradient(135deg, rgb(37 99 235 / 0.95), rgb(124 58 237 / 0.92), rgb(236 72 153 / 0.9)) border-box;
+      linear-gradient(
+          135deg,
+          rgb(249 115 22 / 0.9),
+          rgb(251 146 60 / 0.85),
+          rgb(253 186 116 / 0.8)
+        )
+        border-box;
     transition: all 300ms var(--motion-ease-standard);
   }
 
   .premium-border:hover {
     box-shadow:
-      0 0 0 1px rgb(139 92 246 / 0.18),
-      0 20px 45px -30px rgb(139 92 246 / 0.42);
+      0 0 0 1px rgb(249 115 22 / 0.2),
+      0 20px 45px -30px rgb(249 115 22 / 0.35);
     background:
       linear-gradient(hsl(var(--panel)), hsl(var(--panel))) padding-box,
-      linear-gradient(120deg, rgb(37 99 235), rgb(124 58 237), rgb(236 72 153), rgb(37 99 235)) border-box;
+      linear-gradient(
+          120deg,
+          rgb(234 88 12),
+          rgb(249 115 22),
+          rgb(253 186 116),
+          rgb(234 88 12)
+        )
+        border-box;
     background-size: 100% 100%, 200% 200%;
     animation: borderShift 4s linear infinite;
+  }
+
+  /* Subtle scan drift for AIML backdrops (used by AimlMotionField fallback) */
+  .aiml-scanline {
+    background: linear-gradient(
+      105deg,
+      transparent 0%,
+      hsl(var(--primary-400) / 0.06) 45%,
+      hsl(var(--primary-300) / 0.1) 50%,
+      hsl(var(--primary-400) / 0.06) 55%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: aimlScan 14s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .aiml-scanline {
+      animation: none;
+    }
   }
 }
 
@@ -322,21 +363,13 @@ body {
   }
 }
 
-/* Light theme remap for legacy utility usage across pages. */
-.text-white {
-  color: rgb(15 23 42);
-}
-
-.text-slate-100 {
-  color: rgb(30 41 59);
-}
-
-.text-slate-200 {
-  color: rgb(51 65 85);
-}
-
-.text-slate-300 {
-  color: rgb(71 85 105);
+@keyframes aimlScan {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* Intentionally no global border-radius — all corners come from --radius-* (0) */

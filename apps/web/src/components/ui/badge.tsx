@@ -16,12 +16,12 @@ interface BadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: "bg-slate-100 text-slate-600 border-slate-200",
-  primary: "bg-violet-50 text-violet-600 border-violet-200",
-  success: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  warning: "bg-amber-50 text-amber-600 border-amber-200",
-  danger: "bg-red-50 text-red-600 border-red-200",
-  info: "bg-sky-50 text-sky-600 border-sky-200",
+  default: "bg-surface-lighter text-muted-foreground border-border",
+  primary: "bg-primary-500/15 text-primary-300 border-primary-500/35",
+  success: "bg-emerald-500/12 text-emerald-400 border-emerald-500/30",
+  warning: "bg-amber-500/12 text-amber-400 border-amber-500/30",
+  danger: "bg-red-500/12 text-red-400 border-red-500/30",
+  info: "bg-sky-500/12 text-sky-400 border-sky-500/30",
 };
 
 export function Badge({ children, variant = "default", className }: BadgeProps) {

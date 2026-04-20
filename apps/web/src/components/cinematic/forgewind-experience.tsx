@@ -244,9 +244,9 @@ export function ForgeWindExperience() {
 
       <header className="section-copy px-6 pb-10 pt-24 md:px-12">
         <div className="mx-auto max-w-6xl">
-          <p className="text-xs uppercase tracking-[0.25em] text-primary-300">ForgeWind cinematic system</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-primary-300">ForgeWind · AIML career OS</p>
           <AnimatedTextReveal
-            text="A scroll-driven AI operating system that transforms profile data into strategic career momentum."
+            text="A scroll-driven model-forward operating system that turns profile and repo signal into strategic career momentum."
             className="mt-4 max-w-4xl text-3xl font-semibold leading-tight text-white md:text-6xl"
           />
         </div>

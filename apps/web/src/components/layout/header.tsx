@@ -41,21 +41,21 @@ export function Header({ title, subtitle }: HeaderProps) {
   }, []);
 
   return (
-    <header className="sticky top-0 z-30 mb-4 flex h-16 items-center justify-between rounded-2xl border border-white/80 bg-white/75 px-4 shadow-sm backdrop-blur-xl sm:px-6">
+    <header className="sticky top-0 z-30 mb-4 flex h-16 items-center justify-between rounded-2xl border border-border/80 bg-panel/75 px-4 shadow-sm backdrop-blur-xl sm:px-6">
       {/* Left: Home + Title */}
       <div className="flex min-w-0 items-start gap-3">
         <Link
           href="/"
-          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-slate-500 transition-colors hover:border-border-light hover:bg-surface-light hover:text-slate-900"
+          className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-surface-light text-muted-foreground transition-colors hover:border-border-light hover:bg-surface-lighter hover:text-foreground"
           title="ForgeWind home"
           aria-label="ForgeWind home"
         >
           <Home className="h-5 w-5" />
         </Link>
         <div className="min-w-0">
-          <h1 className="text-xl font-semibold text-slate-900">{title}</h1>
+          <h1 className="text-xl font-semibold text-foreground">{title}</h1>
           {subtitle && (
-            <p className="text-sm text-slate-500">{subtitle}</p>
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
           )}
         </div>
       </div>
@@ -66,14 +66,13 @@ export function Header({ title, subtitle }: HeaderProps) {
         <div className="relative">
           <div
             className={cn(
-              "flex items-center rounded-lg border border-border bg-surface transition-all duration-200",
-              "bg-white",
+              "flex items-center rounded-lg border border-border bg-surface-light transition-all duration-200",
               searchOpen ? "w-72" : "w-10"
             )}
           >
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center text-slate-500 hover:text-slate-900"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center text-muted-foreground hover:text-foreground"
             >
               <Search className="h-4 w-4" />
             </button>
@@ -84,7 +83,7 @@ export function Header({ title, subtitle }: HeaderProps) {
                 placeholder="Search anything..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-10 flex-1 bg-transparent pr-4 text-sm text-slate-900 placeholder:text-slate-400 outline-none"
+                className="h-10 flex-1 bg-transparent pr-4 text-sm text-foreground placeholder:text-muted-foreground outline-none"
               />
             )}
           </div>
@@ -94,7 +93,7 @@ export function Header({ title, subtitle }: HeaderProps) {
         <div ref={notifRef} className="relative">
           <button
             onClick={() => setNotifOpen(!notifOpen)}
-            className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-white text-slate-500 transition-colors hover:text-slate-900"
+            className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-surface-light text-muted-foreground transition-colors hover:text-foreground"
           >
             <Bell className="h-4 w-4" />
             {unreadCount > 0 && (
@@ -105,15 +104,15 @@ export function Header({ title, subtitle }: HeaderProps) {
           </button>
 
           {notifOpen && (
-            <div className="absolute right-0 top-12 w-80 rounded-xl border border-border bg-white shadow-lg">
+            <div className="absolute right-0 top-12 w-80 rounded-xl border border-border bg-panel shadow-lg">
               <div className="border-b border-border p-4">
-                <h3 className="text-sm font-semibold text-slate-900">
+                <h3 className="text-sm font-semibold text-foreground">
                   Notifications
                 </h3>
               </div>
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <p className="p-4 text-center text-sm text-slate-500">
+                  <p className="p-4 text-center text-sm text-muted-foreground">
                     No notifications
                   </p>
                 ) : (
@@ -127,15 +126,15 @@ export function Header({ title, subtitle }: HeaderProps) {
                       )}
                     >
                       <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-slate-900">
+                      <span className="text-sm font-medium text-foreground">
                           {n.title}
                         </span>
                         {!n.read && (
                           <span className="h-2 w-2 rounded-full bg-primary-400" />
                         )}
                       </div>
-                      <p className="text-xs text-slate-500">{n.message}</p>
-                      <span className="text-[10px] text-slate-500">
+                      <p className="text-xs text-muted-foreground">{n.message}</p>
+                      <span className="text-[10px] text-muted-foreground">
                         {formatDistanceToNow(new Date(n.createdAt), {
                           addSuffix: true,
                         })}
@@ -152,7 +151,7 @@ export function Header({ title, subtitle }: HeaderProps) {
         <div ref={dropdownRef} className="relative">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-1.5 transition-colors hover:bg-slate-50"
+            className="flex items-center gap-2 rounded-lg border border-border bg-surface-light px-3 py-1.5 transition-colors hover:bg-surface-lighter"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-500/20 text-primary-400 text-xs font-semibold">
               {(user?.name ?? "User")
@@ -160,29 +159,29 @@ export function Header({ title, subtitle }: HeaderProps) {
                 .map((n) => n[0])
                 .join("") ?? "U"}
             </div>
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-foreground">
               {user?.name?.split(" ")[0] ?? "User"}
             </span>
-            <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 top-12 w-56 rounded-xl border border-border bg-white shadow-lg">
+            <div className="absolute right-0 top-12 w-56 rounded-xl border border-border bg-panel shadow-lg">
               <div className="border-b border-border p-3">
-                <p className="text-sm font-medium text-slate-900">{user?.name}</p>
-                <p className="text-xs text-slate-500">{user?.email}</p>
+                <p className="text-sm font-medium text-foreground">{user?.name}</p>
+                <p className="text-xs text-muted-foreground">{user?.email}</p>
               </div>
               <div className="p-1.5">
                 <a
                   href="/profile"
-                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-surface-light hover:text-foreground"
                 >
                   <User className="h-4 w-4" />
                   View Profile
                 </a>
                 <a
                   href="/settings"
-                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-600 hover:bg-slate-50"
+                  className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-surface-light hover:text-foreground"
                 >
                   <Settings className="h-4 w-4" />
                   Settings

@@ -66,9 +66,9 @@ function LoginForm() {
       <ForgeWindAuthMark />
       <AuthCard>
         <div className="mb-8 text-center">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary-600">Sign in</p>
-          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">Welcome back</h1>
-          <p className="mt-1.5 text-sm text-slate-600">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary-400">Sign in</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">Welcome back</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
             Development access only. Public registration is disabled.
           </p>
         </div>
@@ -104,7 +104,7 @@ function LoginForm() {
           <AuthButton loading={loading}>{loading ? "Signing in…" : "Sign in"}</AuthButton>
         </form>
 
-        <p className="mt-8 text-center text-xs text-slate-500">
+        <p className="mt-8 text-center text-xs text-muted-foreground">
           Single shared development account. Credentials are distributed outside this app.
         </p>
       </AuthCard>
@@ -119,7 +119,7 @@ export default function LoginPage() {
         <AuthPageShell>
           <ForgeWindAuthMark />
           <AuthCard>
-            <p className="text-center text-sm text-slate-600">Loading…</p>
+            <p className="text-center text-sm text-muted-foreground">Loading…</p>
           </AuthCard>
         </AuthPageShell>
       }

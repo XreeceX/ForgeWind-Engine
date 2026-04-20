@@ -9,6 +9,7 @@ const config: Config = {
       colors: {
         background: "hsl(var(--background) / <alpha-value>)",
         foreground: "hsl(var(--foreground) / <alpha-value>)",
+        "muted-foreground": "hsl(var(--muted-foreground) / <alpha-value>)",
         surface: {
           DEFAULT: "hsl(var(--surface) / <alpha-value>)",
           light: "hsl(var(--surface-light) / <alpha-value>)",

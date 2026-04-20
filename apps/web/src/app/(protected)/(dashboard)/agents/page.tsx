@@ -89,8 +89,8 @@ const agents: Agent[] = [
     icon: Search,
     status: "idle",
     tasksCompleted: 67,
-    color: "text-purple-400",
-    bg: "bg-purple-500/10",
+    color: "text-accent-300",
+    bg: "bg-accent-500/10",
   },
   {
     id: "application-assistant",
@@ -211,7 +211,7 @@ export default function AgentsPage() {
           <div className="flex items-center justify-between mb-4 px-1">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-primary-400" />
-              <h3 className="text-base font-semibold text-white">
+              <h3 className="text-base font-semibold text-foreground">
                 Available Agents
               </h3>
             </div>
@@ -235,7 +235,7 @@ export default function AgentsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-sm font-semibold text-white">
+                      <h4 className="text-sm font-semibold text-foreground">
                         {agent.name}
                       </h4>
                       <div
@@ -245,15 +245,15 @@ export default function AgentsPage() {
                             ? "bg-emerald-400 animate-pulse"
                             : agent.status === "error"
                               ? "bg-red-400"
-                              : "bg-slate-500"
+                              : "bg-muted-foreground/60"
                         )}
                       />
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 line-clamp-2">
+                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
                       {agent.description}
                     </p>
                     <div className="flex items-center justify-between mt-3">
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-muted-foreground">
                         {agent.tasksCompleted} tasks completed
                       </span>
                       <Badge
@@ -278,10 +278,10 @@ export default function AgentsPage() {
         {/* Task History */}
         <Card>
           <div className="flex items-center justify-between px-6 pt-5 pb-3">
-            <h3 className="text-base font-semibold text-white">
+            <h3 className="text-base font-semibold text-foreground">
               Task History
             </h3>
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-muted-foreground">
               {mockTasks.length} total tasks
             </span>
           </div>
@@ -307,7 +307,7 @@ export default function AgentsPage() {
                             ? "text-amber-400 animate-spin"
                             : task.status === "failed"
                               ? "text-red-400"
-                              : "text-slate-500"
+                              : "text-muted-foreground"
                       )}
                     />
                     <div className="flex-1 min-w-0">
@@ -317,13 +317,13 @@ export default function AgentsPage() {
                         </span>
                         <Badge variant={config.variant}>{config.label}</Badge>
                       </div>
-                      <p className="text-sm text-slate-300 mt-0.5 truncate">
+                      <p className="mt-0.5 truncate text-sm text-muted-foreground">
                         {task.description}
                       </p>
                     </div>
                     <ChevronRight
                       className={cn(
-                        "h-4 w-4 flex-shrink-0 text-slate-500 transition-transform",
+                        "h-4 w-4 flex-shrink-0 text-muted-foreground transition-transform",
                         isExpanded && "rotate-90"
                       )}
                     />
@@ -331,10 +331,10 @@ export default function AgentsPage() {
 
                   {isExpanded && task.result && (
                     <div className="ml-7 mt-1 rounded-lg border border-border bg-surface-light/20 p-4">
-                      <p className="text-sm text-slate-300 leading-relaxed">
+                      <p className="text-sm leading-relaxed text-muted-foreground">
                         {task.result}
                       </p>
-                      <p className="text-[10px] text-slate-500 mt-2">
+                      <p className="mt-2 text-[10px] text-muted-foreground">
                         Started:{" "}
                         {new Date(task.createdAt).toLocaleString()}
                         {task.completedAt &&
@@ -358,7 +358,7 @@ export default function AgentsPage() {
       >
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className="mb-2 block text-sm font-medium text-foreground">
               Select Agent
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -381,7 +381,7 @@ export default function AgentsPage() {
                   >
                     <agent.icon className={cn("h-4 w-4", agent.color)} />
                   </div>
-                  <span className="text-sm font-medium text-slate-200">
+                  <span className="text-sm font-medium text-foreground">
                     {agent.name}
                   </span>
                 </button>
@@ -390,7 +390,7 @@ export default function AgentsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">
+            <label className="mb-2 block text-sm font-medium text-foreground">
               Task Description
             </label>
             <textarea
@@ -398,14 +398,14 @@ export default function AgentsPage() {
               onChange={(e) => setTaskInput(e.target.value)}
               rows={3}
               placeholder="Describe what you want the agent to do..."
-              className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500/50 resize-none"
+              className="w-full resize-none rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500/50"
             />
           </div>
 
           {selectedAgent && (
             <div className="flex items-start gap-2 rounded-lg bg-primary-500/5 border border-primary-500/10 p-3">
               <AlertCircle className="h-4 w-4 text-primary-400 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 The{" "}
                 <span className="text-primary-400 font-medium">
                   {agents.find((a) => a.id === selectedAgent)?.name}

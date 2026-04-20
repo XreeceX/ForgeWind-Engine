@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
     "@tanstack/react-query": "^5.60.0",
     "axios": "^1.7.0",
     "clsx": "^2.1.0",

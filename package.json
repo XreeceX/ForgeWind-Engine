@@ -18,6 +18,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "db:generate": "pnpm --filter user-service db:generate",
     "db:migrate": "pnpm --filter user-service db:migrate",
+    "db:forgewind:generate": "pnpm --filter @forgewind-engine/forgewind-api db:generate",
+    "db:forgewind:migrate": "pnpm --filter @forgewind-engine/forgewind-api db:migrate",
     "docker:up": "docker-compose -f infra/docker/docker-compose.yml up -d",
     "docker:down": "docker-compose -f infra/docker/docker-compose.yml down",
     "prepare": "husky"

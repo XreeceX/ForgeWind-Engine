@@ -1,7 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["NODE_ENV", "DATABASE_URL", "OPENAI_API_KEY"],
+  "globalEnv": [
+    "NODE_ENV",
+    "DATABASE_URL",
+    "OPENAI_API_KEY",
+    "ANTHROPIC_API_KEY",
+    "ANTHROPIC_MODEL",
+    "GITHUB_CLIENT_ID",
+    "GITHUB_CLIENT_SECRET",
+    "GITHUB_CALLBACK_URL",
+    "GITHUB_TOKEN",
+    "PORT",
+    "CORS_ORIGIN"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

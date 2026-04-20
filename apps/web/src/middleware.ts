@@ -43,6 +43,7 @@ const PUBLIC_PATH_PREFIXES = [
   "/login",
   "/forgot-password",
   "/api/auth",
+  "/neon-comments",
 ] as const;
 
 function isPublicPath(pathname: string): boolean {

@@ -17,11 +17,11 @@ const toneMap = {
 export function AIResponseBlock({ title, content, tone = "default" }: AIResponseBlockProps) {
   return (
     <Card className={cn("p-4", toneMap[tone])}>
-      <div className="mb-2 flex items-center justify-between">
-        <p className="text-sm font-semibold text-white">{title}</p>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="text-sm font-semibold text-foreground">{title}</p>
         <Badge variant={tone === "actionable" ? "success" : tone === "insight" ? "primary" : "default"}>{tone}</Badge>
       </div>
-      <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200">{content}</p>
+      <p className="whitespace-pre-wrap text-sm leading-relaxed text-fw-gray-700">{content}</p>
     </Card>
   );
 }

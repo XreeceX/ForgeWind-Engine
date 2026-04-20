@@ -14,25 +14,25 @@ const statCards = (
     label: "AI confidence",
     value: "92%",
     icon: Sparkles,
-    tone: "text-primary-300 bg-primary-500/10",
+    tone: "text-primary-600 bg-primary-500/10",
   },
   {
     label: "Tracked repositories",
     value: String(repoCount),
     icon: BarChart3,
-    tone: "text-sky-300 bg-sky-500/10",
+    tone: "text-sky-600 bg-sky-500/10",
   },
   {
     label: "Generated assets",
     value: String(contentCount),
     icon: FileText,
-    tone: "text-emerald-300 bg-emerald-500/10",
+    tone: "text-emerald-600 bg-emerald-500/10",
   },
   {
     label: "High-fit jobs",
     value: "14",
     icon: BriefcaseBusiness,
-    tone: "text-amber-300 bg-amber-500/10",
+    tone: "text-amber-600 bg-amber-500/10",
   },
 ];
 
@@ -44,8 +44,8 @@ export function OverviewStatGrid({ repoCount, contentCount }: OverviewStatGridPr
           <div className={`mb-3 inline-flex h-9 w-9 items-center justify-center rounded-lg ${item.tone}`}>
             <item.icon className="h-4 w-4" />
           </div>
-          <p className="text-xs text-slate-400">{item.label}</p>
-          <p className="mt-1 text-xl font-semibold text-white">{item.value}</p>
+          <p className="text-xs text-muted-foreground">{item.label}</p>
+          <p className="mt-1 font-mono text-xl font-semibold tabular-nums text-foreground">{item.value}</p>
         </Card>
       ))}
     </div>

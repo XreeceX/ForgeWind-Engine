@@ -32,10 +32,10 @@ export function PromptInputBox({
         placeholder={placeholder}
         rows={3}
         disabled={disabled}
-        className="w-full resize-none bg-transparent text-sm text-slate-100 placeholder:text-slate-500 outline-none"
+        className="w-full resize-none bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none focus-visible:outline-none"
       />
       <div className="mt-2 flex items-center justify-between">
-        <p className="text-xs text-slate-500">Enter to run prompt, Shift+Enter for newline</p>
+        <p className="text-xs text-muted-foreground">Enter to run prompt, Shift+Enter for newline</p>
         <Button size="sm" onClick={submit} disabled={disabled || !prompt.trim()}>
           <ArrowUp className="h-3.5 w-3.5" />
           Send

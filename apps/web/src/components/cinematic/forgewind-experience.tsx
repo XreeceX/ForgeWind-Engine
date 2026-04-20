@@ -262,14 +262,15 @@ export function ForgeWindExperience() {
         <motion.div className="h-full bg-gradient-to-r from-primary-500 to-accent-500" style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }} />
       </div>
 
-      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/95 px-2 py-1.5 shadow-sm backdrop-blur-xl">
-        <div className="overflow-hidden rounded-lg ring-1 ring-border/60">
+      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-fw-card border border-fw-gray-100 bg-fw-white/95 px-3 py-2 shadow-sm backdrop-blur-xl">
+        <div className="overflow-hidden rounded-lg ring-1 ring-fw-gray-100">
           <ForgeWindLogo size={28} priority />
         </div>
         <span className="hidden pr-1 text-sm font-semibold text-foreground sm:inline">ForgeWind</span>
       </div>
 
-      <div className="fixed right-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/95 p-1 shadow-sm backdrop-blur-xl">
+      {/* Enough horizontal padding so rounded container does not clip button corners */}
+      <div className="fixed right-4 top-5 z-50 flex items-center gap-2 overflow-visible rounded-fw-card border border-fw-gray-100 bg-fw-white/95 px-3 py-2 shadow-sm backdrop-blur-xl">
         <Button size="sm" variant="primary" onClick={() => setUIMode("cinematic")}>
           Cinematic Mode
         </Button>

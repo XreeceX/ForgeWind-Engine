@@ -67,7 +67,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-fw-gray-100 bg-fw-white transition-transform duration-200",
-          "lg:static lg:z-10 lg:h-screen lg:translate-x-0",
+          /* Flex sibling on lg: stretch with main so background/border run full page height (not capped at 100vh). */
+          "lg:relative lg:z-10 lg:h-auto lg:shrink-0 lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >

@@ -12,7 +12,8 @@ import { UsersModule } from './modules/users/users.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '../../.env'],
+      // Repo root first, then app-local overrides (e.g. PORT=3001).
+      envFilePath: ['../../.env', '.env'],
     }),
     DatabaseModule,
     UsersModule,

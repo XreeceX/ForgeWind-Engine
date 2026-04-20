@@ -3,15 +3,24 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { AimlMotionField } from "@/components/layout/aiml-motion-field";
 import { ParallaxLayer } from "@/components/cinematic/ParallaxLayer";
+import { cn } from "@/lib/cn";
 
-export function DepthBackground() {
+interface DepthBackgroundProps {
+  /** Override z-index (e.g. z-0) when stacking above body with a raised shell sibling */
+  className?: string;
+}
+
+export function DepthBackground({ className }: DepthBackgroundProps) {
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
   const zoom = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 6]);
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div
+      aria-hidden
+      className={cn("pointer-events-none fixed inset-0 -z-10 overflow-hidden", className)}
+    >
       <motion.div
         className="absolute inset-[-12%] bg-[radial-gradient(circle_at_20%_20%,rgba(249,115,22,0.14),transparent_46%),radial-gradient(circle_at_78%_18%,rgba(253,186,116,0.18),transparent_42%),radial-gradient(circle_at_48%_80%,rgba(254,243,199,0.35),transparent_48%)]"
         style={shouldReduceMotion ? undefined : { scale: zoom, rotate }}

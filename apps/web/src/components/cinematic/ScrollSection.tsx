@@ -28,14 +28,14 @@ export function ScrollSection({
           animate={{ opacity: active ? 1 : 0.45, y: active ? 0 : 12 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            "mx-auto grid w-full max-w-7xl gap-8 rounded-3xl border border-border-light/70 bg-panel/50 p-6 backdrop-blur-xl md:grid-cols-[1.1fr_1fr] md:p-10",
+            "mx-auto grid w-full max-w-7xl gap-8 rounded-3xl border border-border-light/90 bg-panel/90 p-6 shadow-sm backdrop-blur-xl md:grid-cols-[1.1fr_1fr] md:p-10",
             active && "shadow-glow-primary",
           )}
         >
           <div>
-            <p className="text-xs uppercase tracking-[0.22em] text-primary-300">{label}</p>
-            <h2 className="mt-4 text-3xl font-semibold leading-tight text-white md:text-5xl">{title}</h2>
-            <p className="mt-5 max-w-xl text-base text-slate-300 md:text-lg">{description}</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-primary-600">{label}</p>
+            <h2 className="mt-4 text-3xl font-semibold leading-tight text-foreground md:text-5xl">{title}</h2>
+            <p className="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">{description}</p>
           </div>
           <div className="relative min-h-[320px]">{children}</div>
         </motion.div>

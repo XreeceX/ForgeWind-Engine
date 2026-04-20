@@ -54,7 +54,7 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
 
   return (
     <header className="sticky top-0 z-30 px-4 pb-2 pt-3 sm:px-6 lg:px-8">
-      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between rounded-2xl border border-border/80 bg-panel/75 px-4 shadow-sm backdrop-blur-xl">
+      <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between rounded-2xl border border-border/80 bg-panel/90 px-4 shadow-sm backdrop-blur-xl">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -86,7 +86,7 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
             <span className="rounded border border-border px-1.5 py-0 text-[11px] text-muted-foreground">Ctrl/Cmd+K</span>
           </Button>
           <div className="ml-1 hidden items-center gap-2 rounded-xl border border-border bg-surface-light/80 px-3 py-1.5 sm:flex">
-            <Sparkles className="h-3.5 w-3.5 text-primary-400" />
+            <Sparkles className="h-3.5 w-3.5 text-primary-600" />
             <div>
               <p className="text-xs font-medium text-foreground">{userProfile.name}</p>
               <p className="text-[11px] text-muted-foreground">{userProfile.role}</p>

@@ -66,7 +66,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             "relative rounded-lg px-4 py-2.5 text-sm font-medium transition-all duration-300",
             tab.disabled && "cursor-not-allowed opacity-40",
             activeTab === tab.value
-              ? "premium-border bg-surface-light text-primary-400 shadow-xs"
+              ? "premium-border bg-surface-light text-primary-700 shadow-xs"
               : "text-muted-foreground hover:text-foreground",
             !tab.disabled && activeTab !== tab.value && "hover:bg-surface-light/80"
           )}
@@ -78,7 +78,7 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
                 className={cn(
                   "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
                   activeTab === tab.value
-                    ? "bg-primary-500/20 text-primary-300"
+                    ? "bg-primary-500/15 text-primary-800"
                     : "bg-surface-lighter text-muted-foreground"
                 )}
               >

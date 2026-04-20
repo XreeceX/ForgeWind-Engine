@@ -20,7 +20,7 @@ export function ForgeWindAuthMark() {
           <span className="text-xl font-semibold tracking-tight text-foreground md:text-2xl">
             Forge<span className="gradient-text">Wind</span>
           </span>
-          <p className="mt-2 text-xs uppercase tracking-[0.28em] text-muted-foreground transition-colors group-hover:text-primary-400">
+          <p className="mt-2 text-xs uppercase tracking-[0.28em] text-muted-foreground transition-colors group-hover:text-primary-600">
             AIML career intelligence
           </p>
         </div>

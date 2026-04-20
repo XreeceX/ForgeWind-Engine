@@ -146,10 +146,10 @@ export function ForgeWindExperience() {
     return (
       <AppShell>
         <div className="space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border-light bg-panel-elevated/70 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border-light bg-panel-elevated/90 p-4">
             <div>
-              <p className="text-xs uppercase tracking-[0.22em] text-primary-300">Work Mode</p>
-              <h1 className="mt-1 text-2xl font-semibold text-white">ForgeWind workspace</h1>
+              <p className="text-xs uppercase tracking-[0.22em] text-primary-600">Work Mode</p>
+              <h1 className="mt-1 text-2xl font-semibold text-foreground">ForgeWind workspace</h1>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="secondary" onClick={() => setChatOverlayOpen(true)}>
@@ -164,7 +164,7 @@ export function ForgeWindExperience() {
 
           <div className="grid gap-6 xl:grid-cols-3">
             <Card className="cinematic-card space-y-4 p-4 xl:col-span-2">
-              <p className="text-sm font-semibold text-white">Repository intelligence</p>
+              <p className="text-sm font-semibold text-foreground">Repository intelligence</p>
               <div className="grid gap-3 md:grid-cols-2">
                 {repositories.map((repo) => (
                   <RepoCard
@@ -191,7 +191,7 @@ export function ForgeWindExperience() {
 
           <div className="grid gap-6 xl:grid-cols-3">
             <Card className="cinematic-card space-y-3 p-4 xl:col-span-2">
-              <p className="text-sm font-semibold text-white">Generated content</p>
+              <p className="text-sm font-semibold text-foreground">Generated content</p>
               <div className="grid gap-3 md:grid-cols-2">
                 {generatedContent.slice(0, 4).map((content) => (
                   <ContentPreviewCard key={content.id} content={content} />
@@ -199,7 +199,7 @@ export function ForgeWindExperience() {
               </div>
             </Card>
             <Card className="cinematic-card space-y-3 p-4">
-              <p className="text-sm font-semibold text-white">Opportunity feed</p>
+              <p className="text-sm font-semibold text-foreground">Opportunity feed</p>
               {JOB_MATCHES.map((job) => (
                 <JobMatchCard key={job.id} job={job} />
               ))}
@@ -222,18 +222,18 @@ export function ForgeWindExperience() {
     <div ref={containerRef} className="relative min-h-screen overflow-x-clip pb-16">
       <DepthBackground />
 
-      <div className="fixed inset-x-0 top-0 z-40 h-1 bg-surface-light/65">
-        <motion.div className="h-full bg-gradient-to-r from-primary-400 to-accent-400" style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }} />
+      <div className="fixed inset-x-0 top-0 z-40 h-1 bg-primary-100/90">
+        <motion.div className="h-full bg-gradient-to-r from-primary-500 to-accent-500" style={{ scaleX: scrollProgress, transformOrigin: "0% 50%" }} />
       </div>
 
-      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/80 px-2 py-1.5 backdrop-blur-xl">
-        <div className="overflow-hidden rounded-lg ring-1 ring-white/10">
+      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/95 px-2 py-1.5 shadow-sm backdrop-blur-xl">
+        <div className="overflow-hidden rounded-lg ring-1 ring-border/60">
           <ForgeWindLogo size={28} priority />
         </div>
-        <span className="hidden pr-1 text-sm font-semibold text-white sm:inline">ForgeWind</span>
+        <span className="hidden pr-1 text-sm font-semibold text-foreground sm:inline">ForgeWind</span>
       </div>
 
-      <div className="fixed right-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/80 p-1 backdrop-blur-xl">
+      <div className="fixed right-4 top-5 z-50 flex items-center gap-2 rounded-full border border-border-light bg-panel/95 p-1 shadow-sm backdrop-blur-xl">
         <Button size="sm" variant="primary" onClick={() => setUIMode("cinematic")}>
           Cinematic Mode
         </Button>
@@ -244,10 +244,10 @@ export function ForgeWindExperience() {
 
       <header className="section-copy px-6 pb-10 pt-24 md:px-12">
         <div className="mx-auto max-w-6xl">
-          <p className="text-xs uppercase tracking-[0.25em] text-primary-300">ForgeWind · AIML career OS</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-primary-600">ForgeWind · AIML career OS</p>
           <AnimatedTextReveal
             text="A scroll-driven model-forward operating system that turns profile and repo signal into strategic career momentum."
-            className="mt-4 max-w-4xl text-3xl font-semibold leading-tight text-white md:text-6xl"
+            className="mt-4 max-w-4xl text-3xl font-semibold leading-tight text-foreground md:text-6xl"
           />
         </div>
       </header>
@@ -262,15 +262,15 @@ export function ForgeWindExperience() {
         >
           <div className="section-card grid h-full gap-3">
             <FloatingCard>
-              <p className="text-xs uppercase tracking-[0.18em] text-primary-300">Profile</p>
-              <p className="mt-2 text-xl font-semibold text-white">{userProfile.name}</p>
-              <p className="text-sm text-slate-300">{userProfile.role}</p>
-              <p className="mt-3 text-sm text-slate-400">{userProfile.headline}</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-primary-600">Profile</p>
+              <p className="mt-2 text-xl font-semibold text-foreground">{userProfile.name}</p>
+              <p className="text-sm text-muted-foreground">{userProfile.role}</p>
+              <p className="mt-3 text-sm text-muted-foreground">{userProfile.headline}</p>
             </FloatingCard>
             <FloatingCard delay={0.08}>
-              <p className="text-xs uppercase tracking-[0.18em] text-accent-300">Career Goal</p>
-              <p className="mt-2 text-sm text-slate-200">{userProfile.primaryGoal}</p>
-              <p className="mt-2 text-sm text-slate-400">Narrative: {memoryContext.careerNarrative}</p>
+              <p className="text-xs uppercase tracking-[0.18em] text-accent-600">Career Goal</p>
+              <p className="mt-2 text-sm text-foreground">{userProfile.primaryGoal}</p>
+              <p className="mt-2 text-sm text-muted-foreground">Narrative: {memoryContext.careerNarrative}</p>
             </FloatingCard>
           </div>
         </ScrollSection>
@@ -287,10 +287,10 @@ export function ForgeWindExperience() {
               <FloatingCard key={repo.id} delay={index * 0.06}>
                 <button className="w-full text-left" onClick={() => setSelectedRepository(repo.id)}>
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="text-sm font-semibold text-white">{repo.fullName}</p>
-                    <span className="text-xs text-slate-400">{repo.language}</span>
+                    <p className="text-sm font-semibold text-foreground">{repo.fullName}</p>
+                    <span className="text-xs text-muted-foreground">{repo.language}</span>
                   </div>
-                  <p className="text-xs text-slate-300">{repo.summary}</p>
+                  <p className="text-xs text-muted-foreground">{repo.summary}</p>
                 </button>
               </FloatingCard>
             ))}
@@ -325,8 +325,8 @@ export function ForgeWindExperience() {
         >
           <div className="section-card grid gap-3">
             <FloatingCard>
-              <p className="text-xs uppercase tracking-[0.18em] text-primary-300">Strength map</p>
-              <ul className="mt-3 space-y-2 text-sm text-slate-200">
+              <p className="text-xs uppercase tracking-[0.18em] text-primary-600">Strength map</p>
+              <ul className="mt-3 space-y-2 text-sm text-foreground">
                 {memoryContext.strengths.map((strength) => (
                   <li key={strength}>- {strength}</li>
                 ))}
@@ -334,7 +334,7 @@ export function ForgeWindExperience() {
             </FloatingCard>
             <FloatingCard delay={0.08}>
               <p className="text-xs uppercase tracking-[0.18em] text-warning">Growth gaps</p>
-              <ul className="mt-3 space-y-2 text-sm text-slate-300">
+              <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                 {memoryContext.gaps.map((gap) => (
                   <li key={gap}>- {gap}</li>
                 ))}
@@ -352,8 +352,8 @@ export function ForgeWindExperience() {
         >
           <div className="section-card space-y-3">
             <FloatingCard>
-              <p className="text-xs uppercase tracking-[0.18em] text-primary-300">AI content studio</p>
-              <p className="mt-2 text-sm text-slate-300">
+              <p className="text-xs uppercase tracking-[0.18em] text-primary-600">AI content studio</p>
+              <p className="mt-2 text-sm text-muted-foreground">
                 Drafts are grounded in the selected repository and optimization targets.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -388,26 +388,26 @@ export function ForgeWindExperience() {
         </ScrollSection>
       </main>
 
-      <div className="fixed bottom-5 left-5 z-40 rounded-xl border border-border-light bg-panel/75 px-4 py-3 backdrop-blur-xl">
-        <div className="flex items-center gap-3 text-xs text-slate-300">
-          <Layers className="h-4 w-4 text-primary-300" />
-          <span className={activeNarrativeSection === "identity" ? "text-white" : ""}>
+      <div className="fixed bottom-5 left-5 z-40 rounded-xl border border-border-light bg-panel/95 px-4 py-3 shadow-sm backdrop-blur-xl">
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <Layers className="h-4 w-4 text-primary-600" />
+          <span className={activeNarrativeSection === "identity" ? "font-semibold text-foreground" : ""}>
             <UserRound className="mr-1 inline h-3.5 w-3.5" />
             Identity
           </span>
-          <span className={activeNarrativeSection === "data" ? "text-white" : ""}>
+          <span className={activeNarrativeSection === "data" ? "font-semibold text-foreground" : ""}>
             <Sparkles className="mr-1 inline h-3.5 w-3.5" />
             Data
           </span>
-          <span className={activeNarrativeSection === "analysis" ? "text-white" : ""}>
+          <span className={activeNarrativeSection === "analysis" ? "font-semibold text-foreground" : ""}>
             <BrainCircuit className="mr-1 inline h-3.5 w-3.5" />
             Analysis
           </span>
-          <span className={activeNarrativeSection === "creation" ? "text-white" : ""}>
+          <span className={activeNarrativeSection === "creation" ? "font-semibold text-foreground" : ""}>
             <WandSparkles className="mr-1 inline h-3.5 w-3.5" />
             Creation
           </span>
-          <span className={activeNarrativeSection === "opportunity" ? "text-white" : ""}>
+          <span className={activeNarrativeSection === "opportunity" ? "font-semibold text-foreground" : ""}>
             <BriefcaseBusiness className="mr-1 inline h-3.5 w-3.5" />
             Opportunity
           </span>

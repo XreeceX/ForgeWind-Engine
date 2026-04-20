@@ -17,7 +17,7 @@ interface BadgeProps {
 
 const variantStyles: Record<BadgeVariant, string> = {
   default: "bg-surface-lighter text-muted-foreground border-border",
-  primary: "bg-primary-500/15 text-primary-300 border-primary-500/35",
+  primary: "bg-primary-500/12 text-primary-800 border-primary-500/35",
   success: "bg-emerald-500/12 text-emerald-400 border-emerald-500/30",
   warning: "bg-amber-500/12 text-amber-400 border-amber-500/30",
   danger: "bg-red-500/12 text-red-400 border-red-500/30",

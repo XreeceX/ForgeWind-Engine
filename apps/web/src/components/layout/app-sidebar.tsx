@@ -45,14 +45,14 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
     <>
       <div
         className={cn(
-          "fixed inset-0 z-30 bg-slate-950/25 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-30 bg-slate-900/20 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden",
           isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={onClose}
       />
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 h-full w-[18.5rem] border-r border-border/80 bg-panel/85 px-4 py-4 shadow-lg backdrop-blur-2xl transition-transform duration-300 lg:sticky lg:z-20 lg:h-screen lg:translate-x-0",
+          "fixed left-0 top-0 z-40 h-full w-[18.5rem] border-r border-border/80 bg-panel/95 px-4 py-4 shadow-lg backdrop-blur-2xl transition-transform duration-300 lg:sticky lg:z-20 lg:h-screen lg:translate-x-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -99,7 +99,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                 <item.icon
                   className={cn(
                     "h-4.5 w-4.5 transition-colors",
-                    active ? "text-primary-400" : "text-muted-foreground group-hover:text-foreground",
+                    active ? "text-primary-600" : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
                 <span className="font-medium">{item.label}</span>
@@ -111,7 +111,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
         <Card className="mt-6 p-4">
           <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Active repository</p>
           <div className="mt-2 flex items-start gap-2.5">
-            <FolderGit2 className="mt-0.5 h-4 w-4 text-primary-400" />
+            <FolderGit2 className="mt-0.5 h-4 w-4 text-primary-600" />
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-foreground">
                 {selectedRepo?.fullName ?? "None selected"}

@@ -15,15 +15,15 @@ export function CinematicBackdrop() {
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
       <motion.div
-        className="absolute -top-40 left-[6%] h-[30rem] w-[30rem] rounded-full bg-primary-500/18 blur-[120px]"
+        className="absolute -top-40 left-[6%] h-[30rem] w-[30rem] rounded-full bg-primary-400/22 blur-[120px]"
         style={shouldReduceMotion ? undefined : { y: orbPrimaryY }}
       />
       <motion.div
-        className="absolute top-[22%] right-[-8%] h-[26rem] w-[26rem] rounded-full bg-accent-400/12 blur-[110px]"
+        className="absolute top-[22%] right-[-8%] h-[26rem] w-[26rem] rounded-full bg-accent-300/20 blur-[110px]"
         style={shouldReduceMotion ? undefined : { y: orbSecondaryY, scale: orbSecondaryScale }}
       />
       <motion.div
-        className="absolute bottom-[-6%] left-[20%] h-[22rem] w-[22rem] rounded-full bg-white/5 blur-[100px]"
+        className="absolute bottom-[-6%] left-[20%] h-[22rem] w-[22rem] rounded-full bg-white/80 blur-[100px]"
         style={shouldReduceMotion ? undefined : { y: orbSecondaryY }}
       />
       <motion.div

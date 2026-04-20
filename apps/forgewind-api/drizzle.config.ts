@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import { defineConfig } from 'drizzle-kit';
+import { resolveDatabaseUrl } from './src/db/resolve-database-url';
 
 dotenv.config({ path: '../../.env' });
 dotenv.config({ path: '.env' });
@@ -9,6 +10,6 @@ export default defineConfig({
   out: './drizzle/migrations',
   dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.DATABASE_URL!,
+    url: resolveDatabaseUrl(),
   },
 });

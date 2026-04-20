@@ -12,10 +12,11 @@ export default function NeonCommentsPage() {
   async function create(formData: FormData) {
     "use server";
 
-    const databaseUrl = process.env.DATABASE_URL;
+    const databaseUrl =
+      process.env.DATABASE_URL?.trim() || process.env.STORAGE_URL?.trim();
     if (!databaseUrl) {
       throw new Error(
-        "DATABASE_URL is not set. Run `vercel env pull .env.development.local` or add DATABASE_URL to `.env.local`.",
+        "DATABASE_URL or STORAGE_URL is not set. Run `vercel env pull .env.development.local`, or add one of them to `.env.local` (Vercel Neon Storage with prefix STORAGE sets STORAGE_URL).",
       );
     }
 

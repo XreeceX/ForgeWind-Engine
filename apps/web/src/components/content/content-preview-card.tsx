@@ -5,9 +5,10 @@ import type { GeneratedContentItem } from "@/stores/forgewind.store";
 
 interface ContentPreviewCardProps {
   content: GeneratedContentItem;
+  actions?: React.ReactNode;
 }
 
-export function ContentPreviewCard({ content }: ContentPreviewCardProps) {
+export function ContentPreviewCard({ content, actions }: ContentPreviewCardProps) {
   return (
     <Card className="rounded-fw-card border border-fw-gray-100 bg-fw-white p-4 transition-all duration-200 hover:border-fw-orange-mid hover:bg-fw-orange-light/30">
       <div className="mb-2 flex items-center justify-between gap-2">
@@ -19,6 +20,7 @@ export function ContentPreviewCard({ content }: ContentPreviewCardProps) {
         <CalendarDays className="h-3.5 w-3.5" />
         {new Date(content.createdAt).toLocaleDateString()}
       </div>
+      {actions ? <div className="mt-3 flex flex-wrap gap-2">{actions}</div> : null}
     </Card>
   );
 }

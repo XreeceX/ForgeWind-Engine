@@ -1,3 +1,4 @@
+import { ForgeWindApiBootstrap } from "@/components/layout/forgewind-api-bootstrap";
 import { ProtectedSessionGate } from "@/components/layout/protected-session-gate";
 
 export default function ProtectedLayout({
@@ -5,5 +6,12 @@ export default function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <ProtectedSessionGate>{children}</ProtectedSessionGate>;
+  return (
+    <ProtectedSessionGate>
+      <>
+        <ForgeWindApiBootstrap />
+        {children}
+      </>
+    </ProtectedSessionGate>
+  );
 }

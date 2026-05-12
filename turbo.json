@@ -13,8 +13,8 @@
     "GITHUB_CALLBACK_URL",
     "GITHUB_TOKEN",
     "PORT",
-    "CORS_ORIGIN"
-  ],
+    "NEXT_PUBLIC_FORGEWIND_API_URL",
+    "NEXT_PUBLIC_API_URL",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

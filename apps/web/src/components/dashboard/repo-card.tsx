@@ -1,6 +1,6 @@
 "use client";
 
-import { GitFork, Star } from "lucide-react";
+import { GitFork, Loader2, RefreshCw, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { HealthRing } from "@/components/workspace/health-ring";
 import type { RepositorySummary } from "@/stores/forgewind.store";
@@ -10,9 +10,17 @@ interface RepoCardProps {
   repo: RepositorySummary;
   selected?: boolean;
   onSelect?: (repoId: string) => void;
+  onSync?: (repoId: string) => void;
+  isSyncing?: boolean;
 }
 
-export function RepoCard({ repo, selected = false, onSelect }: RepoCardProps) {
+export function RepoCard({
+  repo,
+  selected = false,
+  onSelect,
+  onSync,
+  isSyncing = false,
+}: RepoCardProps) {
   return (
     <motion.button
       type="button"
@@ -48,6 +56,28 @@ export function RepoCard({ repo, selected = false, onSelect }: RepoCardProps) {
               Active
             </span>
           </div>
+          {onSync ? (
+            <button
+              type="button"
+              aria-label={`Sync repository ${repo.name}`}
+              disabled={isSyncing}
+              onClick={(event) => {
+                event.stopPropagation();
+                onSync(repo.id);
+              }}
+              className={cn(
+                "mt-2 inline-flex items-center gap-1.5 rounded-md border border-fw-orange-mid px-2 py-1 text-xs font-medium text-fw-orange",
+                "transition-colors hover:bg-fw-orange-light/80 disabled:pointer-events-none disabled:opacity-50",
+              )}
+            >
+              {isSyncing ? (
+                <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3.5 w-3.5 shrink-0" />
+              )}
+              Sync GitHub
+            </button>
+          ) : null}
         </div>
         <HealthRing score={repo.healthScore} size={64} />
       </div>

@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import type { ForgeWindApiUser } from "@/lib/forgewind-api";
+import { forgeWindFetch, getForgeWindApiBaseUrl } from "@/lib/forgewind-api";
 
 export interface UserProfile {
   id: string;
@@ -49,7 +51,15 @@ export type NarrativeSectionId =
   | "creation"
   | "opportunity";
 
+export interface ForgeWindAgentSnapshot {
+  mode: string;
+  agentStatus: string;
+  lastAction: string | null;
+}
+
 interface ForgeWindState {
+  forgeWindUserId: string | null;
+  agentSnapshot: ForgeWindAgentSnapshot | null;
   userProfile: UserProfile;
   repositories: RepositorySummary[];
   selectedRepositoryId: string;
@@ -59,6 +69,14 @@ interface ForgeWindState {
   commandPaletteOpen: boolean;
   activeNarrativeSection: NarrativeSectionId;
   chatOverlayOpen: boolean;
+  setForgeWindUserId: (id: string | null) => void;
+  setRepositories: (repos: RepositorySummary[]) => void;
+  applyForgeWindUserFromApi: (user: ForgeWindApiUser) => void;
+  setAgentSnapshot: (snapshot: ForgeWindAgentSnapshot | null) => void;
+  patchRepository: (
+    repoId: string,
+    patch: Partial<RepositorySummary>,
+  ) => void;
   setSelectedRepository: (repoId: string) => void;
   setAIStatus: (status: AIAnalysisState["status"]) => void;
   setAIFocus: (focus: string) => void;
@@ -72,49 +90,20 @@ interface ForgeWindState {
 
 const now = new Date().toISOString();
 
-const initialRepositories: RepositorySummary[] = [
-  {
-    id: "repo-forgewind-web",
-    name: "forgewind-web",
-    fullName: "reece/forgewind-web",
-    language: "TypeScript",
-    stars: 41,
-    healthScore: 88,
-    summary: "Main Next.js workspace powering ForgeWind experiences.",
-  },
-  {
-    id: "repo-workflows",
-    name: "career-workflows",
-    fullName: "reece/career-workflows",
-    language: "Python",
-    stars: 29,
-    healthScore: 81,
-    summary: "AI orchestration and scoring workflows for content and jobs.",
-  },
-  {
-    id: "repo-ingestion",
-    name: "portfolio-ingestion",
-    fullName: "reece/portfolio-ingestion",
-    language: "Go",
-    stars: 18,
-    healthScore: 76,
-    summary: "Connectors that ingest GitHub and resume context into memory.",
-  },
-];
-const defaultSelectedRepositoryId = initialRepositories[0]?.id ?? "";
-
 export const useForgeWindStore = create<ForgeWindState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
+      forgeWindUserId: null,
+      agentSnapshot: null,
       userProfile: {
-        id: "u-1",
+        id: "local-session",
         name: "Alex Chen",
         role: "Senior Software Engineer",
         headline: "Building AI products with strong systems thinking",
         primaryGoal: "Move into a staff-level backend role in 2026",
       },
-      repositories: initialRepositories,
-      selectedRepositoryId: defaultSelectedRepositoryId,
+      repositories: [],
+      selectedRepositoryId: "",
       aiAnalysis: {
         status: "ready",
         focus: "Role-fit and content signal quality",
@@ -142,7 +131,40 @@ export const useForgeWindStore = create<ForgeWindState>()(
       commandPaletteOpen: false,
       activeNarrativeSection: "identity",
       chatOverlayOpen: false,
-      setSelectedRepository: (selectedRepositoryId) => set({ selectedRepositoryId }),
+      setForgeWindUserId: (forgeWindUserId) => set({ forgeWindUserId }),
+      setRepositories: (repositories) => set({ repositories }),
+      applyForgeWindUserFromApi: (user) =>
+        set((state) => ({
+          forgeWindUserId: user.id,
+          userProfile: {
+            ...state.userProfile,
+            id: user.id,
+            name: user.username,
+          },
+        })),
+      setAgentSnapshot: (agentSnapshot) => set({ agentSnapshot }),
+      patchRepository: (repoId, patch) =>
+        set((state) => ({
+          repositories: state.repositories.map((r) =>
+            r.id === repoId ? { ...r, ...patch } : r,
+          ),
+        })),
+      setSelectedRepository: (selectedRepositoryId) => {
+        set({ selectedRepositoryId });
+        const { forgeWindUserId } = get();
+        if (!forgeWindUserId || !getForgeWindApiBaseUrl()) return;
+        void (async () => {
+          try {
+            await forgeWindFetch(`/repositories/${selectedRepositoryId}/activate`, {
+              method: "PATCH",
+              userId: forgeWindUserId,
+              body: JSON.stringify({ isActive: true }),
+            });
+          } catch {
+            /* non-fatal: local selection still applies */
+          }
+        })();
+      },
       setAIStatus: (status) =>
         set((state) => ({
           aiAnalysis: {
@@ -186,9 +208,10 @@ export const useForgeWindStore = create<ForgeWindState>()(
           },
         })),
       setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
-      setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
+      setActiveNarrativeSection: (activeNarrativeSection) =>
+        set({ activeNarrativeSection }),
       setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),
-    { name: "forgewind-web-state" },
+    { name: "forgewind-web-state-v2" },
   ),
 );

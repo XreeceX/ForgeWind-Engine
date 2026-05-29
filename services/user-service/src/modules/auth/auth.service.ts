@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthProvider, User } from '@prisma/client';
@@ -168,14 +164,17 @@ export class AuthService {
       role: user.role,
     };
 
+    const accessExpiry = this.config.get<string>('JWT_ACCESS_EXPIRY', '15m');
+    const refreshExpiry = this.config.get<string>('JWT_REFRESH_EXPIRY', '7d');
+
     const [accessToken, refreshToken] = await Promise.all([
       this.jwt.signAsync(payload, {
         secret: this.config.getOrThrow<string>('JWT_SECRET'),
-        expiresIn: this.config.get<string>('JWT_ACCESS_EXPIRY', '15m'),
+        expiresIn: accessExpiry as `${number}s` | `${number}m` | `${number}h` | `${number}d`,
       }),
       this.jwt.signAsync(payload, {
         secret: this.config.getOrThrow<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.config.get<string>('JWT_REFRESH_EXPIRY', '7d'),
+        expiresIn: refreshExpiry as `${number}s` | `${number}m` | `${number}h` | `${number}d`,
       }),
     ]);
 

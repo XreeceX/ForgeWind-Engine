@@ -1,23 +1,25 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import toast from "react-hot-toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ContentPreviewCard } from "@/components/content/content-preview-card";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { ContentPreviewCard } from '@/components/content/content-preview-card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   type ForgeWindApiNarrative,
   forgeWindJson,
   getForgeWindApiBaseUrl,
-} from "@/lib/forgewind-api";
-import { mapNarrativeToGeneratedItem } from "@/lib/forgewind-mappers";
-import type { GeneratedContentItem } from "@/stores/forgewind.store";
-import { useForgeWindStore } from "@/stores/forgewind.store";
+} from '@/lib/forgewind-api';
+import { mapNarrativeToGeneratedItem } from '@/lib/forgewind-mappers';
+import type { GeneratedContentItem } from '@/stores/forgewind.store';
+import { useForgeWindAccessToken } from '@/hooks/use-forgewind-access-token';
+import { useForgeWindStore } from '@/stores/forgewind.store';
 
-const narrativeTypes = ["bio", "project_summary", "commit_story"] as const;
+const narrativeTypes = ['bio', 'project_summary', 'commit_story'] as const;
 
 export default function ContentPage() {
+  const accessToken = useForgeWindAccessToken();
   const forgeWindUserId = useForgeWindStore((state) => state.forgeWindUserId);
   const generatedContent = useForgeWindStore((state) => state.generatedContent);
   const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
@@ -26,53 +28,52 @@ export default function ContentPage() {
 
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
   const [narrativeType, setNarrativeType] =
-    useState<(typeof narrativeTypes)[number]>("project_summary");
+    useState<(typeof narrativeTypes)[number]>('project_summary');
 
-  const apiReady = !!getForgeWindApiBaseUrl() && !!forgeWindUserId;
+  const apiReady = !!getForgeWindApiBaseUrl() && !!accessToken;
   const queryClient = useQueryClient();
 
   const narrativesQuery = useQuery({
-    queryKey: ["forgewind-narratives", forgeWindUserId],
+    queryKey: ['forgewind-narratives', forgeWindUserId],
     enabled: apiReady,
     queryFn: () =>
-      forgeWindJson<ForgeWindApiNarrative[]>("/narratives", {
-        userId: forgeWindUserId,
+      forgeWindJson<ForgeWindApiNarrative[]>('/narratives', {
+        accessToken,
       }),
   });
 
   const generateMutation = useMutation({
     mutationFn: async () =>
-      forgeWindJson<ForgeWindApiNarrative>("/narratives/generate", {
-        method: "POST",
-        userId: forgeWindUserId!,
+      forgeWindJson<ForgeWindApiNarrative>('/narratives/generate', {
+        method: 'POST',
+        accessToken: accessToken!,
         body: JSON.stringify({
-          userId: forgeWindUserId,
           repoId: selectedRepositoryId || undefined,
           type: narrativeType,
         }),
       }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["forgewind-narratives"] });
-      toast.success("Narrative generated");
+      void queryClient.invalidateQueries({ queryKey: ['forgewind-narratives'] });
+      toast.success('Narrative generated');
     },
     onError: () => {
-      toast.error("Narrative generation failed.");
+      toast.error('Narrative generation failed.');
     },
   });
 
   const pinMutation = useMutation({
     mutationFn: async (input: { id: string; isPinned: boolean }) =>
       forgeWindJson<ForgeWindApiNarrative>(`/narratives/${input.id}/pin`, {
-        method: "PATCH",
-        userId: forgeWindUserId!,
+        method: 'PATCH',
+        accessToken: accessToken!,
         body: JSON.stringify({ isPinned: input.isPinned }),
       }),
     onSuccess: (_, vars) => {
-      toast.success(vars.isPinned ? "Narrative pinned" : "Narrative unpinned");
-      void queryClient.invalidateQueries({ queryKey: ["forgewind-narratives"] });
+      toast.success(vars.isPinned ? 'Narrative pinned' : 'Narrative unpinned');
+      void queryClient.invalidateQueries({ queryKey: ['forgewind-narratives'] });
     },
     onError: () => {
-      toast.error("Could not update pin state.");
+      toast.error('Could not update pin state.');
     },
   });
 
@@ -101,7 +102,7 @@ export default function ContentPage() {
               Context-aware content generation
             </p>
             <p className="text-xs text-muted-foreground">
-              Current source: {selectedRepository?.fullName ?? "no repository selected"}
+              Current source: {selectedRepository?.fullName ?? 'no repository selected'}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -117,7 +118,7 @@ export default function ContentPage() {
                 >
                   {narrativeTypes.map((t) => (
                     <option key={t} value={t}>
-                      {t.replace(/_/g, " ")}
+                      {t.replace(/_/g, ' ')}
                     </option>
                   ))}
                 </select>
@@ -130,7 +131,7 @@ export default function ContentPage() {
                   }
                   onClick={() => generateMutation.mutate()}
                 >
-                  {generateMutation.isPending ? "Generating…" : "Generate (API)"}
+                  {generateMutation.isPending ? 'Generating…' : 'Generate (API)'}
                 </Button>
               </>
             ) : null}
@@ -139,9 +140,9 @@ export default function ContentPage() {
               variant="secondary"
               onClick={() =>
                 pushGeneratedContent({
-                  title: `Repository highlight: ${selectedRepository?.name ?? "general profile update"}`,
-                  channel: "linkedin",
-                  body: `Today I translated lessons from ${selectedRepository?.fullName ?? "my recent work"} into a practical hiring narrative focused on measurable outcomes.`,
+                  title: `Repository highlight: ${selectedRepository?.name ?? 'general profile update'}`,
+                  channel: 'linkedin',
+                  body: `Today I translated lessons from ${selectedRepository?.fullName ?? 'my recent work'} into a practical hiring narrative focused on measurable outcomes.`,
                 })
               }
             >
@@ -151,7 +152,7 @@ export default function ContentPage() {
         </div>
         {!apiReady ? (
           <p className="mt-3 text-xs text-muted-foreground">
-            Configure <code className="rounded bg-muted px-1">NEXT_PUBLIC_FORGEWIND_API_URL</code>{" "}
+            Configure <code className="rounded bg-muted px-1">NEXT_PUBLIC_FORGEWIND_API_URL</code>{' '}
             and <code className="rounded bg-muted px-1">ANTHROPIC_API_KEY</code> on the API to
             enable AI narratives.
           </p>
@@ -177,7 +178,7 @@ export default function ContentPage() {
                   <Button
                     type="button"
                     size="sm"
-                    variant={isPinned ? "primary" : "secondary"}
+                    variant={isPinned ? 'primary' : 'secondary'}
                     disabled={!narrative || pinMutation.isPending}
                     onClick={() => {
                       if (!narrative) return;
@@ -187,7 +188,7 @@ export default function ContentPage() {
                       });
                     }}
                   >
-                    {isPinned ? "Pinned" : "Pin"}
+                    {isPinned ? 'Pinned' : 'Pin'}
                   </Button>
                   <Button
                     type="button"
@@ -196,9 +197,9 @@ export default function ContentPage() {
                     onClick={async () => {
                       try {
                         await navigator.clipboard.writeText(item.body);
-                        toast.success("Copied to clipboard");
+                        toast.success('Copied to clipboard');
                       } catch {
-                        toast.error("Clipboard copy failed");
+                        toast.error('Clipboard copy failed');
                       }
                     }}
                   >

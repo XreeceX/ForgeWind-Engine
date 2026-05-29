@@ -3,21 +3,28 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import { gatewayEnvSchema } from '@forgewind-engine/config';
+import { bootstrapService } from '@forgewind-engine/utils';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
+  const pino = bootstrapService('api-gateway', gatewayEnvSchema);
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: false });
   const configuredOrigins = (process.env.CORS_ORIGIN ?? 'http://localhost:3000')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
 
   app.use(helmet());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.enableCors({
-    // Allow explicit origins from env and keep non-browser clients functional.
-    origin: (origin, callback) => {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
       if (!origin || configuredOrigins.includes(origin)) {
         callback(null, true);
         return;
@@ -50,7 +57,7 @@ async function bootstrap() {
 
   const port = Number(process.env.PORT ?? 8090);
   await app.listen(port, '0.0.0.0');
-  logger.log(`API Gateway listening on port ${port}`);
+  pino.info(`API Gateway listening on port ${port}`);
   logger.log(`Swagger docs available at /api/docs`);
 }
 

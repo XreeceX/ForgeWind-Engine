@@ -1,91 +1,91 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import toast from "react-hot-toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { JobMatchCard, type JobMatch } from "@/components/jobs/job-match-card";
-import { Card } from "@/components/ui/card";
+import { useMemo } from 'react';
+import toast from 'react-hot-toast';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { JobMatchCard, type JobMatch } from '@/components/jobs/job-match-card';
+import { Card } from '@/components/ui/card';
 import {
   type ForgeWindApiOpportunityMatch,
   forgeWindJson,
   getForgeWindApiBaseUrl,
-} from "@/lib/forgewind-api";
-import { mapOpportunityMatchToJob } from "@/lib/forgewind-mappers";
-import { useForgeWindStore } from "@/stores/forgewind.store";
+} from '@/lib/forgewind-api';
+import { mapOpportunityMatchToJob } from '@/lib/forgewind-mappers';
+import { useForgeWindAccessToken } from '@/hooks/use-forgewind-access-token';
+import { useForgeWindStore } from '@/stores/forgewind.store';
 
 export default function JobsPage() {
+  const accessToken = useForgeWindAccessToken();
   const forgeWindUserId = useForgeWindStore((state) => state.forgeWindUserId);
   const repositories = useForgeWindStore((state) => state.repositories);
   const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
   const queryClient = useQueryClient();
 
-  const apiReady = !!getForgeWindApiBaseUrl() && !!forgeWindUserId;
+  const apiReady = !!getForgeWindApiBaseUrl() && !!accessToken;
   const fallbackMatches = useMemo<JobMatch[]>(() => {
-    const language = selectedRepository?.language ?? "TypeScript";
+    const language = selectedRepository?.language ?? 'TypeScript';
     const baseScore = selectedRepository?.healthScore ?? 72;
     return [
       {
-        id: "job-1",
-        title: "Senior Backend Engineer",
-        company: "Stripe",
-        location: "Remote",
+        id: 'job-1',
+        title: 'Senior Backend Engineer',
+        company: 'Stripe',
+        location: 'Remote',
         matchScore: Math.min(97, baseScore + 8),
         reason: `Strong alignment with ${language} ownership and systems reliability experience.`,
-        status: "new",
+        status: 'new',
       },
       {
-        id: "job-2",
-        title: "Platform Engineer",
-        company: "Datadog",
-        location: "New York, NY",
+        id: 'job-2',
+        title: 'Platform Engineer',
+        company: 'Datadog',
+        location: 'New York, NY',
         matchScore: Math.min(94, baseScore + 5),
-        reason:
-          "Repository commits show operational maturity and architecture depth.",
-        status: "new",
+        reason: 'Repository commits show operational maturity and architecture depth.',
+        status: 'new',
       },
       {
-        id: "job-3",
-        title: "Staff Software Engineer",
-        company: "Notion",
-        location: "San Francisco, CA",
+        id: 'job-3',
+        title: 'Staff Software Engineer',
+        company: 'Notion',
+        location: 'San Francisco, CA',
         matchScore: Math.min(91, baseScore + 3),
-        reason:
-          "Public technical narratives indicate senior-level communication and delivery.",
-        status: "new",
+        reason: 'Public technical narratives indicate senior-level communication and delivery.',
+        status: 'new',
       },
     ];
   }, [selectedRepository]);
 
   const matchesQuery = useQuery({
-    queryKey: ["forgewind-matches", forgeWindUserId],
+    queryKey: ['forgewind-matches', forgeWindUserId],
     enabled: apiReady,
     queryFn: () =>
-      forgeWindJson<ForgeWindApiOpportunityMatch[]>("/matches", {
-        userId: forgeWindUserId,
+      forgeWindJson<ForgeWindApiOpportunityMatch[]>('/matches', {
+        accessToken,
       }),
   });
 
   const updateStatus = useMutation({
-    mutationFn: async (input: { id: string; status: "saved" | "dismissed" }) =>
+    mutationFn: async (input: { id: string; status: 'saved' | 'dismissed' }) =>
       forgeWindJson(`/matches/${input.id}/status`, {
-        method: "PATCH",
-        userId: forgeWindUserId!,
+        method: 'PATCH',
+        accessToken: accessToken!,
         body: JSON.stringify({ status: input.status }),
       }),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["forgewind-matches"] });
-      toast.success("Match status updated");
+      void queryClient.invalidateQueries({ queryKey: ['forgewind-matches'] });
+      toast.success('Match status updated');
     },
     onError: () => {
-      toast.error("Could not update match status.");
+      toast.error('Could not update match status.');
     },
   });
 
   const jobs: JobMatch[] = useMemo(() => {
     if (!apiReady) return fallbackMatches;
     const rows = matchesQuery.data ?? [];
-    const active = rows.filter((m) => m.status !== "dismissed");
+    const active = rows.filter((m) => m.status !== 'dismissed');
     if (active.length === 0) return [];
     return active.map((m) => {
       const v = mapOpportunityMatchToJob(m);
@@ -107,7 +107,7 @@ export default function JobsPage() {
       <Card className="p-5">
         <p className="text-sm font-semibold text-foreground">Role matching context</p>
         <p className="text-xs text-muted-foreground">
-          Matches are personalized from: {selectedRepository?.fullName ?? "No repository selected"}
+          Matches are personalized from: {selectedRepository?.fullName ?? 'No repository selected'}
         </p>
         {apiReady ? (
           <p className="mt-2 text-xs text-muted-foreground">
@@ -115,7 +115,7 @@ export default function JobsPage() {
           </p>
         ) : (
           <p className="mt-2 text-xs text-muted-foreground">
-            Set <code className="rounded bg-muted px-1 py-0.5">NEXT_PUBLIC_FORGEWIND_API_URL</code>{" "}
+            Set <code className="rounded bg-muted px-1 py-0.5">NEXT_PUBLIC_FORGEWIND_API_URL</code>{' '}
             and sign in to load opportunities from the API.
           </p>
         )}
@@ -136,9 +136,9 @@ export default function JobsPage() {
             <JobMatchCard
               key={job.id}
               job={job}
-              showActions={apiReady && job.status === "new"}
-              onSave={(id) => updateStatus.mutate({ id, status: "saved" })}
-              onDismiss={(id) => updateStatus.mutate({ id, status: "dismissed" })}
+              showActions={apiReady && job.status === 'new'}
+              onSave={(id) => updateStatus.mutate({ id, status: 'saved' })}
+              onDismiss={(id) => updateStatus.mutate({ id, status: 'dismissed' })}
             />
           ))
         )}

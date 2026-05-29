@@ -7,11 +7,13 @@
     "dev": "nest start --watch",
     "start": "node dist/main",
     "lint": "eslint src/",
-    "test": "jest",
+    "test": "jest --config jest.config.cjs",
     "db:generate": "prisma generate",
     "db:push": "prisma db push"
   },
   "dependencies": {
+    "@forgewind-engine/config": "workspace:*",
+    "@forgewind-engine/utils": "workspace:*",
     "@nestjs/axios": "^3.1.3",
     "@nestjs/common": "^10.4.0",
     "@nestjs/config": "^3.3.0",

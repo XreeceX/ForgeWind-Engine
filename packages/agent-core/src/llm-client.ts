@@ -1,18 +1,18 @@
-import OpenAI from "openai";
+import OpenAI from 'openai';
 import type {
   ChatCompletionTool,
   ChatCompletionMessageParam,
-} from "openai/resources/chat/completions.js";
-import pino from "pino";
+} from 'openai/resources/chat/completions.js';
+import pino from 'pino';
 import type {
   AgentTool,
   LLMRequestOptions,
   LLMResponse,
   LLMToolCall,
   TokenUsage,
-} from "./types.js";
+} from './types.js';
 
-const DEFAULT_MODEL = "gpt-4o";
+const DEFAULT_MODEL = 'gpt-4o';
 const DEFAULT_TEMPERATURE = 0.7;
 const DEFAULT_MAX_TOKENS = 4096;
 const MAX_RETRIES = 3;
@@ -25,9 +25,7 @@ export class LLMClient {
 
   constructor(client: OpenAI, logger?: pino.Logger) {
     this.client = client;
-    this.logger =
-      logger ??
-      pino({ name: "llm-client", level: process.env["LOG_LEVEL"] ?? "info" });
+    this.logger = logger ?? pino({ name: 'llm-client', level: process.env['LOG_LEVEL'] ?? 'info' });
   }
 
   async chatCompletion(
@@ -40,7 +38,7 @@ export class LLMClient {
     const maxTokens = options.maxTokens ?? DEFAULT_MAX_TOKENS;
 
     const openaiTools: ChatCompletionTool[] = tools.map((tool) => ({
-      type: "function" as const,
+      type: 'function' as const,
       function: {
         name: tool.name,
         description: tool.description,
@@ -54,7 +52,7 @@ export class LLMClient {
       try {
         this.logger.debug(
           { model, attempt, messageCount: messages.length },
-          "Sending chat completion request",
+          'Sending chat completion request',
         );
 
         const response = await this.client.chat.completions.create({
@@ -64,13 +62,13 @@ export class LLMClient {
           max_tokens: maxTokens,
           ...(openaiTools.length > 0 && { tools: openaiTools }),
           ...(options.jsonMode && {
-            response_format: { type: "json_object" },
+            response_format: { type: 'json_object' },
           }),
         });
 
         const choice = response.choices[0];
         if (!choice) {
-          throw new Error("No completion choice returned from LLM");
+          throw new Error('No completion choice returned from LLM');
         }
 
         const tokensUsed: TokenUsage = {
@@ -81,16 +79,13 @@ export class LLMClient {
         this.totalTokensUsed.prompt += tokensUsed.prompt;
         this.totalTokensUsed.completion += tokensUsed.completion;
 
-        const toolCalls: LLMToolCall[] = (
-          choice.message.tool_calls ?? []
-        ).map((tc) => ({
-          id: tc.id,
-          name: tc.function.name,
-          arguments: JSON.parse(tc.function.arguments) as Record<
-            string,
-            unknown
-          >,
-        }));
+        const toolCalls: LLMToolCall[] = (choice.message.tool_calls ?? [])
+          .filter((tc): tc is Extract<typeof tc, { type: 'function' }> => tc.type === 'function')
+          .map((tc) => ({
+            id: tc.id,
+            name: tc.function.name,
+            arguments: JSON.parse(tc.function.arguments) as Record<string, unknown>,
+          }));
 
         this.logger.debug(
           {
@@ -98,7 +93,7 @@ export class LLMClient {
             toolCallCount: toolCalls.length,
             finishReason: choice.finish_reason,
           },
-          "Chat completion received",
+          'Chat completion received',
         );
 
         return {
@@ -108,15 +103,11 @@ export class LLMClient {
           finishReason: choice.finish_reason,
         };
       } catch (error: unknown) {
-        lastError =
-          error instanceof Error ? error : new Error(String(error));
+        lastError = error instanceof Error ? error : new Error(String(error));
 
         if (this.isRateLimitError(error)) {
           const backoffMs = BASE_BACKOFF_MS * Math.pow(2, attempt);
-          this.logger.warn(
-            { attempt, backoffMs },
-            "Rate limited, backing off",
-          );
+          this.logger.warn({ attempt, backoffMs }, 'Rate limited, backing off');
           await this.sleep(backoffMs);
           continue;
         }
@@ -125,7 +116,7 @@ export class LLMClient {
           const backoffMs = BASE_BACKOFF_MS * Math.pow(2, attempt);
           this.logger.warn(
             { attempt, backoffMs, error: lastError.message },
-            "Retryable error, backing off",
+            'Retryable error, backing off',
           );
           await this.sleep(backoffMs);
           continue;
@@ -135,7 +126,7 @@ export class LLMClient {
       }
     }
 
-    throw lastError ?? new Error("LLM request failed after max retries");
+    throw lastError ?? new Error('LLM request failed after max retries');
   }
 
   async streamCompletion(
@@ -149,7 +140,7 @@ export class LLMClient {
     const maxTokens = options.maxTokens ?? DEFAULT_MAX_TOKENS;
 
     const openaiTools: ChatCompletionTool[] = tools.map((tool) => ({
-      type: "function" as const,
+      type: 'function' as const,
       function: {
         name: tool.name,
         description: tool.description,
@@ -166,12 +157,9 @@ export class LLMClient {
       ...(openaiTools.length > 0 && { tools: openaiTools }),
     });
 
-    let fullContent = "";
-    const toolCallAccumulators = new Map<
-      number,
-      { id: string; name: string; arguments: string }
-    >();
-    let finishReason = "stop";
+    let fullContent = '';
+    const toolCallAccumulators = new Map<number, { id: string; name: string; arguments: string }>();
+    let finishReason = 'stop';
 
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta;
@@ -186,12 +174,12 @@ export class LLMClient {
         for (const tc of delta.tool_calls) {
           const existing = toolCallAccumulators.get(tc.index);
           if (existing) {
-            existing.arguments += tc.function?.arguments ?? "";
+            existing.arguments += tc.function?.arguments ?? '';
           } else {
             toolCallAccumulators.set(tc.index, {
-              id: tc.id ?? "",
-              name: tc.function?.name ?? "",
-              arguments: tc.function?.arguments ?? "",
+              id: tc.id ?? '',
+              name: tc.function?.name ?? '',
+              arguments: tc.function?.arguments ?? '',
             });
           }
         }
@@ -202,9 +190,7 @@ export class LLMClient {
       }
     }
 
-    const toolCalls: LLMToolCall[] = Array.from(
-      toolCallAccumulators.values(),
-    ).map((tc) => ({
+    const toolCalls: LLMToolCall[] = Array.from(toolCallAccumulators.values()).map((tc) => ({
       id: tc.id,
       name: tc.name,
       arguments: JSON.parse(tc.arguments) as Record<string, unknown>,

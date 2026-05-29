@@ -1,23 +1,26 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch } from '@nestjs/common';
-import { StubUserId } from '../../common/decorators/stub-user-id.decorator';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, UseGuards } from '@nestjs/common';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedForgeWindUser } from '../auth/jwt.strategy';
 import { UpdateMatchStatusDto } from './matches.dto';
 import { MatchesService } from './matches.service';
 
 @Controller('matches')
+@UseGuards(JwtAuthGuard)
 export class MatchesController {
   constructor(private readonly matches: MatchesService) {}
 
   @Get()
-  list(@StubUserId() userId: string) {
-    return this.matches.listForUser(userId);
+  list(@CurrentUser() user: AuthenticatedForgeWindUser) {
+    return this.matches.listForUser(user.id);
   }
 
   @Patch(':id/status')
   updateStatus(
-    @StubUserId() userId: string,
+    @CurrentUser() user: AuthenticatedForgeWindUser,
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: UpdateMatchStatusDto,
   ) {
-    return this.matches.updateStatus(userId, id, body.status);
+    return this.matches.updateStatus(user.id, id, body.status);
   }
 }

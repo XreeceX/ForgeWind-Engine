@@ -1,0 +1,9 @@
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import type { AuthenticatedForgeWindUser } from '../jwt.strategy';
+
+export const CurrentUser = createParamDecorator(
+  (_data: unknown, ctx: ExecutionContext): AuthenticatedForgeWindUser => {
+    const request = ctx.switchToHttp().getRequest<{ user: AuthenticatedForgeWindUser }>();
+    return request.user;
+  },
+);

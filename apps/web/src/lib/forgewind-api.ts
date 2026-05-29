@@ -1,6 +1,5 @@
 /**
- * Minimal client for `@forgewind-engine/forgewind-api` (no JWT — uses `X-User-Id`).
- * Use only from client components or server actions after resolving the ForgeWind user UUID.
+ * Client for `@forgewind-engine/forgewind-api` — uses JWT Bearer auth from user-service.
  */
 
 export function getForgeWindApiBaseUrl(): string | null {
@@ -8,16 +7,25 @@ export function getForgeWindApiBaseUrl(): string | null {
   return url || null;
 }
 
+export function getUserServiceUrl(): string {
+  return (
+    process.env.NEXT_PUBLIC_USER_SERVICE_URL?.trim() ||
+    process.env.USER_SERVICE_URL?.trim() ||
+    'http://localhost:4001'
+  );
+}
+
 export class ForgeWindApiNotConfiguredError extends Error {
   constructor() {
-    super("NEXT_PUBLIC_FORGEWIND_API_URL is not set");
-    this.name = "ForgeWindApiNotConfiguredError";
+    super('NEXT_PUBLIC_FORGEWIND_API_URL is not set');
+    this.name = 'ForgeWindApiNotConfiguredError';
   }
 }
 
 export type ForgeWindApiUser = {
   id: string;
-  githubId: string;
+  externalUserId?: string | null;
+  githubId: string | null;
   username: string;
   avatarUrl: string;
   email: string | null;
@@ -85,23 +93,23 @@ export type ForgeWindApiAgentState = {
 
 export async function forgeWindFetch(
   path: string,
-  options: RequestInit & { userId?: string | null } = {},
+  options: RequestInit & { accessToken?: string | null } = {},
 ): Promise<Response> {
   const base = getForgeWindApiBaseUrl();
   if (!base) {
     throw new ForgeWindApiNotConfiguredError();
   }
 
-  const { userId, headers: initHeaders, ...rest } = options;
-  const url = `${base.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;
+  const { accessToken, headers: initHeaders, ...rest } = options;
+  const url = `${base.replace(/\/$/, '')}${path.startsWith('/') ? path : `/${path}`}`;
 
   const headers = new Headers(initHeaders);
-  if (!headers.has("Content-Type") && rest.body != null) {
-    headers.set("Content-Type", "application/json");
+  if (!headers.has('Content-Type') && rest.body != null) {
+    headers.set('Content-Type', 'application/json');
   }
-  const uid = userId?.trim();
-  if (uid) {
-    headers.set("X-User-Id", uid);
+  const token = accessToken?.trim();
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
   }
 
   return fetch(url, { ...rest, headers });
@@ -109,7 +117,7 @@ export async function forgeWindFetch(
 
 export async function forgeWindJson<T>(
   path: string,
-  options: RequestInit & { userId?: string | null } = {},
+  options: RequestInit & { accessToken?: string | null } = {},
 ): Promise<T> {
   const res = await forgeWindFetch(path, options);
   if (!res.ok) {
@@ -117,12 +125,12 @@ export async function forgeWindJson<T>(
     throw new Error(`ForgeWind API ${res.status}: ${text.slice(0, 400)}`);
   }
 
-  if (res.status === 204 || res.headers.get("content-length") === "0") {
+  if (res.status === 204 || res.headers.get('content-length') === '0') {
     return undefined as T;
   }
 
-  const ct = res.headers.get("content-type") ?? "";
-  if (!ct.includes("application/json")) {
+  const ct = res.headers.get('content-type') ?? '';
+  if (!ct.includes('application/json')) {
     return undefined as T;
   }
 
@@ -146,7 +154,6 @@ export function mapForgeWindRepositoryToSummary(r: ForgeWindApiRepository): {
     stars: 0,
     healthScore: r.lastSyncedAt ? 78 : 65,
     summary:
-      r.description?.trim() ||
-      `Connected repository ${r.fullName}. Sync to refresh signals.`,
+      r.description?.trim() || `Connected repository ${r.fullName}. Sync to refresh signals.`,
   };
 }

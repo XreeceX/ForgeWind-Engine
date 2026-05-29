@@ -23,11 +23,7 @@ export const opportunitySourceEnum = pgEnum('opportunity_source', [
   'ai_suggested',
 ]);
 
-export const opportunityStatusEnum = pgEnum('opportunity_status', [
-  'new',
-  'saved',
-  'dismissed',
-]);
+export const opportunityStatusEnum = pgEnum('opportunity_status', ['new', 'saved', 'dismissed']);
 
 export const agentModeEnum = pgEnum('agent_mode', ['focus', 'explore', 'rest']);
 
@@ -40,13 +36,12 @@ export const agentStatusEnum = pgEnum('forge_agent_status', [
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
-  githubId: text('github_id').notNull().unique(),
+  externalUserId: text('external_user_id').unique(),
+  githubId: text('github_id').unique(),
   username: text('username').notNull(),
   avatarUrl: text('avatar_url').notNull(),
   email: text('email'),
-  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' })
-    .defaultNow()
-    .notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' })
     .defaultNow()
     .notNull()
@@ -75,14 +70,10 @@ export const repoSnapshots = pgTable('repo_snapshots', {
   repoId: uuid('repo_id')
     .notNull()
     .references(() => repositories.id, { onDelete: 'cascade' }),
-  capturedAt: timestamp('captured_at', { withTimezone: true, mode: 'date' })
-    .defaultNow()
-    .notNull(),
+  capturedAt: timestamp('captured_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
   commitCount30d: integer('commit_count_30d').notNull(),
   topLanguages: jsonb('top_languages').$type<Record<string, number>>().notNull(),
-  contributors: jsonb('contributors')
-    .$type<Array<{ login: string; commits: number }>>()
-    .notNull(),
+  contributors: jsonb('contributors').$type<Array<{ login: string; commits: number }>>().notNull(),
   focusScore: numeric('focus_score', { precision: 4, scale: 2 }).notNull(),
   healthScore: numeric('health_score', { precision: 4, scale: 2 }).notNull(),
   rawSignal: jsonb('raw_signal').$type<Record<string, unknown>>().notNull(),
@@ -116,9 +107,7 @@ export const opportunityMatches = pgTable('opportunity_matches', {
   matchedSignals: jsonb('matched_signals').$type<Record<string, unknown>>().notNull(),
   url: text('url'),
   status: opportunityStatusEnum('status').notNull().default('new'),
-  surfacedAt: timestamp('surfaced_at', { withTimezone: true, mode: 'date' })
-    .defaultNow()
-    .notNull(),
+  surfacedAt: timestamp('surfaced_at', { withTimezone: true, mode: 'date' }).defaultNow().notNull(),
 });
 
 export const agentState = pgTable('agent_state', {

@@ -9,6 +9,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@forgewind-engine/config": "workspace:*",
     "nanoid": "^5.0.0",
     "pino": "^9.0.0"
   }

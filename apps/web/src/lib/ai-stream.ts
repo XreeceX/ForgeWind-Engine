@@ -1,19 +1,17 @@
-import type {
-  AiStreamEvent,
-  CreateAiSessionPayload,
-} from "@/types/ai-stream";
+import type { AiStreamEvent, CreateAiSessionPayload } from '@/types/ai-stream';
+import { getForgeWindApiBaseUrl } from '@/lib/forgewind-api';
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api/v1";
+  getForgeWindApiBaseUrl() || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 export async function createAiSession(
   payload: CreateAiSessionPayload,
-  accessToken: string
+  accessToken: string,
 ): Promise<{ sessionId: string }> {
   const response = await fetch(`${API_BASE_URL}/ai/sessions`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(payload),
@@ -63,10 +61,10 @@ export function streamAiSessionSync({
   void (async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/ai/sessions/${sessionId}/stream`, {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          Accept: "text/event-stream",
+          Accept: 'text/event-stream',
         },
         signal: controller.signal,
       });
@@ -76,20 +74,20 @@ export function streamAiSessionSync({
       }
 
       if (!response.body) {
-        throw new Error("AI stream body is unavailable");
+        throw new Error('AI stream body is unavailable');
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let buffer = "";
+      let buffer = '';
 
       while (!controller.signal.aborted) {
         const { done, value } = await reader.read();
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const chunks = buffer.split("\n\n");
-        buffer = chunks.pop() ?? "";
+        const chunks = buffer.split('\n\n');
+        buffer = chunks.pop() ?? '';
 
         for (const chunk of chunks) {
           const event = parseSseChunk(chunk);
@@ -102,7 +100,7 @@ export function streamAiSessionSync({
       onDone?.();
     } catch (error) {
       if (!controller.signal.aborted) {
-        onError?.(error instanceof Error ? error : new Error("Unknown stream error"));
+        onError?.(error instanceof Error ? error : new Error('Unknown stream error'));
       }
     }
   })();
@@ -111,11 +109,11 @@ export function streamAiSessionSync({
 }
 
 function parseSseChunk(chunk: string): AiStreamEvent | null {
-  const lines = chunk.split("\n");
+  const lines = chunk.split('\n');
   const dataLines: string[] = [];
 
   for (const line of lines) {
-    if (line.startsWith("data:")) {
+    if (line.startsWith('data:')) {
       dataLines.push(line.slice(5).trim());
     }
   }
@@ -123,7 +121,7 @@ function parseSseChunk(chunk: string): AiStreamEvent | null {
   if (!dataLines.length) return null;
 
   try {
-    return JSON.parse(dataLines.join("")) as AiStreamEvent;
+    return JSON.parse(dataLines.join('')) as AiStreamEvent;
   } catch {
     return null;
   }

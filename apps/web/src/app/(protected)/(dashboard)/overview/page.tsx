@@ -1,26 +1,28 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import toast from "react-hot-toast";
-import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { Plus } from "lucide-react";
-import { RepoCard } from "@/components/dashboard/repo-card";
-import { OverviewStatGrid } from "@/components/dashboard/overview-stat-grid";
-import { InsightCard } from "@/components/ai-studio/insight-card";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Modal } from "@/components/ui/modal";
+import { useCallback, useState } from 'react';
+import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { Plus } from 'lucide-react';
+import { RepoCard } from '@/components/dashboard/repo-card';
+import { OverviewStatGrid } from '@/components/dashboard/overview-stat-grid';
+import { InsightCard } from '@/components/ai-studio/insight-card';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Modal } from '@/components/ui/modal';
 import {
   type ForgeWindApiRepoSnapshot,
   type ForgeWindApiRepository,
   forgeWindJson,
   getForgeWindApiBaseUrl,
   mapForgeWindRepositoryToSummary,
-} from "@/lib/forgewind-api";
-import { useForgeWindStore } from "@/stores/forgewind.store";
+} from '@/lib/forgewind-api';
+import { useForgeWindAccessToken } from '@/hooks/use-forgewind-access-token';
+import { useForgeWindStore } from '@/stores/forgewind.store';
 
 export default function OverviewPage() {
+  const accessToken = useForgeWindAccessToken();
   const forgeWindUserId = useForgeWindStore((state) => state.forgeWindUserId);
   const repositories = useForgeWindStore((state) => state.repositories);
   const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
@@ -32,58 +34,58 @@ export default function OverviewPage() {
   const [openConnectModal, setOpenConnectModal] = useState(false);
   const [formBusy, setFormBusy] = useState(false);
   const [form, setForm] = useState({
-    githubRepoId: "",
-    fullName: "",
-    name: "",
-    description: "",
-    language: "TypeScript",
+    githubRepoId: '',
+    fullName: '',
+    name: '',
+    description: '',
+    language: 'TypeScript',
   });
-  const apiReady = !!getForgeWindApiBaseUrl() && !!forgeWindUserId;
+  const apiReady = !!getForgeWindApiBaseUrl() && !!accessToken;
   const selectedRepository = repositories.find((repo) => repo.id === selectedRepositoryId);
 
   const handleRepoSync = useCallback(
     async (repoId: string) => {
-      if (!forgeWindUserId || !getForgeWindApiBaseUrl()) return;
+      if (!accessToken || !getForgeWindApiBaseUrl()) return;
       setSyncingRepoId(repoId);
       try {
-        const snap = await forgeWindJson<ForgeWindApiRepoSnapshot>(
-          `/repositories/${repoId}/sync`,
-          { method: "POST", userId: forgeWindUserId },
-        );
+        const snap = await forgeWindJson<ForgeWindApiRepoSnapshot>(`/repositories/${repoId}/sync`, {
+          method: 'POST',
+          accessToken,
+        });
         const health = Math.round(Number(snap.healthScore));
         const focus = Math.round(Number(snap.focusScore));
         patchRepository(repoId, {
           healthScore: Number.isFinite(health) ? health : 70,
-          summary: `Synced: ${snap.commitCount30d} commits (30d). Focus ${Number.isFinite(focus) ? focus : "—"} · health ${Number.isFinite(health) ? health : "—"}.`,
+          summary: `Synced: ${snap.commitCount30d} commits (30d). Focus ${Number.isFinite(focus) ? focus : '—'} · health ${Number.isFinite(health) ? health : '—'}.`,
         });
-        toast.success("Repository synced");
+        toast.success('Repository synced');
       } catch (err) {
-        console.warn("[ForgeWind sync]", err);
-        toast.error("Sync failed. Check GitHub/API credentials.");
+        console.warn('[ForgeWind sync]', err);
+        toast.error('Sync failed. Check GitHub/API credentials.');
       } finally {
         setSyncingRepoId(null);
       }
     },
-    [forgeWindUserId, patchRepository],
+    [accessToken, patchRepository],
   );
 
   const connectRepo = useCallback(async () => {
     if (!forgeWindUserId || !apiReady || formBusy) return;
     if (!form.fullName.trim() || !form.name.trim() || !form.githubRepoId.trim()) {
-      toast.error("Fill repo id, name, and full name.");
+      toast.error('Fill repo id, name, and full name.');
       return;
     }
     setFormBusy(true);
     try {
-      const created = await forgeWindJson<ForgeWindApiRepository>("/repositories", {
-        method: "POST",
-        userId: forgeWindUserId,
+      const created = await forgeWindJson<ForgeWindApiRepository>('/repositories', {
+        method: 'POST',
+        accessToken,
         body: JSON.stringify({
           githubRepoId: form.githubRepoId.trim(),
           name: form.name.trim(),
           fullName: form.fullName.trim(),
           description: form.description.trim() || undefined,
-          language: form.language.trim() || "TypeScript",
+          language: form.language.trim() || 'TypeScript',
         }),
       });
       const mapped = mapForgeWindRepositoryToSummary(created);
@@ -91,60 +93,59 @@ export default function OverviewPage() {
         repositories: [mapped, ...state.repositories],
         selectedRepositoryId: mapped.id,
       }));
-      toast.success("Repository connected");
+      toast.success('Repository connected');
       setOpenConnectModal(false);
       setForm({
-        githubRepoId: "",
-        fullName: "",
-        name: "",
-        description: "",
-        language: "TypeScript",
+        githubRepoId: '',
+        fullName: '',
+        name: '',
+        description: '',
+        language: 'TypeScript',
       });
     } catch (error) {
-      console.warn("[ForgeWind connect repo]", error);
-      toast.error("Could not connect repository.");
+      console.warn('[ForgeWind connect repo]', error);
+      toast.error('Could not connect repository.');
     } finally {
       setFormBusy(false);
     }
-  }, [apiReady, forgeWindUserId, form, formBusy]);
+  }, [apiReady, accessToken, form, formBusy]);
 
   const disconnectRepo = useCallback(
     async (repoId: string) => {
       if (!forgeWindUserId || !apiReady) return;
       try {
         await forgeWindJson<void>(`/repositories/${repoId}`, {
-          method: "DELETE",
-          userId: forgeWindUserId,
+          method: 'DELETE',
+          accessToken,
         });
         useForgeWindStore.setState((state) => {
           const nextRepos = state.repositories.filter((r) => r.id !== repoId);
           const nextSelected =
             state.selectedRepositoryId === repoId
-              ? (nextRepos[0]?.id ?? "")
+              ? (nextRepos[0]?.id ?? '')
               : state.selectedRepositoryId;
           return { repositories: nextRepos, selectedRepositoryId: nextSelected };
         });
-        toast.success("Repository disconnected");
+        toast.success('Repository disconnected');
       } catch (error) {
-        console.warn("[ForgeWind disconnect repo]", error);
-        toast.error("Could not disconnect repository.");
+        console.warn('[ForgeWind disconnect repo]', error);
+        toast.error('Could not disconnect repository.');
       }
     },
-    [apiReady, forgeWindUserId],
+    [apiReady, accessToken],
   );
 
   const snapshotQuery = useQuery({
-    queryKey: ["forgewind-snapshots", forgeWindUserId, selectedRepositoryId],
+    queryKey: ['forgewind-snapshots', forgeWindUserId, selectedRepositoryId],
     enabled: apiReady && !!selectedRepositoryId,
     queryFn: () =>
-      forgeWindJson<ForgeWindApiRepoSnapshot[]>(
-        `/repositories/${selectedRepositoryId}/snapshots`,
-        { userId: forgeWindUserId },
-      ),
+      forgeWindJson<ForgeWindApiRepoSnapshot[]>(`/repositories/${selectedRepositoryId}/snapshots`, {
+        accessToken,
+      }),
   });
 
   const healthQuery = useQuery({
-    queryKey: ["career-health", selectedRepositoryId],
+    queryKey: ['career-health', selectedRepositoryId],
     queryFn: async () => {
       const selected = repositories.find((repo) => repo.id === selectedRepositoryId);
       const scoreBase = selected?.healthScore ?? 70;
@@ -188,8 +189,10 @@ export default function OverviewPage() {
             </div>
             {repositories.length === 0 ? (
               <p className="text-sm text-muted-foreground">
-                No repositories connected yet. With{" "}
-                <code className="rounded bg-muted px-1 py-0.5 text-xs">NEXT_PUBLIC_FORGEWIND_API_URL</code>{" "}
+                No repositories connected yet. With{' '}
+                <code className="rounded bg-muted px-1 py-0.5 text-xs">
+                  NEXT_PUBLIC_FORGEWIND_API_URL
+                </code>{' '}
                 set and the API running, add a repo.
               </p>
             ) : (
@@ -245,22 +248,22 @@ export default function OverviewPage() {
             <p className="mb-3 text-xs text-muted-foreground">
               {selectedRepository
                 ? `Recent sync history for ${selectedRepository.fullName}`
-                : "Select a repository to view sync history."}
+                : 'Select a repository to view sync history.'}
             </p>
             {snapshotQuery.isLoading ? (
               <p className="text-xs text-muted-foreground">Loading snapshots…</p>
             ) : snapshotQuery.isError ? (
               <p className="text-xs text-red-600">Could not load snapshot history.</p>
             ) : (snapshotQuery.data?.length ?? 0) === 0 ? (
-              <p className="text-xs text-muted-foreground">No snapshots yet. Sync a repository to create one.</p>
+              <p className="text-xs text-muted-foreground">
+                No snapshots yet. Sync a repository to create one.
+              </p>
             ) : (
               <div className="space-y-2">
                 {snapshotQuery.data!.slice(0, 4).map((s) => (
                   <div key={s.id} className="rounded-md border border-border p-2 text-xs">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">
-                        {new Date(s.capturedAt).toLocaleString()}
-                      </span>
+                      <span className="font-medium">{new Date(s.capturedAt).toLocaleString()}</span>
                       <span>{Math.round(Number(s.healthScore))}% health</span>
                     </div>
                     <div className="mt-1 text-muted-foreground">

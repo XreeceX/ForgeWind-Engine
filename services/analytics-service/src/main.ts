@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { serviceEnvSchema } from '@forgewind-engine/config';
+import { bootstrapService } from '@forgewind-engine/utils';
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+  const logger = bootstrapService('analytics-service', serviceEnvSchema);
+  const app = await NestFactory.create(AppModule, { logger: false });
 
   app.setGlobalPrefix('api/v1');
 
@@ -36,7 +39,7 @@ async function bootstrap(): Promise<void> {
   const port = process.env['PORT'] ?? 4007;
   await app.listen(port);
 
-  console.log(`Analytics service running on port ${port}`);
+  logger.info(`Analytics service running on port ${port}`);
 }
 
 void bootstrap();

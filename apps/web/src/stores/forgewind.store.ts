@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { ForgeWindApiUser } from "@/lib/forgewind-api";
-import { forgeWindFetch, getForgeWindApiBaseUrl } from "@/lib/forgewind-api";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { ForgeWindApiUser } from '@/lib/forgewind-api';
+import { forgeWindFetch, getForgeWindApiBaseUrl } from '@/lib/forgewind-api';
 
 export interface UserProfile {
   id: string;
@@ -22,7 +22,7 @@ export interface RepositorySummary {
 }
 
 export interface AIAnalysisState {
-  status: "idle" | "running" | "ready" | "error";
+  status: 'idle' | 'running' | 'ready' | 'error';
   focus: string;
   lastRunAt: string | null;
   findings: string[];
@@ -31,7 +31,7 @@ export interface AIAnalysisState {
 export interface GeneratedContentItem {
   id: string;
   title: string;
-  channel: "linkedin" | "email" | "portfolio";
+  channel: 'linkedin' | 'email' | 'portfolio';
   body: string;
   createdAt: string;
 }
@@ -44,12 +44,12 @@ export interface MemoryContext {
 }
 
 export type NarrativeSectionId =
-  | "identity"
-  | "data"
-  | "analysis"
-  | "output"
-  | "creation"
-  | "opportunity";
+  | 'identity'
+  | 'data'
+  | 'analysis'
+  | 'output'
+  | 'creation'
+  | 'opportunity';
 
 export interface ForgeWindAgentSnapshot {
   mode: string;
@@ -73,15 +73,12 @@ interface ForgeWindState {
   setRepositories: (repos: RepositorySummary[]) => void;
   applyForgeWindUserFromApi: (user: ForgeWindApiUser) => void;
   setAgentSnapshot: (snapshot: ForgeWindAgentSnapshot | null) => void;
-  patchRepository: (
-    repoId: string,
-    patch: Partial<RepositorySummary>,
-  ) => void;
-  setSelectedRepository: (repoId: string) => void;
-  setAIStatus: (status: AIAnalysisState["status"]) => void;
+  patchRepository: (repoId: string, patch: Partial<RepositorySummary>) => void;
+  setSelectedRepository: (repoId: string, accessToken?: string | null) => void;
+  setAIStatus: (status: AIAnalysisState['status']) => void;
   setAIFocus: (focus: string) => void;
   setAIFindings: (findings: string[]) => void;
-  pushGeneratedContent: (item: Omit<GeneratedContentItem, "id" | "createdAt">) => void;
+  pushGeneratedContent: (item: Omit<GeneratedContentItem, 'id' | 'createdAt'>) => void;
   updateMemoryContext: (updates: Partial<MemoryContext>) => void;
   setCommandPaletteOpen: (open: boolean) => void;
   setActiveNarrativeSection: (section: NarrativeSectionId) => void;
@@ -92,44 +89,44 @@ const now = new Date().toISOString();
 
 export const useForgeWindStore = create<ForgeWindState>()(
   persist(
-    (set, get) => ({
+    (set, _get) => ({
       forgeWindUserId: null,
       agentSnapshot: null,
       userProfile: {
-        id: "local-session",
-        name: "Alex Chen",
-        role: "Senior Software Engineer",
-        headline: "Building AI products with strong systems thinking",
-        primaryGoal: "Move into a staff-level backend role in 2026",
+        id: 'local-session',
+        name: 'Alex Chen',
+        role: 'Senior Software Engineer',
+        headline: 'Building AI products with strong systems thinking',
+        primaryGoal: 'Move into a staff-level backend role in 2026',
       },
       repositories: [],
-      selectedRepositoryId: "",
+      selectedRepositoryId: '',
       aiAnalysis: {
-        status: "ready",
-        focus: "Role-fit and content signal quality",
+        status: 'ready',
+        focus: 'Role-fit and content signal quality',
         lastRunAt: now,
         findings: [
-          "Strong architecture language increases recruiter response rate.",
-          "Recent commits map well to platform engineering narratives.",
+          'Strong architecture language increases recruiter response rate.',
+          'Recent commits map well to platform engineering narratives.',
         ],
       },
       generatedContent: [
         {
-          id: "content-seed-1",
-          title: "Scaling API reliability without slowing delivery",
-          channel: "linkedin",
-          body: "This week I focused on reliability guardrails in our API layer...",
+          id: 'content-seed-1',
+          title: 'Scaling API reliability without slowing delivery',
+          channel: 'linkedin',
+          body: 'This week I focused on reliability guardrails in our API layer...',
           createdAt: now,
         },
       ],
       memoryContext: {
-        careerNarrative: "Backend engineer growing toward staff-level ownership.",
-        strengths: ["System design", "Execution speed", "Cross-team communication"],
-        gaps: ["Public proof of impact", "Leadership storytelling"],
-        preferredTone: "Technical and concise",
+        careerNarrative: 'Backend engineer growing toward staff-level ownership.',
+        strengths: ['System design', 'Execution speed', 'Cross-team communication'],
+        gaps: ['Public proof of impact', 'Leadership storytelling'],
+        preferredTone: 'Technical and concise',
       },
       commandPaletteOpen: false,
-      activeNarrativeSection: "identity",
+      activeNarrativeSection: 'identity',
       chatOverlayOpen: false,
       setForgeWindUserId: (forgeWindUserId) => set({ forgeWindUserId }),
       setRepositories: (repositories) => set({ repositories }),
@@ -145,19 +142,16 @@ export const useForgeWindStore = create<ForgeWindState>()(
       setAgentSnapshot: (agentSnapshot) => set({ agentSnapshot }),
       patchRepository: (repoId, patch) =>
         set((state) => ({
-          repositories: state.repositories.map((r) =>
-            r.id === repoId ? { ...r, ...patch } : r,
-          ),
+          repositories: state.repositories.map((r) => (r.id === repoId ? { ...r, ...patch } : r)),
         })),
-      setSelectedRepository: (selectedRepositoryId) => {
+      setSelectedRepository: (selectedRepositoryId, accessToken) => {
         set({ selectedRepositoryId });
-        const { forgeWindUserId } = get();
-        if (!forgeWindUserId || !getForgeWindApiBaseUrl()) return;
+        if (!accessToken || !getForgeWindApiBaseUrl()) return;
         void (async () => {
           try {
             await forgeWindFetch(`/repositories/${selectedRepositoryId}/activate`, {
-              method: "PATCH",
-              userId: forgeWindUserId,
+              method: 'PATCH',
+              accessToken,
               body: JSON.stringify({ isActive: true }),
             });
           } catch {
@@ -185,7 +179,7 @@ export const useForgeWindStore = create<ForgeWindState>()(
           aiAnalysis: {
             ...state.aiAnalysis,
             findings,
-            status: "ready",
+            status: 'ready',
             lastRunAt: new Date().toISOString(),
           },
         })),
@@ -208,10 +202,9 @@ export const useForgeWindStore = create<ForgeWindState>()(
           },
         })),
       setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
-      setActiveNarrativeSection: (activeNarrativeSection) =>
-        set({ activeNarrativeSection }),
+      setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
       setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),
-    { name: "forgewind-web-state-v2" },
+    { name: 'forgewind-web-state-v2' },
   ),
 );

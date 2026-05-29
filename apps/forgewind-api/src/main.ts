@@ -1,10 +1,13 @@
 import 'reflect-metadata';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { forgewindApiEnvSchema } from '@forgewind-engine/config';
+import { bootstrapService } from '@forgewind-engine/utils';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = bootstrapService('forgewind-api', forgewindApiEnvSchema);
+  const app = await NestFactory.create(AppModule, { logger: false });
 
   app.enableCors({
     origin: (process.env.CORS_ORIGIN ?? 'http://localhost:3000')
@@ -25,6 +28,7 @@ async function bootstrap() {
 
   const port = Number(process.env.PORT ?? 3001);
   await app.listen(port, '0.0.0.0');
+  logger.info(`ForgeWind API listening on port ${port}`);
 }
 
 bootstrap();

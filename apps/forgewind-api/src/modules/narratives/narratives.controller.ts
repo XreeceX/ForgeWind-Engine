@@ -7,38 +7,35 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { StubUserId } from '../../common/decorators/stub-user-id.decorator';
-import {
-  GenerateNarrativeDto,
-  ListNarrativesQueryDto,
-  PinNarrativeDto,
-} from './narratives.dto';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedForgeWindUser } from '../auth/jwt.strategy';
+import { GenerateNarrativeDto, ListNarrativesQueryDto, PinNarrativeDto } from './narratives.dto';
 import { NarrativesService } from './narratives.service';
 
 @Controller('narratives')
+@UseGuards(JwtAuthGuard)
 export class NarrativesController {
   constructor(private readonly narratives: NarrativesService) {}
 
   @Post('generate')
-  generate(@StubUserId() userId: string, @Body() body: GenerateNarrativeDto) {
-    return this.narratives.generate(userId, body);
+  generate(@CurrentUser() user: AuthenticatedForgeWindUser, @Body() body: GenerateNarrativeDto) {
+    return this.narratives.generate(user.id, body);
   }
 
   @Get()
-  list(
-    @StubUserId() userId: string,
-    @Query() query: ListNarrativesQueryDto,
-  ) {
-    return this.narratives.listForUser(userId, query.type);
+  list(@CurrentUser() user: AuthenticatedForgeWindUser, @Query() query: ListNarrativesQueryDto) {
+    return this.narratives.listForUser(user.id, query.type);
   }
 
   @Patch(':id/pin')
   pin(
-    @StubUserId() userId: string,
+    @CurrentUser() user: AuthenticatedForgeWindUser,
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() body: PinNarrativeDto,
   ) {
-    return this.narratives.setPinned(userId, id, body.isPinned);
+    return this.narratives.setPinned(user.id, id, body.isPinned);
   }
 }

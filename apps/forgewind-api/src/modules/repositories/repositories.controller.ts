@@ -7,39 +7,43 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { StubUserId } from '../../common/decorators/stub-user-id.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { AuthenticatedForgeWindUser } from '../auth/jwt.strategy';
 import { ActivateRepositoryDto, ConnectRepositoryDto } from './repositories.dto';
 import { RepositoriesService } from './repositories.service';
 
 @Controller('repositories')
+@UseGuards(JwtAuthGuard)
 export class RepositoriesController {
   constructor(private readonly repositories: RepositoriesService) {}
 
   @Post()
-  connect(@StubUserId() userId: string, @Body() body: ConnectRepositoryDto) {
-    return this.repositories.connect(userId, body);
+  connect(@CurrentUser() user: AuthenticatedForgeWindUser, @Body() body: ConnectRepositoryDto) {
+    return this.repositories.connect(user.id, body);
   }
 
   @Get()
-  list(@StubUserId() userId: string) {
-    return this.repositories.listForUser(userId);
+  list(@CurrentUser() user: AuthenticatedForgeWindUser) {
+    return this.repositories.listForUser(user.id);
   }
 
   @Delete(':id')
   disconnect(
-    @StubUserId() userId: string,
+    @CurrentUser() user: AuthenticatedForgeWindUser,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ) {
-    return this.repositories.disconnect(userId, id);
+    return this.repositories.disconnect(user.id, id);
   }
 
   @Patch(':id/activate')
   activate(
-    @StubUserId() userId: string,
+    @CurrentUser() user: AuthenticatedForgeWindUser,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() body: ActivateRepositoryDto,
   ) {
-    return this.repositories.setActive(userId, id, body.isActive);
+    return this.repositories.setActive(user.id, id, body.isActive);
   }
 }

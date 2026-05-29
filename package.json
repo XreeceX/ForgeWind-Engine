@@ -20,17 +20,26 @@
     "db:migrate": "pnpm --filter user-service db:migrate",
     "db:forgewind:generate": "pnpm --filter @forgewind-engine/forgewind-api db:generate",
     "db:forgewind:migrate": "pnpm --filter @forgewind-engine/forgewind-api db:migrate",
-    "docker:up": "docker-compose -f infra/docker/docker-compose.yml up -d",
-    "docker:down": "docker-compose -f infra/docker/docker-compose.yml down",
+    "docker:up": "docker compose -f infra/docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f infra/docker/docker-compose.yml down",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22.0.0",
+    "@types/supertest": "^6.0.2",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
     "husky": "^9.0.0",
+    "jest": "^29.7.0",
     "lint-staged": "^15.0.0",
     "prettier": "^3.3.0",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
     "turbo": "^2.3.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.18.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -41,5 +50,14 @@
       "prettier --write"
     ]
   },
-  "packageManager": "pnpm@10.33.0"
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "overrides": {
+      "@nestjs/common": "^11.0.0",
+      "@nestjs/core": "^11.0.0",
+      "@nestjs/platform-express": "^11.0.0",
+      "@nestjs/cli": "^11.0.0",
+      "openai": "^5.0.0"
+    }
+  }
 }

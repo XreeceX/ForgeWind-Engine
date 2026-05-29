@@ -49,7 +49,7 @@ The platform is engineered with the same patterns used in production systems at 
 │                        API GATEWAY (NestJS)                         │
 │              Authentication · Rate Limiting · Routing               │
 │            Swagger Docs · JWT · Helmet · Throttler                  │
-│                           :4000                                     │
+│                           :8090                                     │
 └──────┬──────┬──────┬──────┬──────┬──────┬──────┬──────┬────────────┘
        │      │      │      │      │      │      │      │
        ▼      ▼      ▼      ▼      ▼      ▼      ▼      ▼
@@ -97,6 +97,7 @@ The platform is engineered with the same patterns used in production systems at 
 ## ✨ Key Features
 
 ### Profile Intelligence
+
 - **LinkedIn profile analysis** — Parse and score your profile with AI-powered recommendations
 - **Headline & About optimization** — Generate compelling copy tailored to your target role
 - **Experience rewriting** — Transform bullet points into impact-driven narratives
@@ -104,13 +105,15 @@ The platform is engineered with the same patterns used in production systems at 
 - **Profile import** — Ingest LinkedIn data exports (CSV/ZIP) or direct URL analysis
 
 ### Job Intelligence
+
 - **Semantic job matching** — Vector similarity search via Pinecone for role-skill alignment
-- **Match scoring & explanations** — Understand *why* a job is a good fit with detailed reasoning
+- **Match scoring & explanations** — Understand _why_ a job is a good fit with detailed reasoning
 - **Market trend analysis** — Track demand signals, salary ranges, and hiring patterns
 - **Application tracking** — Full pipeline management from discovery through offer
 - **Strategy recommendations** — AI-generated application strategies per role
 
 ### Content Engine
+
 - **Post generation** — Create LinkedIn posts with hooks, storytelling, and CTAs
 - **Content calendar** — Strategic scheduling aligned with career goals
 - **Template library** — Pre-built templates across categories (thought leadership, case studies, etc.)
@@ -118,6 +121,7 @@ The platform is engineered with the same patterns used in production systems at 
 - **Cold email drafting** — Professional outreach copy for networking and applications
 
 ### Skill Intelligence
+
 - **Gap analysis** — Compare current skills against target role requirements
 - **Learning paths** — Curated recommendations for skill development
 - **Certification guidance** — Identify high-ROI certifications for your career trajectory
@@ -125,6 +129,7 @@ The platform is engineered with the same patterns used in production systems at 
 - **Project suggestions** — Portfolio project ideas to demonstrate new skills
 
 ### Multi-Agent System
+
 - **6 specialized AI agents** — Profile, Job, Content, Outreach, Skill Gap, and Trend agents
 - **Tool-calling architecture** — Each agent has dedicated tools for its domain
 - **Autonomous reasoning** — Agents iterate up to 10 tool-calling cycles per task
@@ -132,6 +137,7 @@ The platform is engineered with the same patterns used in production systems at 
 - **Token tracking** — Full usage monitoring per agent execution
 
 ### Automation & Outreach
+
 - **Application prep** — Automated resume tailoring and cover letter generation
 - **Outreach campaigns** — Multi-step email sequences with BullMQ job queues
 - **Smart scheduling** — Reminders and follow-up scheduling
@@ -139,6 +145,7 @@ The platform is engineered with the same patterns used in production systems at 
 - **Campaign analytics** — Track open rates, responses, and conversion
 
 ### Analytics & Reporting
+
 - **Career score** — Composite metric across profile, skills, activity, and network
 - **Progress tracking** — Visualize career trajectory over time with Recharts
 - **Weekly reports** — Automated digest of activity, progress, and recommendations
@@ -153,17 +160,17 @@ The platform is engineered with the same patterns used in production systems at 
 
 Each service is an independent NestJS application with its own port, module structure, and API prefix (`/api/v1`). Services communicate through the API Gateway, which handles cross-cutting concerns like authentication, rate limiting, and request routing.
 
-| Service | Port | Responsibility |
-|---------|------|---------------|
-| API Gateway | 4000 | Auth, routing, rate limiting, Swagger docs |
-| User Service | 4001 | User management, auth, preferences, Prisma/PostgreSQL |
-| Resume Parser | 4002 | PDF/DOCX parsing via pdf-parse & mammoth, LLM extraction |
-| LinkedIn Ingestion | 4003 | Data export processing (CSV/ZIP), URL analysis, profile scoring |
-| Job Service | 4004 | Job aggregation, semantic matching (Pinecone), scheduled tasks |
-| Content Engine | 4005 | AI content generation, strategy planning, template management |
-| Recommendation Engine | 4006 | Skill analysis, networking suggestions, career recommendations |
-| Analytics Service | 4007 | Event tracking, metrics aggregation, scheduled reports |
-| Automation Service | 4008 | BullMQ job queues, outreach campaigns, email via Nodemailer |
+| Service               | Port | Responsibility                                                  |
+| --------------------- | ---- | --------------------------------------------------------------- |
+| API Gateway           | 4000 | Auth, routing, rate limiting, Swagger docs                      |
+| User Service          | 4001 | User management, auth, preferences, Prisma/PostgreSQL           |
+| Resume Parser         | 4002 | PDF/DOCX parsing via pdf-parse & mammoth, LLM extraction        |
+| LinkedIn Ingestion    | 4003 | Data export processing (CSV/ZIP), URL analysis, profile scoring |
+| Job Service           | 4004 | Job aggregation, semantic matching (Pinecone), scheduled tasks  |
+| Content Engine        | 4005 | AI content generation, strategy planning, template management   |
+| Recommendation Engine | 4006 | Skill analysis, networking suggestions, career recommendations  |
+| Analytics Service     | 4007 | Event tracking, metrics aggregation, scheduled reports          |
+| Automation Service    | 4008 | BullMQ job queues, outreach campaigns, email via Nodemailer     |
 
 ### Multi-Agent AI Pattern
 
@@ -185,11 +192,12 @@ ProfileAgent extends BaseAgent
 JobAgent extends BaseAgent
   ├── Tools: search_jobs, score_match, explain_match, ...
   └── Domain-specific system prompt for job intelligence
-  
+
   ... (4 more specialized agents)
 ```
 
 Each agent:
+
 1. Receives a task with context (user profile, goals, etc.)
 2. The LLM decides which tools to invoke and in what order
 3. Tool results are fed back into the conversation
@@ -208,56 +216,56 @@ The gateway (`apps/api-gateway`) is the single entry point for all client reques
 
 ### Data Layer
 
-| Store | Purpose | Used By |
-|-------|---------|---------|
+| Store             | Purpose                                                               | Used By                              |
+| ----------------- | --------------------------------------------------------------------- | ------------------------------------ |
 | **PostgreSQL 16** | Primary relational store — users, jobs, applications, content, events | User Service, Job Service, Analytics |
-| **Redis 7** | Caching, session storage, BullMQ job queues | API Gateway, Automation Service |
-| **Pinecone** | Vector embeddings for semantic job matching and recommendations | Job Service, Recommendation Engine |
+| **Redis 7**       | Caching, session storage, BullMQ job queues                           | API Gateway, Automation Service      |
+| **Pinecone**      | Vector embeddings for semantic job matching and recommendations       | Job Service, Recommendation Engine   |
 
 ### Shared Packages
 
-| Package | Purpose |
-|---------|---------|
+| Package                          | Purpose                                                                  |
+| -------------------------------- | ------------------------------------------------------------------------ |
 | `@forgewind-engine/shared-types` | TypeScript interfaces, enums, and API envelope types across all services |
-| `@forgewind-engine/config` | Zod-validated environment schemas and application constants |
-| `@forgewind-engine/utils` | Logger (Pino), nanoid generation, `Result<T, E>` type, retry utilities |
-| `@forgewind-engine/agent-core` | BaseAgent framework, LLMClient (OpenAI), agent execution types |
+| `@forgewind-engine/config`       | Zod-validated environment schemas and application constants              |
+| `@forgewind-engine/utils`        | Logger (Pino), nanoid generation, `Result<T, E>` type, retry utilities   |
+| `@forgewind-engine/agent-core`   | BaseAgent framework, LLMClient (OpenAI), agent execution types           |
 
 ---
 
 ## 🛠 Tech Stack
 
-| Category | Technology | Version |
-|----------|-----------|---------|
-| **Frontend** | Next.js | 14.2 |
-| | React | 18.3 |
-| | TailwindCSS | 3.4 |
-| | Zustand | 5.x |
-| | React Query (TanStack) | 5.60 |
-| | Recharts | latest |
-| | Framer Motion | latest |
-| **Backend** | NestJS | 10.4 |
-| | Prisma ORM | 5.22 |
-| | Passport + JWT | latest |
-| | class-validator / class-transformer | latest |
-| | BullMQ | 5.x |
-| **AI / ML** | OpenAI SDK | 4.70 |
-| | GPT-4o | — |
-| | Pinecone (Vector DB) | 3.x |
-| **Data** | PostgreSQL | 16 |
-| | Redis | 7 |
-| **Infra** | Docker Compose | — |
-| | Kubernetes | — |
-| | Terraform (AWS) | ~5.0 |
-| | ECS Fargate | — |
-| | RDS | — |
-| **Tooling** | Turborepo | 2.3 |
-| | pnpm Workspaces | 9.x |
-| | TypeScript | 5.6 |
-| | Zod | 3.23 |
-| | Pino (logging) | 9.x |
-| | Husky + lint-staged | latest |
-| | Prettier | 3.3 |
+| Category     | Technology                          | Version |
+| ------------ | ----------------------------------- | ------- |
+| **Frontend** | Next.js                             | 14.2    |
+|              | React                               | 18.3    |
+|              | TailwindCSS                         | 3.4     |
+|              | Zustand                             | 5.x     |
+|              | React Query (TanStack)              | 5.60    |
+|              | Recharts                            | latest  |
+|              | Framer Motion                       | latest  |
+| **Backend**  | NestJS                              | 10.4    |
+|              | Prisma ORM                          | 5.22    |
+|              | Passport + JWT                      | latest  |
+|              | class-validator / class-transformer | latest  |
+|              | BullMQ                              | 5.x     |
+| **AI / ML**  | OpenAI SDK                          | 4.70    |
+|              | GPT-4o                              | —       |
+|              | Pinecone (Vector DB)                | 3.x     |
+| **Data**     | PostgreSQL                          | 16      |
+|              | Redis                               | 7       |
+| **Infra**    | Docker Compose                      | —       |
+|              | Kubernetes                          | —       |
+|              | Terraform (AWS)                     | ~5.0    |
+|              | ECS Fargate                         | —       |
+|              | RDS                                 | —       |
+| **Tooling**  | Turborepo                           | 2.3     |
+|              | pnpm Workspaces                     | 9.x     |
+|              | TypeScript                          | 5.6     |
+|              | Zod                                 | 3.23    |
+|              | Pino (logging)                      | 9.x     |
+|              | Husky + lint-staged                 | latest  |
+|              | Prettier                            | 3.3     |
 
 ---
 
@@ -339,11 +347,11 @@ forgewind/
 
 ### Prerequisites
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| Node.js | ≥ 20 | Runtime |
-| pnpm | ≥ 9 | Package manager |
-| Docker | Latest | Infrastructure services |
+| Tool    | Version | Purpose                 |
+| ------- | ------- | ----------------------- |
+| Node.js | ≥ 20    | Runtime                 |
+| pnpm    | ≥ 9     | Package manager         |
+| Docker  | Latest  | Infrastructure services |
 
 ### 1. Clone the repository
 
@@ -388,11 +396,11 @@ pnpm docker:up
 
 This launches PostgreSQL 16, Redis 7, and pgAdmin via Docker Compose.
 
-| Service | URL |
-|---------|-----|
-| PostgreSQL | `localhost:5432` |
-| Redis | `localhost:6379` |
-| pgAdmin | `http://localhost:5050` |
+| Service    | URL                     |
+| ---------- | ----------------------- |
+| PostgreSQL | `localhost:5432`        |
+| Redis      | `localhost:6379`        |
+| pgAdmin    | `http://localhost:5050` |
 
 ### 5. Run database migrations
 
@@ -411,10 +419,10 @@ Turborepo runs all apps, services, and packages in development mode with hot rel
 
 ### 7. Open the application
 
-| App | URL |
-|-----|-----|
-| Frontend | [http://localhost:3000](http://localhost:3000) |
-| API Gateway | [http://localhost:4000/api/v1](http://localhost:4000/api/v1) |
+| App          | URL                                                              |
+| ------------ | ---------------------------------------------------------------- |
+| Frontend     | [http://localhost:3000](http://localhost:3000)                   |
+| API Gateway  | [http://localhost:4000/api/v1](http://localhost:4000/api/v1)     |
 | Swagger Docs | [http://localhost:4000/api/docs](http://localhost:4000/api/docs) |
 
 ---
@@ -425,34 +433,34 @@ All endpoints are prefixed with `/api/v1` and routed through the API Gateway on 
 
 ### Endpoint Summary
 
-| Domain | Method | Endpoint | Description |
-|--------|--------|----------|-------------|
-| **Auth** | POST | `/auth/register` | Create account |
-| | POST | `/auth/login` | JWT login |
-| | POST | `/auth/refresh` | Refresh token |
-| | GET | `/auth/linkedin` | LinkedIn OAuth flow |
-| | GET | `/auth/me` | Current user |
-| **Users** | GET | `/users/me` | Get profile |
-| | PATCH | `/users/me` | Update profile |
-| | PATCH | `/users/me/career-goals` | Update career goals |
-| **Profile** | POST | `/profile/analyze` | AI profile analysis |
-| | POST | `/profile/optimize` | Optimize profile sections |
-| | POST | `/profile/import` | Import LinkedIn data |
-| | GET | `/profile/suggestions` | Get improvement suggestions |
-| **Jobs** | GET | `/jobs` | Search jobs |
-| | GET | `/jobs/matches` | Semantic job matches |
-| | GET | `/jobs/:id` | Job details |
-| | POST | `/jobs/:id/apply` | Start application |
-| | GET | `/jobs/applications` | List applications |
-| | PATCH | `/jobs/applications/:id` | Update application status |
-| **Content** | POST | `/content/generate` | Generate content |
-| | POST | `/content/rewrite` | Rewrite/improve content |
-| | GET | `/content/strategy` | Get content strategy |
-| | GET | `/content/templates` | List templates |
-| **Agents** | POST | `/agents/tasks` | Submit agent task |
-| | GET | `/agents/tasks/:id` | Get task result |
-| | DELETE | `/agents/tasks/:id` | Cancel task |
-| **Health** | GET | `/health` | Gateway health check |
+| Domain      | Method | Endpoint                 | Description                 |
+| ----------- | ------ | ------------------------ | --------------------------- |
+| **Auth**    | POST   | `/auth/register`         | Create account              |
+|             | POST   | `/auth/login`            | JWT login                   |
+|             | POST   | `/auth/refresh`          | Refresh token               |
+|             | GET    | `/auth/linkedin`         | LinkedIn OAuth flow         |
+|             | GET    | `/auth/me`               | Current user                |
+| **Users**   | GET    | `/users/me`              | Get profile                 |
+|             | PATCH  | `/users/me`              | Update profile              |
+|             | PATCH  | `/users/me/career-goals` | Update career goals         |
+| **Profile** | POST   | `/profile/analyze`       | AI profile analysis         |
+|             | POST   | `/profile/optimize`      | Optimize profile sections   |
+|             | POST   | `/profile/import`        | Import LinkedIn data        |
+|             | GET    | `/profile/suggestions`   | Get improvement suggestions |
+| **Jobs**    | GET    | `/jobs`                  | Search jobs                 |
+|             | GET    | `/jobs/matches`          | Semantic job matches        |
+|             | GET    | `/jobs/:id`              | Job details                 |
+|             | POST   | `/jobs/:id/apply`        | Start application           |
+|             | GET    | `/jobs/applications`     | List applications           |
+|             | PATCH  | `/jobs/applications/:id` | Update application status   |
+| **Content** | POST   | `/content/generate`      | Generate content            |
+|             | POST   | `/content/rewrite`       | Rewrite/improve content     |
+|             | GET    | `/content/strategy`      | Get content strategy        |
+|             | GET    | `/content/templates`     | List templates              |
+| **Agents**  | POST   | `/agents/tasks`          | Submit agent task           |
+|             | GET    | `/agents/tasks/:id`      | Get task result             |
+|             | DELETE | `/agents/tasks/:id`      | Cancel task                 |
+| **Health**  | GET    | `/health`                | Gateway health check        |
 
 ### Example Request
 
@@ -498,14 +506,14 @@ Build System Prompt + User Message
 
 ### Agent Directory
 
-| Agent | Tools | Description |
-|-------|-------|-------------|
-| **Profile Agent** | `analyze_profile`, `generate_headlines`, `rewrite_about`, `optimize_experience`, `suggest_skills` | Analyzes LinkedIn profiles and generates optimized content for each section |
-| **Job Agent** | `search_jobs`, `score_match`, `explain_match`, `suggest_strategy` | Finds relevant opportunities and explains fit with detailed scoring |
-| **Content Agent** | `generate_post_ideas`, `write_post`, `create_content_plan`, `suggest_hooks`, `analyze_trends` | Creates content strategy, writes posts, and identifies trending topics |
-| **Outreach Agent** | `draft_cold_email`, `draft_connection_request`, `suggest_networking_targets`, `draft_followup`, `analyze_outreach` | Generates personalized outreach messages and manages networking strategy |
-| **Skill Gap Agent** | `analyze_skill_gaps`, `recommend_learning_path`, `prioritize_skills`, `find_resources`, `assess_progress` | Identifies skill gaps against target roles and builds learning roadmaps |
-| **Trend Agent** | `analyze_industry_trends`, `monitor_market`, `identify_emerging_skills`, `predict_opportunities`, `generate_report` | Tracks industry movements, emerging technologies, and career opportunities |
+| Agent               | Tools                                                                                                               | Description                                                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **Profile Agent**   | `analyze_profile`, `generate_headlines`, `rewrite_about`, `optimize_experience`, `suggest_skills`                   | Analyzes LinkedIn profiles and generates optimized content for each section |
+| **Job Agent**       | `search_jobs`, `score_match`, `explain_match`, `suggest_strategy`                                                   | Finds relevant opportunities and explains fit with detailed scoring         |
+| **Content Agent**   | `generate_post_ideas`, `write_post`, `create_content_plan`, `suggest_hooks`, `analyze_trends`                       | Creates content strategy, writes posts, and identifies trending topics      |
+| **Outreach Agent**  | `draft_cold_email`, `draft_connection_request`, `suggest_networking_targets`, `draft_followup`, `analyze_outreach`  | Generates personalized outreach messages and manages networking strategy    |
+| **Skill Gap Agent** | `analyze_skill_gaps`, `recommend_learning_path`, `prioritize_skills`, `find_resources`, `assess_progress`           | Identifies skill gaps against target roles and builds learning roadmaps     |
+| **Trend Agent**     | `analyze_industry_trends`, `monitor_market`, `identify_emerging_skills`, `predict_opportunities`, `generate_report` | Tracks industry movements, emerging technologies, and career opportunities  |
 
 ---
 
@@ -544,11 +552,13 @@ pnpm format        # Prettier formatting
 ### Adding a New Service
 
 1. Create a new directory under `services/`:
+
    ```bash
    mkdir -p services/my-service/src
    ```
 
 2. Initialize with NestJS and add workspace dependencies:
+
    ```json
    {
      "name": "my-service",
@@ -561,6 +571,7 @@ pnpm format        # Prettier formatting
    ```
 
 3. Set up the NestJS bootstrap in `src/main.ts` with the global prefix:
+
    ```typescript
    app.setGlobalPrefix('api/v1');
    await app.listen(process.env.PORT || 4009);
@@ -625,6 +636,7 @@ terraform apply
 ```
 
 **Provisioned resources:**
+
 - VPC with public/private subnets across 2 AZs
 - RDS PostgreSQL 16 (encrypted, private subnet, optional Multi-AZ)
 - ECS Fargate cluster with task definitions for api-gateway and user-service
@@ -637,6 +649,7 @@ terraform apply
 ## 🗺 Roadmap
 
 ### Phase 1 — Foundation ✅
+
 - [x] Monorepo setup with Turborepo + pnpm workspaces
 - [x] API Gateway with JWT auth and rate limiting
 - [x] User service with Prisma ORM
@@ -646,6 +659,7 @@ terraform apply
 - [x] Docker Compose infrastructure
 
 ### Phase 2 — Intelligence 🔄
+
 - [x] Multi-agent framework (BaseAgent + LLMClient)
 - [x] 6 specialized AI agents
 - [x] Job matching with Pinecone vector search
@@ -655,6 +669,7 @@ terraform apply
 - [ ] Enhanced semantic matching with fine-tuned embeddings
 
 ### Phase 3 — Automation
+
 - [x] BullMQ job queue integration
 - [x] Outreach campaign management
 - [ ] Email delivery with tracking (open/click rates)
@@ -663,7 +678,8 @@ terraform apply
 - [ ] Automated application submission
 
 ### Phase 4 — Scale & Polish
-- [ ] Full Next.js frontend implementation
+
+- [x] Full Next.js frontend implementation
 - [ ] Real-time notifications (WebSocket)
 - [ ] Multi-tenant architecture
 - [ ] Graph database for network analysis (Neo4j)
@@ -672,6 +688,7 @@ terraform apply
 - [ ] Team/enterprise features
 
 ### Phase 5 — Advanced AI
+
 - [ ] Agent-to-agent communication protocol
 - [ ] Long-term memory with conversation history
 - [ ] Fine-tuned models for career domain
@@ -695,14 +712,14 @@ Contributions are welcome! Here's how to get started:
 
 This project follows [Conventional Commits](https://www.conventionalcommits.org/):
 
-| Prefix | Purpose |
-|--------|---------|
-| `feat:` | New feature |
-| `fix:` | Bug fix |
-| `docs:` | Documentation |
+| Prefix      | Purpose          |
+| ----------- | ---------------- |
+| `feat:`     | New feature      |
+| `fix:`      | Bug fix          |
+| `docs:`     | Documentation    |
 | `refactor:` | Code refactoring |
-| `test:` | Adding tests |
-| `chore:` | Maintenance |
+| `test:`     | Adding tests     |
+| `chore:`    | Maintenance      |
 
 ### Branch Naming
 

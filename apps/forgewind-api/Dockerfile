@@ -1,7 +1,9 @@
 # ── Stage 1: Build ────────────────────────────────────────────
 FROM node:20-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+ENV HUSKY=0
+
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 WORKDIR /app
 
@@ -20,6 +22,9 @@ RUN pnpm --filter @forgewind-engine/forgewind-api build
 
 # ── Stage 2: Production ──────────────────────────────────────
 FROM node:20-alpine AS production
+
+ENV NODE_ENV=production
+ENV HUSKY=0
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 

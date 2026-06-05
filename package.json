@@ -20,6 +20,7 @@
     "db:migrate": "pnpm --filter user-service db:migrate",
     "db:forgewind:generate": "pnpm --filter @forgewind-engine/forgewind-api db:generate",
     "db:forgewind:migrate": "pnpm --filter @forgewind-engine/forgewind-api db:migrate",
+    "db:user-service:push": "pnpm --filter @forgewind-engine/user-service db:push",
     "docker:up": "docker compose -f infra/docker/docker-compose.yml up -d",
     "docker:down": "docker compose -f infra/docker/docker-compose.yml down",
     "prepare": "husky"

@@ -1,7 +1,8 @@
-# ── Stage 1: Build ────────────────────────────────────────────
-FROM node:20-alpine AS builder
+# ── Single-stage image: keeps pnpm workspace node_modules intact ──
+FROM node:20-alpine
 
 ENV HUSKY=0
+ENV NODE_ENV=production
 
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
@@ -16,26 +17,10 @@ RUN pnpm install --frozen-lockfile
 COPY apps/forgewind-api/ apps/forgewind-api/
 COPY tsconfig.base.json ./
 
-RUN pnpm --filter @forgewind-engine/config build
-RUN pnpm --filter @forgewind-engine/utils build
-RUN pnpm --filter @forgewind-engine/forgewind-api build
-
-# ── Stage 2: Production ──────────────────────────────────────
-FROM node:20-alpine AS production
-
-ENV NODE_ENV=production
-ENV HUSKY=0
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-WORKDIR /app
-
-COPY --from=builder /app/apps/forgewind-api/dist ./dist
-COPY --from=builder /app/apps/forgewind-api/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-
-USER appuser
+RUN pnpm --filter @forgewind-engine/config build \
+  && pnpm --filter @forgewind-engine/utils build \
+  && pnpm --filter @forgewind-engine/forgewind-api build
 
 EXPOSE 3001
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "apps/forgewind-api/dist/main.js"]

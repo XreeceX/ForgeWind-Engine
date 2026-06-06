@@ -1,7 +1,8 @@
-# ── Stage 1: Build ────────────────────────────────────────────
-FROM node:20-alpine AS builder
+# ── Single-stage image: keeps pnpm workspace node_modules intact ──
+FROM node:20-alpine
 
 ENV HUSKY=0
+ENV NODE_ENV=production
 
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
@@ -16,26 +17,9 @@ RUN pnpm install --frozen-lockfile
 COPY services/user-service/ services/user-service/
 COPY tsconfig.base.json ./
 
-RUN pnpm --filter @forgewind-engine/user-service exec prisma generate
-RUN pnpm --filter @forgewind-engine/user-service build
-
-# ── Stage 2: Production ──────────────────────────────────────
-FROM node:20-alpine AS production
-
-ENV NODE_ENV=production
-ENV HUSKY=0
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-WORKDIR /app
-
-COPY --from=builder /app/services/user-service/dist ./dist
-COPY --from=builder /app/services/user-service/package.json ./
-COPY --from=builder /app/services/user-service/prisma ./prisma
-COPY --from=builder /app/node_modules ./node_modules
-
-USER appuser
+RUN pnpm --filter @forgewind-engine/user-service exec prisma generate \
+  && pnpm --filter @forgewind-engine/user-service build
 
 EXPOSE 4001
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "services/user-service/dist/main.js"]

@@ -17,7 +17,9 @@ RUN pnpm install --frozen-lockfile
 COPY services/user-service/ services/user-service/
 COPY tsconfig.base.json ./
 
-RUN pnpm --filter @forgewind-engine/user-service exec prisma generate \
+RUN pnpm --filter @forgewind-engine/config build \
+  && pnpm --filter @forgewind-engine/utils build \
+  && pnpm --filter @forgewind-engine/user-service exec prisma generate \
   && pnpm --filter @forgewind-engine/user-service build
 
 EXPOSE 4001

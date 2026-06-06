@@ -40,7 +40,7 @@ const nextAuth = NextAuth({
       },
       async authorize(credentials) {
         const password =
-          typeof credentials?.password === 'string' ? credentials.password : undefined;
+          typeof credentials?.password === 'string' ? credentials.password.trim() : undefined;
         if (!password) return null;
 
         const email =

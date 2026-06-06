@@ -6,9 +6,11 @@ import { timingSafeEqual } from "crypto";
  * `FORGEWIND_DEMO_USERNAME` / `FORGEWIND_DEMO_PASSWORD` (never commit real secrets).
  */
 export function getForgeWindDemoAuth() {
+  const username = process.env.FORGEWIND_DEMO_USERNAME?.trim();
+  const password = process.env.FORGEWIND_DEMO_PASSWORD?.trim();
   return {
-    username: (process.env.FORGEWIND_DEMO_USERNAME ?? "rod").trim(),
-    password: (process.env.FORGEWIND_DEMO_PASSWORD ?? "rod8989").trim(),
+    username: username || "rod",
+    password: password || "rod8989",
   };
 }
 

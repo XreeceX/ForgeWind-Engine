@@ -2,15 +2,14 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
-import { isValidUsername } from "@/lib/auth/validate";
+import { isValidEmail, isValidUsername } from "@/lib/auth/validate";
 import { safeCallbackPath } from "@/lib/auth/safe-callback-path";
-import { syncDemoSessionToStore } from "@/lib/auth/sync-auth-store";
 import { useAuthStore } from "@/stores/auth.store";
 
 type FieldErrors = Partial<{ username: string; password: string }>;
@@ -32,9 +31,12 @@ function LoginForm() {
     e.preventDefault();
     setSubmitError(null);
 
+    const trimmed = username.trim();
     const next: FieldErrors = {};
-    if (!username.trim()) next.username = "Username is required";
-    else if (!isValidUsername(username)) next.username = "Enter a valid username";
+    if (!trimmed) next.username = "Email or username is required";
+    else if (!isValidUsername(trimmed) && !isValidEmail(trimmed)) {
+      next.username = "Enter a valid email or username";
+    }
     if (!password) next.password = "Password is required";
 
     setFieldErrors(next);
@@ -42,8 +44,10 @@ function LoginForm() {
 
     setLoading(true);
     try {
+      const isEmail = isValidEmail(trimmed);
       const result = await signIn("credentials", {
-        username: username.trim(),
+        username: isEmail ? undefined : trimmed.toLowerCase(),
+        email: isEmail ? trimmed.toLowerCase() : undefined,
         password,
         redirect: false,
       });
@@ -53,7 +57,20 @@ function LoginForm() {
         return;
       }
 
-      syncDemoSessionToStore(login);
+      const session = await getSession();
+      if (session?.user) {
+        login(
+          {
+            id: session.user.id,
+            email: session.user.email ?? "",
+            name: session.user.name ?? "",
+            linkedinConnected: false,
+          },
+          session.accessToken ?? "demo-access-token",
+          session.refreshToken ?? "demo-refresh-token",
+        );
+      }
+
       router.push(safeCallbackPath(callbackUrl, "/forgewind-engine"));
       router.refresh();
     } finally {
@@ -75,7 +92,7 @@ function LoginForm() {
 
         <form noValidate onSubmit={onSubmit} className="space-y-5">
           <AuthInput
-            label="Username"
+            label="Email or username"
             name="username"
             type="text"
             inputMode="text"

@@ -27,6 +27,7 @@ async function loginViaUserService(email: string, password: string) {
 
 const nextAuth = NextAuth({
   secret: getNextAuthSecret(),
+  trustHost: true,
   session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
   pages: { signIn: '/login' },
   providers: [
@@ -38,20 +39,25 @@ const nextAuth = NextAuth({
         username: { label: 'Username', type: 'text' },
       },
       async authorize(credentials) {
+        const password =
+          typeof credentials?.password === 'string' ? credentials.password : undefined;
+        if (!password) return null;
+
         const email =
           typeof credentials?.email === 'string'
             ? credentials.email.trim().toLowerCase()
             : undefined;
-        const password =
-          typeof credentials?.password === 'string' ? credentials.password : undefined;
         const username =
           typeof credentials?.username === 'string'
             ? credentials.username.trim().toLowerCase()
             : undefined;
 
-        if (email && password) {
+        const emailLogin =
+          email || (username?.includes('@') ? username : undefined);
+
+        if (emailLogin) {
           try {
-            const result = await loginViaUserService(email, password);
+            const result = await loginViaUserService(emailLogin, password);
             if (result) {
               return {
                 id: result.user.id,
@@ -62,11 +68,12 @@ const nextAuth = NextAuth({
               };
             }
           } catch {
-            // Fall through to demo credentials when user-service is unavailable.
+            // user-service unreachable
           }
+          return null;
         }
 
-        if (!username || !password) return null;
+        if (!username) return null;
 
         const { username: expectedUser, password: expectedPassword } = getForgeWindDemoAuth();
         if (username !== expectedUser.toLowerCase()) return null;

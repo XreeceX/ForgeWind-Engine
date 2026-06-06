@@ -1,16 +1,17 @@
-/** Shared secret for NextAuth — must match JWT signing in API routes and Edge middleware. */
+/**
+ * NextAuth secret — required in all environments.
+ * Set AUTH_SECRET or NEXTAUTH_SECRET in your environment.
+ */
 export function getNextAuthSecret(): string {
   const secret = process.env.AUTH_SECRET?.trim() || process.env.NEXTAUTH_SECRET?.trim();
-  if (secret) {
-    return secret;
+  if (secret) return secret;
+
+  // Allow `next build` to complete without the secret (env not available at build time).
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return '__build_placeholder__';
   }
 
-  // Next.js sets NODE_ENV=production during `next build`; allow that phase to finish.
-  const isProductionBuild = process.env.NEXT_PHASE === 'phase-production-build';
-
-  if (process.env.NODE_ENV === 'production' && !isProductionBuild) {
-    throw new Error('NEXTAUTH_SECRET must be set in production');
-  }
-
-  return 'forgewind-demo-nextauth-secret-change-in-env';
+  throw new Error(
+    'Missing AUTH_SECRET (or NEXTAUTH_SECRET). Set this environment variable before starting the app.',
+  );
 }

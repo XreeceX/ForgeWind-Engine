@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -25,16 +26,20 @@ export class UserController {
     return this.userService.getFullProfile(user.id);
   }
 
+  /**
+   * GET /users/:id — Only allowed for the authenticated user's own ID.
+   * Services that need cross-user lookup should use an internal mechanism, not this endpoint.
+   */
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  async findById(@Param('id') id: string, @CurrentUser() user: AuthenticatedUser) {
+    if (id !== user.id) {
+      throw new ForbiddenException('You can only access your own profile');
+    }
     return this.userService.findById(id);
   }
 
   @Patch('me')
-  async updateMe(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: UpdateUserDto,
-  ) {
+  async updateMe(@CurrentUser() user: AuthenticatedUser, @Body() dto: UpdateUserDto) {
     return this.userService.update(user.id, dto);
   }
 

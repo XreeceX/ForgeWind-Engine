@@ -18,25 +18,22 @@ export class ProfileProxyService {
     return this.config.get<string>('JOB_SERVICE_URL', 'http://localhost:4004');
   }
 
-  async getProfile(externalUserId: string, authorization?: string) {
+  /**
+   * Fetch the authenticated user's profile from user-service.
+   * The Authorization header is always forwarded — no unauthenticated fallback.
+   */
+  async getProfile(authorization: string) {
     try {
       const response = await firstValueFrom(
         this.http.get(`${this.userServiceUrl}/api/v1/users/me`, {
-          headers: authorization ? { Authorization: authorization } : undefined,
+          headers: { Authorization: authorization },
         }),
       );
       return response.data;
-    } catch {
-      try {
-        const fallback = await firstValueFrom(
-          this.http.get(`${this.userServiceUrl}/api/v1/users/${externalUserId}`),
-        );
-        return fallback.data;
-      } catch (error) {
-        throw new ServiceUnavailableException(
-          `User service unavailable: ${error instanceof Error ? error.message : 'unknown error'}`,
-        );
-      }
+    } catch (error) {
+      throw new ServiceUnavailableException(
+        `User service unavailable: ${error instanceof Error ? error.message : 'unknown error'}`,
+      );
     }
   }
 

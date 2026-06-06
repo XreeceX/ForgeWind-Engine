@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useAuthStore } from '@/stores/auth.store';
+import { getSession } from 'next-auth/react';
 import { getForgeWindApiBaseUrl } from '@/lib/forgewind-api';
 
 const API_BASE_URL =
@@ -14,10 +14,11 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
-    const { accessToken } = useAuthStore.getState();
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+  async (config) => {
+    // Tokens live in the NextAuth session cookie — retrieve them here for each request.
+    const session = await getSession();
+    if (session?.accessToken) {
+      config.headers.Authorization = `Bearer ${session.accessToken}`;
     }
     return config;
   },
@@ -26,12 +27,9 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-      if (typeof window !== 'undefined') {
-        window.location.href = '/login';
-      }
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   },

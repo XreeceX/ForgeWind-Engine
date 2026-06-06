@@ -11,10 +11,10 @@ export class ProfileController {
 
   @Get('me')
   getMe(
-    @CurrentUser() user: AuthenticatedForgeWindUser,
-    @Headers('authorization') authorization?: string,
+    @CurrentUser() _user: AuthenticatedForgeWindUser,
+    @Headers('authorization') authorization: string,
   ) {
-    return this.profileProxy.getProfile(user.externalUserId, authorization);
+    return this.profileProxy.getProfile(authorization);
   }
 }
 

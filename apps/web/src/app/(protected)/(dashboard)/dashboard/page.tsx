@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Header } from "@/components/layout/header";
-import { ScoreRing } from "@/components/ui/score-ring";
-import { StatCard } from "@/components/ui/stat-card";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useAuthStore } from "@/stores/auth.store";
+import { Header } from '@/components/layout/header';
+import { ScoreRing } from '@/components/ui/score-ring';
+import { StatCard } from '@/components/ui/stat-card';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { useSession } from 'next-auth/react';
 import {
   User,
   Briefcase,
@@ -20,7 +20,7 @@ import {
   CheckCircle2,
   Clock,
   ArrowRight,
-} from "lucide-react";
+} from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -29,92 +29,96 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from "recharts";
+} from 'recharts';
 
 const weeklyData = [
-  { day: "Mon", score: 62, applications: 2, content: 1 },
-  { day: "Tue", score: 65, applications: 3, content: 0 },
-  { day: "Wed", score: 68, applications: 1, content: 2 },
-  { day: "Thu", score: 71, applications: 4, content: 1 },
-  { day: "Fri", score: 73, applications: 2, content: 3 },
-  { day: "Sat", score: 74, applications: 0, content: 1 },
-  { day: "Sun", score: 76, applications: 1, content: 0 },
+  { day: 'Mon', score: 62, applications: 2, content: 1 },
+  { day: 'Tue', score: 65, applications: 3, content: 0 },
+  { day: 'Wed', score: 68, applications: 1, content: 2 },
+  { day: 'Thu', score: 71, applications: 4, content: 1 },
+  { day: 'Fri', score: 73, applications: 2, content: 3 },
+  { day: 'Sat', score: 74, applications: 0, content: 1 },
+  { day: 'Sun', score: 76, applications: 1, content: 0 },
 ];
 
 const recentActivity = [
   {
-    id: "1",
-    agent: "Profile Optimizer",
-    action: "Updated your LinkedIn headline for better visibility",
-    time: "12 min ago",
-    status: "completed" as const,
+    id: '1',
+    agent: 'Profile Optimizer',
+    action: 'Updated your LinkedIn headline for better visibility',
+    time: '12 min ago',
+    status: 'completed' as const,
   },
   {
-    id: "2",
-    agent: "Job Matcher",
-    action: "Found 8 new senior engineering roles matching your profile",
-    time: "45 min ago",
-    status: "completed" as const,
+    id: '2',
+    agent: 'Job Matcher',
+    action: 'Found 8 new senior engineering roles matching your profile',
+    time: '45 min ago',
+    status: 'completed' as const,
   },
   {
-    id: "3",
-    agent: "Content Writer",
-    action: "Generated a thought leadership post about AI trends",
-    time: "2 hours ago",
-    status: "completed" as const,
+    id: '3',
+    agent: 'Content Writer',
+    action: 'Generated a thought leadership post about AI trends',
+    time: '2 hours ago',
+    status: 'completed' as const,
   },
   {
-    id: "4",
-    agent: "Skill Analyzer",
-    action: "Running gap analysis against target roles...",
-    time: "Just now",
-    status: "running" as const,
+    id: '4',
+    agent: 'Skill Analyzer',
+    action: 'Running gap analysis against target roles...',
+    time: 'Just now',
+    status: 'running' as const,
   },
   {
-    id: "5",
-    agent: "Network Scout",
-    action: "Identified 15 key connections at target companies",
-    time: "3 hours ago",
-    status: "completed" as const,
+    id: '5',
+    agent: 'Network Scout',
+    action: 'Identified 15 key connections at target companies',
+    time: '3 hours ago',
+    status: 'completed' as const,
   },
 ];
 
 const quickActions = [
   {
-    label: "Optimize Profile",
-    description: "AI-powered LinkedIn optimization",
+    label: 'Optimize Profile',
+    description: 'AI-powered LinkedIn optimization',
     icon: User,
-    color: "text-primary-400",
-    bg: "bg-primary-500/10",
-    href: "/profile",
+    color: 'text-primary-400',
+    bg: 'bg-primary-500/10',
+    href: '/profile',
   },
   {
-    label: "Find Jobs",
-    description: "Discover matching opportunities",
+    label: 'Find Jobs',
+    description: 'Discover matching opportunities',
     icon: Target,
-    color: "text-emerald-400",
-    bg: "bg-emerald-500/10",
-    href: "/jobs",
+    color: 'text-emerald-400',
+    bg: 'bg-emerald-500/10',
+    href: '/jobs',
   },
   {
-    label: "Generate Content",
-    description: "Create engaging LinkedIn posts",
+    label: 'Generate Content',
+    description: 'Create engaging LinkedIn posts',
     icon: PenTool,
-    color: "text-amber-400",
-    bg: "bg-amber-500/10",
-    href: "/content",
+    color: 'text-amber-400',
+    bg: 'bg-amber-500/10',
+    href: '/content',
   },
   {
-    label: "Analyze Skills",
-    description: "Identify gaps and growth areas",
+    label: 'Analyze Skills',
+    description: 'Identify gaps and growth areas',
     icon: TrendingUp,
-    color: "text-sky-400",
-    bg: "bg-sky-500/10",
-    href: "/skills",
+    color: 'text-sky-400',
+    bg: 'bg-sky-500/10',
+    href: '/skills',
   },
 ];
 
-function CustomTooltip({ active, payload, label }: {
+function CustomTooltip({
+  active,
+  payload,
+  label,
+}: {
   active?: boolean;
   payload?: Array<{ value: number; dataKey: string }>;
   label?: string;
@@ -125,7 +129,7 @@ function CustomTooltip({ active, payload, label }: {
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
       {payload.map((entry) => (
         <p key={entry.dataKey} className="text-sm font-semibold text-foreground">
-          {entry.dataKey === "score" ? "Score" : "Apps"}: {entry.value}
+          {entry.dataKey === 'score' ? 'Score' : 'Apps'}: {entry.value}
         </p>
       ))}
     </div>
@@ -133,13 +137,14 @@ function CustomTooltip({ active, payload, label }: {
 }
 
 export default function DashboardPage() {
-  const user = useAuthStore((s) => s.user);
+  const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <div>
       <Header
         title="Dashboard"
-        subtitle={`Welcome back, ${user?.name?.split(" ")[0] ?? "there"}`}
+        subtitle={`Welcome back, ${user?.name?.split(' ')[0] ?? 'there'} 👋`}
       />
 
       <div className="space-y-8 p-2 sm:p-4">
@@ -150,14 +155,12 @@ export default function DashboardPage() {
             <div className="flex flex-col items-center text-center space-y-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary-400" />
-                <h2 className="text-lg font-semibold text-foreground">
-                  Career Score
-                </h2>
+                <h2 className="text-lg font-semibold text-foreground">Career Score</h2>
               </div>
               <ScoreRing score={76} size={160} strokeWidth={10} label="/ 100" />
               <p className="max-w-xs text-sm text-muted-foreground">
-                Your career readiness score based on profile strength, skills,
-                and market positioning.
+                Your career readiness score based on profile strength, skills, and market
+                positioning.
               </p>
               <div className="flex items-center gap-1.5 text-emerald-400">
                 <TrendingUp className="h-4 w-4" />
@@ -202,9 +205,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between px-6 pt-5 pb-3">
               <div className="flex items-center gap-2">
                 <Bot className="h-5 w-5 text-primary-400" />
-                <h3 className="text-base font-semibold text-foreground">
-                  Recent AI Activity
-                </h3>
+                <h3 className="text-base font-semibold text-foreground">Recent AI Activity</h3>
               </div>
               <Button variant="ghost" size="sm">
                 View All <ArrowRight className="h-3.5 w-3.5" />
@@ -217,7 +218,7 @@ export default function DashboardPage() {
                   className="flex items-start gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-primary-500/10"
                 >
                   <div className="mt-0.5">
-                    {item.status === "completed" ? (
+                    {item.status === 'completed' ? (
                       <CheckCircle2 className="h-4 w-4 text-emerald-400" />
                     ) : (
                       <Clock className="h-4 w-4 text-amber-400 animate-pulse" />
@@ -225,24 +226,14 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-primary-400">
-                        {item.agent}
-                      </span>
-                      <Badge
-                        variant={
-                          item.status === "completed" ? "success" : "warning"
-                        }
-                      >
+                      <span className="text-xs font-semibold text-primary-400">{item.agent}</span>
+                      <Badge variant={item.status === 'completed' ? 'success' : 'warning'}>
                         {item.status}
                       </Badge>
                     </div>
-                    <p className="mt-0.5 text-sm text-muted-foreground">
-                      {item.action}
-                    </p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">{item.action}</p>
                   </div>
-                  <span className="flex-shrink-0 text-xs text-muted-foreground">
-                    {item.time}
-                  </span>
+                  <span className="flex-shrink-0 text-xs text-muted-foreground">{item.time}</span>
                 </div>
               ))}
             </div>
@@ -252,17 +243,12 @@ export default function DashboardPage() {
           <div className="col-span-12 lg:col-span-5 space-y-4">
             <div className="flex items-center gap-2 px-1">
               <Zap className="h-5 w-5 text-amber-400" />
-              <h3 className="text-base font-semibold text-foreground">
-                Quick Actions
-              </h3>
+              <h3 className="text-base font-semibold text-foreground">Quick Actions</h3>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {quickActions.map((action) => (
                 <a key={action.label} href={action.href}>
-                  <Card
-                    className="p-4 cursor-pointer group"
-                    hover
-                  >
+                  <Card className="p-4 cursor-pointer group" hover>
                     <div
                       className={`flex h-10 w-10 items-center justify-center rounded-lg ${action.bg} mb-3`}
                     >
@@ -271,9 +257,7 @@ export default function DashboardPage() {
                     <p className="text-sm font-medium text-foreground transition-colors group-hover:text-primary-400">
                       {action.label}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      {action.description}
-                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{action.description}</p>
                   </Card>
                 </a>
               ))}
@@ -285,12 +269,8 @@ export default function DashboardPage() {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-base font-semibold text-foreground">
-                Weekly Progress
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Career score and activity trends
-              </p>
+              <h3 className="text-base font-semibold text-foreground">Weekly Progress</h3>
+              <p className="text-sm text-muted-foreground">Career score and activity trends</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
@@ -320,13 +300,9 @@ export default function DashboardPage() {
                 dataKey="day"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fontSize: 12, fill: "#94a3b8" }}
+                tick={{ fontSize: 12, fill: '#94a3b8' }}
               />
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12, fill: "#94a3b8" }}
-              />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} />
               <Tooltip content={<CustomTooltip />} />
               <Area
                 type="monotone"

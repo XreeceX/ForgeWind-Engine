@@ -1,13 +1,12 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 /**
- * Layer 5 — No meaningful UI until the client confirms a JWT session.
- * Middleware already blocks unauthenticated requests; this avoids flashing
- * sensitive layout in edge client-navigation cases and keeps the first paint minimal.
+ * Client guard: confirms an active session before rendering protected layout.
+ * Middleware is the primary protection; this handles client-side navigation edge cases.
  */
 export function ProtectedSessionGate({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -19,13 +18,13 @@ export function ProtectedSessionGate({ children }: { children: React.ReactNode }
   }, []);
 
   useEffect(() => {
-    if (!mounted || status === "loading") return;
-    if (status === "unauthenticated") {
-      router.replace("/login");
+    if (!mounted || status === 'loading') return;
+    if (status === 'unauthenticated') {
+      router.replace('/login');
     }
   }, [mounted, router, status]);
 
-  if (!mounted || status === "loading") {
+  if (!mounted || status === 'loading') {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6">
         <div className="h-1 w-48 max-w-full overflow-hidden bg-slate-200">
@@ -36,18 +35,10 @@ export function ProtectedSessionGate({ children }: { children: React.ReactNode }
     );
   }
 
-  if (status === "unauthenticated") {
+  if (status === 'unauthenticated') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-sm text-slate-500">
-        Redirecting to sign in…
-      </div>
-    );
-  }
-
-  if (status !== "authenticated") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background text-sm text-slate-500">
-        Verifying session…
+        Redirecting…
       </div>
     );
   }

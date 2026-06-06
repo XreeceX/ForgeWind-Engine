@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
 
+/** UI-facing identity — populated from the NextAuth session, not stored with tokens. */
 export interface User {
   id: string;
   email: string;
@@ -10,40 +10,24 @@ export interface User {
   linkedinConnected: boolean;
 }
 
-export interface AuthState {
+export interface AuthStore {
   user: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-  isAuthenticated: boolean;
-  login: (user: User, accessToken: string, refreshToken: string) => void;
-  logout: () => void;
+  setUser: (user: User | null) => void;
   updateUser: (updates: Partial<User>) => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      accessToken: null,
-      refreshToken: null,
-      isAuthenticated: false,
+/**
+ * Lightweight UI store for user identity.
+ * Tokens are NOT stored here — they live exclusively in the NextAuth session cookie.
+ * This store is populated by SyncSessionToStore mounted in the protected layout.
+ */
+export const useAuthStore = create<AuthStore>()((set) => ({
+  user: null,
 
-      login: (user, accessToken, refreshToken) =>
-        set({ user, accessToken, refreshToken, isAuthenticated: true }),
+  setUser: (user) => set({ user }),
 
-      logout: () =>
-        set({
-          user: null,
-          accessToken: null,
-          refreshToken: null,
-          isAuthenticated: false,
-        }),
-
-      updateUser: (updates) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, ...updates } : null,
-        })),
-    }),
-    { name: "forgewind-auth-v2" }
-  )
-);
+  updateUser: (updates) =>
+    set((state) => ({
+      user: state.user ? { ...state.user, ...updates } : null,
+    })),
+}));

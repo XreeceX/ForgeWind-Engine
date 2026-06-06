@@ -1,16 +1,8 @@
-import NextAuth from 'next-auth';
 import { NextResponse } from 'next/server';
+import NextAuth from 'next-auth';
 import { authConfig } from '@/auth.config';
 
-/**
- * ForgeWind demo — Edge middleware
- * 1) Block known AI / crawler / script user agents (plain 403)
- * 2) Auth.js v5 `authorized` callback (auth.config.ts) protects routes
- *
- * Uses authConfig only (Edge-safe) — do not import `@/auth` here (Node crypto in authorize).
- */
-
-const BLOCKED_USER_AGENT_SNIPPETS = [
+const BLOCKED_UA_SNIPPETS = [
   'gptbot',
   'chatgpt-user',
   'claudebot',
@@ -33,35 +25,23 @@ const BLOCKED_USER_AGENT_SNIPPETS = [
   'axios/',
 ] as const;
 
-function isBlockedBotUserAgent(userAgent: string): boolean {
-  const lower = userAgent.toLowerCase();
-  return BLOCKED_USER_AGENT_SNIPPETS.some((needle) => lower.includes(needle));
+function isBlockedBot(ua: string): boolean {
+  const lower = ua.toLowerCase();
+  return BLOCKED_UA_SNIPPETS.some((s) => lower.includes(s));
 }
 
 const { auth } = NextAuth(authConfig);
 
 export default auth((request) => {
-  const userAgent = request.headers.get('user-agent') ?? '';
-
-  if (userAgent && isBlockedBotUserAgent(userAgent)) {
-    return new NextResponse('Forbidden', {
-      status: 403,
-      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-    });
+  const ua = request.headers.get('user-agent') ?? '';
+  if (ua && isBlockedBot(ua)) {
+    return new NextResponse('Forbidden', { status: 403 });
   }
-
-  const { pathname } = request.nextUrl;
-
-  if (pathname === '/signup' || pathname.startsWith('/signup/')) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
   return NextResponse.next();
 });
 
 export const config = {
   matcher: [
-    '/',
-    '/((?!_next/|favicon.ico|robots.txt|.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|txt)$).*)',
+    '/((?!_next/|favicon\\.ico$|robots\\.txt$|.*\\.(?:ico|png|jpg|jpeg|gif|svg|webp|txt)$).*)',
   ],
 };

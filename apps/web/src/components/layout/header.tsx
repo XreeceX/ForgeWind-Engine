@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
-import { Bell, Search, ChevronDown, LogOut, User, Settings, Home } from "lucide-react";
-import { cn } from "@/lib/cn";
-import { signOut as nextAuthSignOut } from "next-auth/react";
-import { useAppStore } from "@/stores/app.store";
-import { useAuthStore } from "@/stores/auth.store";
-import { formatDistanceToNow } from "date-fns";
+import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { Bell, Search, ChevronDown, LogOut, User, Settings, Home } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import { signOut } from 'next-auth/react';
+import { useAppStore } from '@/stores/app.store';
+import { useAuthStore } from '@/stores/auth.store';
+import { formatDistanceToNow } from 'date-fns';
 
 interface HeaderProps {
   title: string;
@@ -16,14 +16,13 @@ interface HeaderProps {
 
 export function Header({ title, subtitle }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
 
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
   const { notifications, markNotificationRead } = useAppStore();
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -36,8 +35,8 @@ export function Header({ title, subtitle }: HeaderProps) {
         setNotifOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
   return (
@@ -54,9 +53,7 @@ export function Header({ title, subtitle }: HeaderProps) {
         </Link>
         <div className="min-w-0">
           <h1 className="text-xl font-semibold text-foreground">{title}</h1>
-          {subtitle && (
-            <p className="text-sm text-muted-foreground">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-sm text-muted-foreground">{subtitle}</p>}
         </div>
       </div>
 
@@ -66,8 +63,8 @@ export function Header({ title, subtitle }: HeaderProps) {
         <div className="relative">
           <div
             className={cn(
-              "flex items-center rounded-lg border border-border bg-surface-light transition-all duration-200",
-              searchOpen ? "w-72" : "w-10"
+              'flex items-center rounded-lg border border-border bg-surface-light transition-all duration-200',
+              searchOpen ? 'w-72' : 'w-10',
             )}
           >
             <button
@@ -106,32 +103,24 @@ export function Header({ title, subtitle }: HeaderProps) {
           {notifOpen && (
             <div className="absolute right-0 top-12 w-80 rounded-xl border border-border bg-panel shadow-lg">
               <div className="border-b border-border p-4">
-                <h3 className="text-sm font-semibold text-foreground">
-                  Notifications
-                </h3>
+                <h3 className="text-sm font-semibold text-foreground">Notifications</h3>
               </div>
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <p className="p-4 text-center text-sm text-muted-foreground">
-                    No notifications
-                  </p>
+                  <p className="p-4 text-center text-sm text-muted-foreground">No notifications</p>
                 ) : (
                   notifications.map((n) => (
                     <button
                       key={n.id}
                       onClick={() => markNotificationRead(n.id)}
                       className={cn(
-                        "flex w-full flex-col gap-1 border-b border-border p-4 text-left transition-colors hover:bg-surface-light",
-                        !n.read && "bg-primary-500/5"
+                        'flex w-full flex-col gap-1 border-b border-border p-4 text-left transition-colors hover:bg-surface-light',
+                        !n.read && 'bg-primary-500/5',
                       )}
                     >
                       <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-foreground">
-                          {n.title}
-                        </span>
-                        {!n.read && (
-                          <span className="h-2 w-2 rounded-full bg-primary-400" />
-                        )}
+                        <span className="text-sm font-medium text-foreground">{n.title}</span>
+                        {!n.read && <span className="h-2 w-2 rounded-full bg-primary-400" />}
                       </div>
                       <p className="text-xs text-muted-foreground">{n.message}</p>
                       <span className="text-[10px] text-muted-foreground">
@@ -154,13 +143,13 @@ export function Header({ title, subtitle }: HeaderProps) {
             className="flex items-center gap-2 rounded-lg border border-border bg-surface-light px-3 py-1.5 transition-colors hover:bg-surface-lighter"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-500/20 text-primary-400 text-xs font-semibold">
-              {(user?.name ?? "User")
-                .split(" ")
+              {(user?.name ?? 'User')
+                .split(' ')
                 .map((n) => n[0])
-                .join("") ?? "U"}
+                .join('') ?? 'U'}
             </div>
             <span className="text-sm font-medium text-foreground">
-              {user?.name?.split(" ")[0] ?? "User"}
+              {user?.name?.split(' ')[0] ?? 'User'}
             </span>
             <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
           </button>
@@ -187,10 +176,7 @@ export function Header({ title, subtitle }: HeaderProps) {
                   Settings
                 </a>
                 <button
-                  onClick={async () => {
-                    await nextAuthSignOut({ redirect: false });
-                    logout();
-                  }}
+                  onClick={() => signOut({ callbackUrl: '/login' })}
                   className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-400 hover:bg-red-500/10"
                 >
                   <LogOut className="h-4 w-4" />

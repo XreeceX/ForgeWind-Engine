@@ -4,50 +4,102 @@ import { AuthError } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { safeCallbackPath } from '@/lib/auth/safe-callback-path';
+import { getUserServiceUrl } from '@/lib/forgewind-api';
 
 export type LoginResult = { ok: true } | { ok: false; error: string };
+export type RegisterResult = { ok: true } | { ok: false; error: string };
 
-function isAuthFailureRedirect(responseUrl: unknown): boolean {
-  if (typeof responseUrl !== 'string') return true;
-  return responseUrl.includes('error=') || responseUrl.includes('CredentialsSignin');
-}
+// ---------------------------------------------------------------------------
+// Login
+// ---------------------------------------------------------------------------
 
 export async function loginWithCredentials(
-  usernameOrEmail: string,
+  email: string,
   password: string,
   callbackUrl: string | null,
 ): Promise<LoginResult> {
-  const trimmed = usernameOrEmail.trim();
+  const normalised = email.trim().toLowerCase();
   const trimmedPassword = password.trim();
-  if (!trimmed || !trimmedPassword) {
-    return { ok: false, error: 'Invalid credentials' };
+
+  if (!normalised || !trimmedPassword) {
+    return { ok: false, error: 'Email and password are required' };
   }
 
   const destination = safeCallbackPath(callbackUrl, '/forgewind-engine');
-  const isEmail = trimmed.includes('@');
-  const credentials: Record<string, string> = { password: trimmedPassword };
-  if (isEmail) {
-    credentials.email = trimmed.toLowerCase();
-  } else {
-    credentials.username = trimmed.toLowerCase();
-  }
 
   try {
     const responseUrl = await signIn('credentials', {
-      ...credentials,
+      email: normalised,
+      password: trimmedPassword,
       redirect: false,
       redirectTo: destination,
     });
 
-    if (isAuthFailureRedirect(responseUrl)) {
-      return { ok: false, error: 'Invalid credentials' };
+    // Auth.js returns the error redirect URL when credentials fail
+    if (typeof responseUrl === 'string' && responseUrl.includes('error=')) {
+      return { ok: false, error: 'Invalid email or password' };
     }
   } catch (error) {
     if (error instanceof AuthError) {
-      return { ok: false, error: 'Invalid credentials' };
+      return { ok: false, error: 'Invalid email or password' };
     }
     throw error;
   }
 
   redirect(destination);
+}
+
+// ---------------------------------------------------------------------------
+// Register
+// ---------------------------------------------------------------------------
+
+export async function registerUser(
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  callbackUrl: string | null,
+): Promise<RegisterResult> {
+  const normalised = email.trim().toLowerCase();
+  const trimmedPassword = password.trim();
+  const trimmedFirst = firstName.trim();
+  const trimmedLast = lastName.trim();
+
+  if (!normalised || !trimmedPassword || !trimmedFirst || !trimmedLast) {
+    return { ok: false, error: 'All fields are required' };
+  }
+
+  if (trimmedPassword.length < 8) {
+    return { ok: false, error: 'Password must be at least 8 characters' };
+  }
+
+  try {
+    const res = await fetch(`${getUserServiceUrl()}/api/v1/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: normalised,
+        password: trimmedPassword,
+        firstName: trimmedFirst,
+        lastName: trimmedLast,
+      }),
+    });
+
+    if (res.status === 409) {
+      return { ok: false, error: 'An account with that email already exists' };
+    }
+
+    if (!res.ok) {
+      const body = (await res.json().catch(() => ({}))) as { message?: string | string[] };
+      const msg = Array.isArray(body.message)
+        ? body.message[0]
+        : (body.message ?? 'Registration failed');
+      return { ok: false, error: String(msg) };
+    }
+  } catch {
+    return { ok: false, error: 'Could not reach the authentication service. Try again.' };
+  }
+
+  // Log the user in immediately after registration
+  return loginWithCredentials(normalised, trimmedPassword, callbackUrl);
 }

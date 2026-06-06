@@ -19,7 +19,7 @@ export function ProtectedSessionGate({ children }: { children: React.ReactNode }
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || status === "loading") return;
     if (status === "unauthenticated") {
       router.replace("/login");
     }

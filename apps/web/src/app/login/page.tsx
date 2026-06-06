@@ -1,8 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { getSession } from "next-auth/react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { loginWithCredentials } from "@/app/login/actions";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
@@ -10,23 +9,25 @@ import { AuthButton } from "@/components/auth/auth-button";
 import { AuthPageShell } from "@/components/auth/auth-page-shell";
 import { ForgeWindAuthMark } from "@/components/auth/forgewind-auth-mark";
 import { isValidEmail, isValidUsername } from "@/lib/auth/validate";
-import { safeCallbackPath } from "@/lib/auth/safe-callback-path";
-import { useAuthStore } from "@/stores/auth.store";
 
 type FieldErrors = Partial<{ username: string; password: string }>;
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl");
-
-  const login = useAuthStore((s) => s.login);
+  const authError = searchParams.get("error");
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (authError === "CredentialsSignin") {
+      setSubmitError("Invalid credentials");
+    }
+  }, [authError]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,29 +46,11 @@ function LoginForm() {
 
     setLoading(true);
     try {
-      const result = await loginWithCredentials(trimmed, password);
+      const result = await loginWithCredentials(trimmed, password, callbackUrl);
 
       if (!result.ok) {
         setSubmitError(result.error);
-        return;
       }
-
-      const session = await getSession();
-      if (session?.user) {
-        login(
-          {
-            id: session.user.id,
-            email: session.user.email ?? "",
-            name: session.user.name ?? "",
-            linkedinConnected: false,
-          },
-          session.accessToken ?? "demo-access-token",
-          session.refreshToken ?? "demo-refresh-token",
-        );
-      }
-
-      router.push(safeCallbackPath(callbackUrl, "/forgewind-engine"));
-      router.refresh();
     } finally {
       setLoading(false);
     }
@@ -81,7 +64,7 @@ function LoginForm() {
           <p className="text-xs uppercase tracking-[0.22em] text-primary-400">Sign in</p>
           <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground">Welcome back</h1>
           <p className="mt-1.5 text-sm text-muted-foreground">
-            Development access only. Public registration is disabled.
+            Development access only. Demo sign-in: username rod, password rod8989.
           </p>
         </div>
 

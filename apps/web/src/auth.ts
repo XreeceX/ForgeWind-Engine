@@ -7,6 +7,7 @@ import {
   timingSafeStringEqual,
 } from '@/lib/auth/forge-wind-demo-credentials';
 import { getUserServiceUrl } from '@/lib/forgewind-api';
+import { authConfig } from '@/auth.config';
 
 async function loginViaUserService(email: string, password: string) {
   const response = await fetch(`${getUserServiceUrl()}/api/v1/auth/login`, {
@@ -26,10 +27,8 @@ async function loginViaUserService(email: string, password: string) {
 }
 
 const nextAuth = NextAuth({
+  ...authConfig,
   secret: getNextAuthSecret(),
-  trustHost: true,
-  session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
-  pages: { signIn: '/login' },
   providers: [
     Credentials({
       name: 'Credentials',
@@ -52,8 +51,25 @@ const nextAuth = NextAuth({
             ? credentials.username.trim().toLowerCase()
             : undefined;
 
-        const emailLogin =
-          email || (username?.includes('@') ? username : undefined);
+        const { username: expectedUser, password: expectedPassword } = getForgeWindDemoAuth();
+        const demoEmail = DEMO_USER.email.toLowerCase();
+        const demoLoginId = username || email;
+
+        if (
+          demoLoginId &&
+          (demoLoginId === expectedUser || demoLoginId === demoEmail)
+        ) {
+          if (!timingSafeStringEqual(password, expectedPassword)) return null;
+          return {
+            id: DEMO_USER.id,
+            email: DEMO_USER.email,
+            name: DEMO_USER.name,
+            accessToken: null,
+            refreshToken: null,
+          };
+        }
+
+        const emailLogin = email || (username?.includes('@') ? username : undefined);
 
         if (emailLogin) {
           try {
@@ -73,47 +89,10 @@ const nextAuth = NextAuth({
           return null;
         }
 
-        if (!username) return null;
-
-        const { username: expectedUser, password: expectedPassword } = getForgeWindDemoAuth();
-        if (username !== expectedUser) return null;
-        if (!timingSafeStringEqual(password, expectedPassword)) return null;
-
-        return {
-          id: DEMO_USER.id,
-          email: DEMO_USER.email,
-          name: DEMO_USER.name,
-          accessToken: null,
-          refreshToken: null,
-        };
+        return null;
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id;
-        token.email = user.email;
-        token.name = user.name;
-        token.accessToken = user.accessToken ?? null;
-        token.refreshToken = user.refreshToken ?? null;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub ?? '';
-        session.user.email = token.email ?? session.user.email;
-        session.user.name = token.name ?? session.user.name;
-      }
-      session.accessToken = token.accessToken ?? null;
-      session.refreshToken = token.refreshToken ?? null;
-      return session;
-    },
-  },
 });
 
-export const handlers = nextAuth.handlers;
-export const signIn: (
-  ...args: Parameters<typeof nextAuth.signIn>
-) => ReturnType<typeof nextAuth.signIn> = nextAuth.signIn;
+export const { handlers, auth, signIn } = nextAuth;

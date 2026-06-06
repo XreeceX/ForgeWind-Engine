@@ -1,6 +1,6 @@
 /** Shared secret for NextAuth — must match JWT signing in API routes and Edge middleware. */
 export function getNextAuthSecret(): string {
-  const secret = process.env.NEXTAUTH_SECRET?.trim() || process.env.AUTH_SECRET?.trim();
+  const secret = process.env.AUTH_SECRET?.trim() || process.env.NEXTAUTH_SECRET?.trim();
   if (secret) {
     return secret;
   }

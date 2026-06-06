@@ -9,7 +9,7 @@ export function getForgeWindDemoAuth() {
   const username = process.env.FORGEWIND_DEMO_USERNAME?.trim();
   const password = process.env.FORGEWIND_DEMO_PASSWORD?.trim();
   return {
-    username: username || "rod",
+    username: (username || "rod").toLowerCase(),
     password: password || "rod8989",
   };
 }

@@ -76,7 +76,7 @@ const nextAuth = NextAuth({
         if (!username) return null;
 
         const { username: expectedUser, password: expectedPassword } = getForgeWindDemoAuth();
-        if (username !== expectedUser.toLowerCase()) return null;
+        if (username !== expectedUser) return null;
         if (!timingSafeStringEqual(password, expectedPassword)) return null;
 
         return {
@@ -113,4 +113,7 @@ const nextAuth = NextAuth({
   },
 });
 
-export const { handlers } = nextAuth;
+export const handlers = nextAuth.handlers;
+export const signIn: (
+  ...args: Parameters<typeof nextAuth.signIn>
+) => ReturnType<typeof nextAuth.signIn> = nextAuth.signIn;

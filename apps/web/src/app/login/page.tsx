@@ -2,7 +2,8 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { signIn, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
+import { loginWithCredentials } from "@/app/login/actions";
 import { AuthCard } from "@/components/auth/auth-card";
 import { AuthInput } from "@/components/auth/auth-input";
 import { AuthButton } from "@/components/auth/auth-button";
@@ -44,16 +45,10 @@ function LoginForm() {
 
     setLoading(true);
     try {
-      const isEmail = isValidEmail(trimmed);
-      const result = await signIn("credentials", {
-        username: isEmail ? undefined : trimmed.toLowerCase(),
-        email: isEmail ? trimmed.toLowerCase() : undefined,
-        password,
-        redirect: false,
-      });
+      const result = await loginWithCredentials(trimmed, password);
 
-      if (result?.error) {
-        setSubmitError("Invalid credentials");
+      if (!result.ok) {
+        setSubmitError(result.error);
         return;
       }
 

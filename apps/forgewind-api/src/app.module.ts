@@ -14,6 +14,7 @@ import { UsersModule } from './modules/users/users.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
       // Repo root first, then app-local overrides (e.g. PORT=3001).
       envFilePath: ['../../.env', '.env'],
     }),

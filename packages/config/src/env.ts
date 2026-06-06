@@ -5,9 +5,27 @@ export const baseEnvSchema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
-export const databaseEnvSchema = z.object({
-  DATABASE_URL: z.string().url('DATABASE_URL must be a valid connection string'),
-});
+export const databaseEnvSchema = z
+  .object({
+    DATABASE_URL: z.string().url('DATABASE_URL must be a valid connection string'),
+  })
+  .superRefine((data, ctx) => {
+    if (process.env.NODE_ENV !== 'production') return;
+
+    try {
+      const host = new URL(data.DATABASE_URL).hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            'DATABASE_URL must not point at localhost in production — set your Neon pooled URL in Railway/Vercel',
+          path: ['DATABASE_URL'],
+        });
+      }
+    } catch {
+      // url() already validated
+    }
+  });
 
 export const jwtEnvSchema = z.object({
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),

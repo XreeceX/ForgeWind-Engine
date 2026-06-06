@@ -9,6 +9,7 @@ import { PreferencesModule } from './modules/preferences/preferences.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
       envFilePath: ['.env.local', '.env'],
     }),
     PrismaModule,

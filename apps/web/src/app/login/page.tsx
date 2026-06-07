@@ -56,8 +56,16 @@ function LoginForm() {
     setLoading(true);
     try {
       const result = await loginWithCredentials(trimmedEmail, password, callbackUrl);
-      if (!result.ok) setSubmitError(result.error);
-    } finally {
+      if (!result.ok) {
+        setSubmitError(result.error);
+        setLoading(false);
+      } else {
+        // Full-page navigation so the browser sends the session cookie in the
+        // next request — client-side router.push() can miss it.
+        window.location.href = result.redirectTo;
+      }
+    } catch {
+      setSubmitError('Something went wrong. Please try again.');
       setLoading(false);
     }
   }

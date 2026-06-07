@@ -47,8 +47,14 @@ function SignupForm() {
     setLoading(true);
     try {
       const result = await registerUser(email, password, firstName, lastName, callbackUrl);
-      if (!result.ok) setSubmitError(result.error);
-    } finally {
+      if (!result.ok) {
+        setSubmitError(result.error);
+        setLoading(false);
+      } else {
+        window.location.href = result.redirectTo;
+      }
+    } catch {
+      setSubmitError('Something went wrong. Please try again.');
       setLoading(false);
     }
   }

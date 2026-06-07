@@ -1,13 +1,12 @@
 'use server';
 
 import { AuthError } from 'next-auth';
-import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { safeCallbackPath } from '@/lib/auth/safe-callback-path';
 import { getUserServiceUrl } from '@/lib/forgewind-api';
 
-export type LoginResult = { ok: true } | { ok: false; error: string };
-export type RegisterResult = { ok: true } | { ok: false; error: string };
+export type LoginResult = { ok: true; redirectTo: string } | { ok: false; error: string };
+export type RegisterResult = { ok: true; redirectTo: string } | { ok: false; error: string };
 
 // ---------------------------------------------------------------------------
 // Login
@@ -28,14 +27,14 @@ export async function loginWithCredentials(
   const destination = safeCallbackPath(callbackUrl, '/forgewind-engine');
 
   try {
-    // Do NOT use redirect: false — Auth.js must throw NEXT_REDIRECT so that the
-    // session cookie is included in the redirect response. We only catch AuthError
-    // (wrong credentials). All other throws (including NEXT_REDIRECT on success)
-    // are re-thrown so Next.js can handle them.
+    // redirect: false — cookie IS set via next/headers cookies() before returning.
+    // We then navigate on the client via window.location.href so the browser sends
+    // the cookie in the subsequent request to /forgewind-engine, which the
+    // middleware can then validate correctly.
     await signIn('credentials', {
       email: normalised,
       password: trimmedPassword,
-      redirectTo: destination,
+      redirect: false,
     });
   } catch (error) {
     if (error instanceof AuthError) {
@@ -44,8 +43,7 @@ export async function loginWithCredentials(
     throw error;
   }
 
-  // Fallback — signIn always redirects on success so this is unreachable in practice.
-  redirect(destination);
+  return { ok: true, redirectTo: destination };
 }
 
 // ---------------------------------------------------------------------------

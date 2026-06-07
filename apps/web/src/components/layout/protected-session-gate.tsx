@@ -1,21 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+
+const SESSION_TIMEOUT_MS = 6000;
 
 /**
  * Client guard: confirms an active session before rendering protected layout.
  * Middleware is the primary protection; this handles client-side navigation edge cases.
+ * If session loading takes longer than SESSION_TIMEOUT_MS, redirect to login.
  */
 export function ProtectedSessionGate({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { status } = useSession();
   const [mounted, setMounted] = useState(false);
+  const timedOut = useRef(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Timeout fallback: if session is still loading after threshold, send to login.
+  useEffect(() => {
+    if (!mounted) return;
+    if (status !== 'loading') return;
+    const t = setTimeout(() => {
+      timedOut.current = true;
+      router.replace('/login');
+    }, SESSION_TIMEOUT_MS);
+    return () => clearTimeout(t);
+  }, [mounted, status, router]);
 
   useEffect(() => {
     if (!mounted || status === 'loading') return;

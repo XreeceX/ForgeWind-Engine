@@ -3,7 +3,8 @@
  */
 
 export function getForgeWindApiBaseUrl(): string | null {
-  const url = process.env.NEXT_PUBLIC_FORGEWIND_API_URL?.trim();
+  const url =
+    process.env.NEXT_PUBLIC_FORGEWIND_API_URL?.trim() || process.env.FORGEWIND_API_URL?.trim();
   return url || null;
 }
 

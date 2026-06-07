@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   BrainCircuit,
   X,
@@ -13,22 +13,23 @@ import {
   MemoryStick,
   Settings,
   BriefcaseBusiness,
-  ChevronDown,
-} from "lucide-react";
-import { motion, type Variants } from "framer-motion";
-import { ForgeWindLogo } from "@/components/brand/forgewind-logo";
-import { cn } from "@/lib/cn";
-import { useForgeWindStore } from "@/stores/forgewind.store";
+  LogOut,
+} from 'lucide-react';
+import { motion, type Variants } from 'framer-motion';
+import { useSession, signOut } from 'next-auth/react';
+import { ForgeWindLogo } from '@/components/brand/forgewind-logo';
+import { cn } from '@/lib/cn';
+import { useForgeWindStore } from '@/stores/forgewind.store';
 
 const primaryNav = [
-  { href: "/forgewind-engine", label: "Home", icon: Home },
-  { href: "/overview", label: "Overview", icon: LayoutDashboard },
-  { href: "/data-hub", label: "Data Hub", icon: Database },
-  { href: "/ai-studio", label: "AI Studio", icon: BrainCircuit },
-  { href: "/content", label: "Content", icon: FileText },
-  { href: "/jobs", label: "Jobs", icon: BriefcaseBusiness },
-  { href: "/memory", label: "Memory", icon: MemoryStick },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: '/forgewind-engine', label: 'Home', icon: Home },
+  { href: '/overview', label: 'Overview', icon: LayoutDashboard },
+  { href: '/data-hub', label: 'Data Hub', icon: Database },
+  { href: '/ai-studio', label: 'AI Studio', icon: BrainCircuit },
+  { href: '/content', label: 'Content', icon: FileText },
+  { href: '/jobs', label: 'Jobs', icon: BriefcaseBusiness },
+  { href: '/memory', label: 'Memory', icon: MemoryStick },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ] as const;
 
 const listVariants: Variants = {
@@ -50,26 +51,37 @@ interface AppSidebarProps {
 
 export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
   const repositories = useForgeWindStore((state) => state.repositories);
-  const userProfile = useForgeWindStore((state) => state.userProfile);
   const selectedRepo = repositories.find((repo) => repo.id === selectedRepositoryId);
+
+  const userName = session?.user?.name ?? '';
+  const userEmail = session?.user?.email ?? '';
+  const initials = userName
+    ? userName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : '?';
 
   return (
     <>
       <div
         className={cn(
-          "fixed inset-0 z-30 bg-fw-gray-900/20 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden",
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+          'fixed inset-0 z-30 bg-fw-gray-900/20 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden',
+          isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
         )}
         onClick={onClose}
       />
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-fw-gray-100 bg-fw-white transition-transform duration-200",
+          'fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-fw-gray-100 bg-fw-white transition-transform duration-200',
           /* Flex sibling on lg: stretch with main so background/border run full page height (not capped at 100vh). */
-          "lg:relative lg:z-10 lg:h-auto lg:shrink-0 lg:translate-x-0",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          'lg:relative lg:z-10 lg:h-auto lg:shrink-0 lg:translate-x-0',
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
         <div className="flex items-center justify-between gap-2 border-b border-fw-gray-100 px-4 py-4">
@@ -107,9 +119,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             {primaryNav.map((item) => {
               const active =
                 pathname === item.href ||
-                (item.href !== "/forgewind-engine" && pathname.startsWith(`${item.href}/`));
-              const homeActive = item.href === "/forgewind-engine" && pathname === "/forgewind-engine";
-              const isActive = item.href === "/forgewind-engine" ? homeActive : active;
+                (item.href !== '/forgewind-engine' && pathname.startsWith(`${item.href}/`));
+              const homeActive =
+                item.href === '/forgewind-engine' && pathname === '/forgewind-engine';
+              const isActive = item.href === '/forgewind-engine' ? homeActive : active;
 
               return (
                 <motion.li key={item.href} variants={itemVariants}>
@@ -117,25 +130,34 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                     href={item.href}
                     onClick={onClose}
                     className={cn(
-                      "group flex h-12 items-center gap-3 rounded-r-[12px] border-l-[3px] pl-3 pr-3 text-sm font-medium transition-all duration-200",
+                      'group flex h-12 items-center gap-3 rounded-r-[12px] border-l-[3px] pl-3 pr-3 text-sm font-medium transition-all duration-200',
                       isActive
-                        ? "border-l-fw-orange bg-fw-orange-light text-fw-orange"
-                        : "border-l-transparent text-fw-gray-700 hover:border-l-fw-orange-mid hover:bg-fw-gray-50 hover:text-fw-orange",
+                        ? 'border-l-fw-orange bg-fw-orange-light text-fw-orange'
+                        : 'border-l-transparent text-fw-gray-700 hover:border-l-fw-orange-mid hover:bg-fw-gray-50 hover:text-fw-orange',
                     )}
                   >
                     <motion.span
                       className="flex h-8 w-8 items-center justify-center"
                       animate={
                         isActive
-                          ? { scale: [1, 1.06, 1], boxShadow: ["0 0 0 0 rgba(249,115,22,0)", "0 0 12px rgba(249,115,22,0.35)", "0 0 0 0 rgba(249,115,22,0)"] }
+                          ? {
+                              scale: [1, 1.06, 1],
+                              boxShadow: [
+                                '0 0 0 0 rgba(249,115,22,0)',
+                                '0 0 12px rgba(249,115,22,0.35)',
+                                '0 0 0 0 rgba(249,115,22,0)',
+                              ],
+                            }
                           : {}
                       }
-                      transition={{ duration: 0.6, ease: "easeOut" }}
+                      transition={{ duration: 0.6, ease: 'easeOut' }}
                     >
                       <item.icon
                         className={cn(
-                          "h-[18px] w-[18px] transition-transform duration-200 group-hover:translate-x-0.5",
-                          isActive ? "text-fw-orange" : "text-fw-gray-400 group-hover:text-fw-orange",
+                          'h-[18px] w-[18px] transition-transform duration-200 group-hover:translate-x-0.5',
+                          isActive
+                            ? 'text-fw-orange'
+                            : 'text-fw-gray-400 group-hover:text-fw-orange',
                         )}
                       />
                     </motion.span>
@@ -147,7 +169,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           </motion.ul>
         </nav>
 
-        <div className="mt-auto border-t border-fw-gray-100 p-3">
+        <div className="mt-auto border-t border-fw-gray-100 p-3 space-y-2">
+          {/* Active repo */}
           <div className="rounded-fw-card border border-fw-orange-mid bg-fw-orange-light/50 p-3">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-fw-orange">
               Active repo
@@ -156,21 +179,35 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               <FolderGit2 className="mt-0.5 h-4 w-4 shrink-0 text-fw-orange" />
               <div className="min-w-0">
                 <p className="truncate font-mono text-xs font-medium text-fw-gray-900">
-                  {selectedRepo?.fullName ?? "None selected"}
+                  {selectedRepo?.fullName ?? 'None selected'}
                 </p>
                 <p className="text-[11px] text-fw-gray-400">
-                  {selectedRepo?.summary ?? "Select a repository in Data Hub."}
+                  {selectedRepo?.summary ?? 'Select a repository in Data Hub.'}
                 </p>
               </div>
             </div>
           </div>
 
+          {/* User info + sign out */}
+          <div className="flex items-center gap-2 rounded-fw-btn px-2 py-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-xs font-semibold text-primary-600">
+              {initials}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-fw-gray-900">
+                {userName || 'Loading…'}
+              </p>
+              <p className="truncate text-[11px] text-fw-gray-400">{userEmail}</p>
+            </div>
+          </div>
+
           <button
             type="button"
-            className="mt-3 flex w-full items-center justify-between rounded-fw-btn px-2 py-2 text-left text-sm font-medium text-fw-gray-900 transition-colors duration-200 hover:bg-fw-gray-50"
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="flex w-full items-center gap-2.5 rounded-fw-btn px-3 py-2 text-sm font-medium text-red-500 transition-colors duration-200 hover:bg-red-50"
           >
-            <span>{userProfile.name}</span>
-            <ChevronDown className="h-4 w-4 text-fw-gray-400" />
+            <LogOut className="h-4 w-4" />
+            Sign out
           </button>
         </div>
       </aside>

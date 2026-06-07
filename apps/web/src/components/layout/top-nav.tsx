@@ -1,21 +1,22 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { ChevronRight, Command, Home, Menu, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useForgeWindStore } from "@/stores/forgewind.store";
-import { cn } from "@/lib/cn";
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ChevronRight, Command, Home, Menu, Sparkles } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { useForgeWindStore } from '@/stores/forgewind.store';
+import { cn } from '@/lib/cn';
 
 function formatCrumb(segment: string) {
-  if (segment === "ai-studio") return "AI Studio";
-  if (segment === "data-hub") return "Data Hub";
-  if (segment === "forgewind-engine") return "ForgeWind Engine";
+  if (segment === 'ai-studio') return 'AI Studio';
+  if (segment === 'data-hub') return 'Data Hub';
+  if (segment === 'forgewind-engine') return 'ForgeWind Engine';
   return segment
-    .split("-")
+    .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+    .join(' ');
 }
 
 interface TopNavProps {
@@ -24,13 +25,15 @@ interface TopNavProps {
 
 export function TopNav({ onOpenSidebar }: TopNavProps) {
   const pathname = usePathname();
-  const userProfile = useForgeWindStore((state) => state.userProfile);
+  const { data: session } = useSession();
   const setCommandPaletteOpen = useForgeWindStore((state) => state.setCommandPaletteOpen);
+  const userName = session?.user?.name ?? '';
+  const userEmail = session?.user?.email ?? '';
 
   const breadcrumbs = useMemo(() => {
-    if (pathname === "/" || pathname === "") return ["Workspace"];
-    const parts = pathname.split("/").filter(Boolean);
-    return ["Workspace", ...parts.map(formatCrumb)];
+    if (pathname === '/' || pathname === '') return ['Workspace'];
+    const parts = pathname.split('/').filter(Boolean);
+    return ['Workspace', ...parts.map(formatCrumb)];
   }, [pathname]);
 
   return (
@@ -52,11 +55,19 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
           >
             <Home className="h-4 w-4" />
           </Link>
-          <nav aria-label="Breadcrumb" className="hidden min-w-0 items-center gap-1 text-xs text-fw-gray-400 md:flex">
+          <nav
+            aria-label="Breadcrumb"
+            className="hidden min-w-0 items-center gap-1 text-xs text-fw-gray-400 md:flex"
+          >
             {breadcrumbs.map((crumb, i) => (
               <span key={`${crumb}-${i}`} className="flex items-center gap-1 truncate">
                 {i > 0 ? <ChevronRight className="h-3 w-3 shrink-0 opacity-50" /> : null}
-                <span className={cn("truncate", i === breadcrumbs.length - 1 && "font-medium text-fw-gray-700")}>
+                <span
+                  className={cn(
+                    'truncate',
+                    i === breadcrumbs.length - 1 && 'font-medium text-fw-gray-700',
+                  )}
+                >
                   {crumb}
                 </span>
               </span>
@@ -84,8 +95,8 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
           <div className="hidden items-center gap-2 rounded-fw-btn border border-fw-gray-100 bg-fw-white px-3 py-1.5 sm:flex">
             <Sparkles className="h-3.5 w-3.5 text-fw-orange" />
             <div className="text-left">
-              <p className="text-xs font-medium text-fw-gray-900">{userProfile.name}</p>
-              <p className="text-[11px] text-fw-gray-400">{userProfile.role}</p>
+              <p className="text-xs font-medium text-fw-gray-900">{userName || 'Loading…'}</p>
+              <p className="text-[11px] text-fw-gray-400">{userEmail}</p>
             </div>
           </div>
         </div>

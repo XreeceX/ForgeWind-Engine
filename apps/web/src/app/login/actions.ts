@@ -28,17 +28,15 @@ export async function loginWithCredentials(
   const destination = safeCallbackPath(callbackUrl, '/forgewind-engine');
 
   try {
-    const responseUrl = await signIn('credentials', {
+    // Do NOT use redirect: false — Auth.js must throw NEXT_REDIRECT so that the
+    // session cookie is included in the redirect response. We only catch AuthError
+    // (wrong credentials). All other throws (including NEXT_REDIRECT on success)
+    // are re-thrown so Next.js can handle them.
+    await signIn('credentials', {
       email: normalised,
       password: trimmedPassword,
-      redirect: false,
       redirectTo: destination,
     });
-
-    // Auth.js returns the error redirect URL when credentials fail
-    if (typeof responseUrl === 'string' && responseUrl.includes('error=')) {
-      return { ok: false, error: 'Invalid email or password' };
-    }
   } catch (error) {
     if (error instanceof AuthError) {
       return { ok: false, error: 'Invalid email or password' };
@@ -46,6 +44,7 @@ export async function loginWithCredentials(
     throw error;
   }
 
+  // Fallback — signIn always redirects on success so this is unreachable in practice.
   redirect(destination);
 }
 

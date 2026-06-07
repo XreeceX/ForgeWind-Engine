@@ -6,7 +6,7 @@
     "deploy": true
   },
   "scripts": {
-    "build": "nest build",
+    "build": "prisma generate && nest build",
     "dev": "nest start --watch",
     "start": "node dist/main",
     "start:prod": "node dist/main",

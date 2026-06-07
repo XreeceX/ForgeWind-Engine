@@ -5,27 +5,10 @@ export const baseEnvSchema = z.object({
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
 });
 
-export const databaseEnvSchema = z
-  .object({
-    DATABASE_URL: z.string().url('DATABASE_URL must be a valid connection string'),
-  })
-  .superRefine((data, ctx) => {
-    if (process.env.NODE_ENV !== 'production') return;
-
-    try {
-      const host = new URL(data.DATABASE_URL).hostname;
-      if (host === 'localhost' || host === '127.0.0.1') {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            'DATABASE_URL must not point at localhost in production — set your Neon pooled URL in Railway/Vercel',
-          path: ['DATABASE_URL'],
-        });
-      }
-    } catch {
-      // url() already validated
-    }
-  });
+// Plain ZodObject — no superRefine so .merge() works correctly downstream.
+export const databaseEnvSchema = z.object({
+  DATABASE_URL: z.string().url('DATABASE_URL must be a valid connection string'),
+});
 
 export const jwtEnvSchema = z.object({
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
@@ -45,11 +28,63 @@ export const authEnvSchema = z.object({
 
 export const serviceEnvSchema = baseEnvSchema;
 
-export const databaseServiceEnvSchema = baseEnvSchema.merge(databaseEnvSchema);
+// Merge first, then apply superRefine for the localhost production guard.
+export const databaseServiceEnvSchema = baseEnvSchema
+  .merge(databaseEnvSchema)
+  .superRefine((data, ctx) => {
+    if (data.NODE_ENV !== 'production') return;
+    try {
+      const host = new URL(data.DATABASE_URL).hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            'DATABASE_URL must not point at localhost in production — set your Neon pooled URL in Railway/Vercel',
+          path: ['DATABASE_URL'],
+        });
+      }
+    } catch {
+      // url() already validated the format
+    }
+  });
 
-export const userServiceEnvSchema = databaseServiceEnvSchema.merge(jwtEnvSchema);
+export const userServiceEnvSchema = baseEnvSchema
+  .merge(databaseEnvSchema)
+  .merge(jwtEnvSchema)
+  .superRefine((data, ctx) => {
+    if (data.NODE_ENV !== 'production') return;
+    try {
+      const host = new URL(data.DATABASE_URL).hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'DATABASE_URL must not point at localhost in production',
+          path: ['DATABASE_URL'],
+        });
+      }
+    } catch {
+      // already validated
+    }
+  });
 
-export const forgewindApiEnvSchema = databaseServiceEnvSchema.merge(jwtEnvSchema);
+export const forgewindApiEnvSchema = baseEnvSchema
+  .merge(databaseEnvSchema)
+  .merge(jwtEnvSchema)
+  .superRefine((data, ctx) => {
+    if (data.NODE_ENV !== 'production') return;
+    try {
+      const host = new URL(data.DATABASE_URL).hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'DATABASE_URL must not point at localhost in production',
+          path: ['DATABASE_URL'],
+        });
+      }
+    } catch {
+      // already validated
+    }
+  });
 
 export const gatewayEnvSchema = baseEnvSchema.merge(jwtEnvSchema.partial());
 

@@ -1,7 +1,9 @@
-# ── Stage 1: Build ────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+ENV HUSKY=0
+ENV NODE_ENV=production
+
+RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 WORKDIR /app
 
@@ -14,21 +16,10 @@ RUN pnpm install --frozen-lockfile
 COPY apps/api-gateway/ apps/api-gateway/
 COPY tsconfig.base.json ./
 
-RUN pnpm --filter api-gateway build
-
-# ── Stage 2: Production ──────────────────────────────────────
-FROM node:20-alpine AS production
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-WORKDIR /app
-
-COPY --from=builder /app/apps/api-gateway/dist ./dist
-COPY --from=builder /app/apps/api-gateway/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-
-USER appuser
+RUN pnpm --filter @forgewind-engine/config build \
+  && pnpm --filter @forgewind-engine/utils build \
+  && pnpm --filter @forgewind-engine/api-gateway build
 
 EXPOSE 4000
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "apps/api-gateway/dist/main.js"]

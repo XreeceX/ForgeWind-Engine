@@ -4,6 +4,7 @@ import type { NextAuthConfig } from 'next-auth';
 const PUBLIC_PREFIXES = ['/login', '/signup', '/api/auth'] as const;
 
 function isPublicPath(pathname: string): boolean {
+  if (pathname === '/') return true;
   if (pathname === '/favicon.ico') return true;
   if (pathname.startsWith('/_next')) return true;
   if (pathname.startsWith('/public/')) return true;

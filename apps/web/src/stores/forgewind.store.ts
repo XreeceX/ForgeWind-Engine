@@ -85,45 +85,32 @@ interface ForgeWindState {
   setChatOverlayOpen: (open: boolean) => void;
 }
 
-const now = new Date().toISOString();
-
 export const useForgeWindStore = create<ForgeWindState>()(
   persist(
     (set, _get) => ({
       forgeWindUserId: null,
       agentSnapshot: null,
       userProfile: {
-        id: 'local-session',
-        name: 'Alex Chen',
-        role: 'Senior Software Engineer',
-        headline: 'Building AI products with strong systems thinking',
-        primaryGoal: 'Move into a staff-level backend role in 2026',
+        id: '',
+        name: '',
+        role: '',
+        headline: '',
+        primaryGoal: '',
       },
       repositories: [],
       selectedRepositoryId: '',
       aiAnalysis: {
-        status: 'ready',
-        focus: 'Role-fit and content signal quality',
-        lastRunAt: now,
-        findings: [
-          'Strong architecture language increases recruiter response rate.',
-          'Recent commits map well to platform engineering narratives.',
-        ],
+        status: 'idle',
+        focus: '',
+        lastRunAt: null,
+        findings: [],
       },
-      generatedContent: [
-        {
-          id: 'content-seed-1',
-          title: 'Scaling API reliability without slowing delivery',
-          channel: 'linkedin',
-          body: 'This week I focused on reliability guardrails in our API layer...',
-          createdAt: now,
-        },
-      ],
+      generatedContent: [],
       memoryContext: {
-        careerNarrative: 'Backend engineer growing toward staff-level ownership.',
-        strengths: ['System design', 'Execution speed', 'Cross-team communication'],
-        gaps: ['Public proof of impact', 'Leadership storytelling'],
-        preferredTone: 'Technical and concise',
+        careerNarrative: '',
+        strengths: [],
+        gaps: [],
+        preferredTone: 'professional',
       },
       commandPaletteOpen: false,
       activeNarrativeSection: 'identity',
@@ -205,6 +192,6 @@ export const useForgeWindStore = create<ForgeWindState>()(
       setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
       setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),
-    { name: 'forgewind-web-state-v2' },
+    { name: 'forgewind-web-state-v3' },
   ),
 );

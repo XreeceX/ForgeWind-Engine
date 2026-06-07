@@ -1,5 +1,5 @@
-import { ForgeWindExperience } from "@/components/cinematic/forgewind-experience";
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return <ForgeWindExperience />;
+export default function ProtectedHome() {
+  redirect('/forgewind-engine');
 }

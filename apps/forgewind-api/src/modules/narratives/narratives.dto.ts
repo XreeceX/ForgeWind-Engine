@@ -4,6 +4,8 @@ export const narrativeTypes = [
   'bio',
   'project_summary',
   'commit_story',
+  'profile_optimization',
+  'skill_analysis',
 ] as const;
 
 export type NarrativeType = (typeof narrativeTypes)[number];

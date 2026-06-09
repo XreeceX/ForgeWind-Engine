@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { AIResponseBlock } from "@/components/ai-studio/ai-response-block";
-import { PromptInputBox } from "@/components/ai-studio/prompt-input-box";
-import type { RepositorySummary } from "@/stores/forgewind.store";
+import { useState } from 'react';
+import { Sparkles } from 'lucide-react';
+import { PromptInputBox } from '@/components/ai-studio/prompt-input-box';
+import type { RepositorySummary } from '@/stores/forgewind.store';
 
 interface AIChatPanelProps {
   selectedRepository?: RepositorySummary;
@@ -11,43 +11,58 @@ interface AIChatPanelProps {
 
 type ChatMessage = {
   id: string;
-  title: string;
+  role: 'user' | 'assistant';
   content: string;
-  tone: "insight" | "actionable";
 };
 
 export function AIChatPanel({ selectedRepository }: AIChatPanelProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: "seed-1",
-      title: "AI insight",
-      content: "Your repository architecture suggests strong backend ownership potential.",
-      tone: "insight",
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  const repositoryContext = useMemo(
-    () => selectedRepository?.fullName ?? "No repository selected",
-    [selectedRepository],
-  );
+  const repoContext = selectedRepository?.fullName ?? null;
 
   function onPrompt(prompt: string) {
-    const response: ChatMessage = {
+    const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
-      title: "AI response",
-      content: `Using context from ${repositoryContext}, I suggest focusing this prompt on measurable outcomes: "${prompt}".`,
-      tone: "actionable",
+      role: 'user',
+      content: prompt,
     };
-    setMessages((prev) => [...prev, response]);
+    const assistantMsg: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content:
+        'AI-powered responses are coming soon. In the meantime, try syncing a repository from the Overview page to build your career context.',
+    };
+    setMessages((prev) => [...prev, userMsg, assistantMsg]);
   }
 
   return (
-    <div className="space-y-3">
-      <div className="max-h-[420px] space-y-3 overflow-y-auto pr-1">
-        {messages.map((message) => (
-          <AIResponseBlock key={message.id} title={message.title} content={message.content} tone={message.tone} />
-        ))}
-      </div>
+    <div className="flex flex-col gap-4">
+      {messages.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-12 text-center">
+          <Sparkles className="mb-3 h-8 w-8 text-primary-400/60" />
+          <p className="text-sm font-medium text-foreground">ForgeWind AI Copilot</p>
+          <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+            {repoContext
+              ? `Ask anything about your career or ${repoContext}.`
+              : 'Connect a repository first to unlock context-aware responses.'}
+          </p>
+        </div>
+      ) : (
+        <div className="max-h-[380px] space-y-3 overflow-y-auto pr-1">
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`rounded-lg px-4 py-3 text-sm ${
+                msg.role === 'user'
+                  ? 'ml-8 bg-primary-500/10 text-foreground'
+                  : 'mr-8 border border-border bg-surface text-muted-foreground'
+              }`}
+            >
+              {msg.content}
+            </div>
+          ))}
+        </div>
+      )}
       <PromptInputBox onSubmit={onPrompt} />
     </div>
   );

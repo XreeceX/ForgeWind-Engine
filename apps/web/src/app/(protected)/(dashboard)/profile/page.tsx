@@ -1,293 +1,261 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Header } from "@/components/layout/header";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import {
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  Plus,
-  X,
-  Linkedin,
-  MapPin,
-  Building,
-  ExternalLink,
-} from "lucide-react";
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { Header } from '@/components/layout/header';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Sparkles, User, Save, Loader2, Linkedin, Target } from 'lucide-react';
+import { getUserServiceUrl } from '@/lib/forgewind-api';
+import toast from 'react-hot-toast';
 
-const suggestions = [
-  {
-    id: "1",
-    section: "Headline",
-    current: "Software Engineer",
-    suggested:
-      "Senior Software Engineer | Building AI-Powered Products | Ex-Google | Open Source Contributor",
-    impact: "high" as const,
-  },
-  {
-    id: "2",
-    section: "About",
-    current: "I am a software engineer with 5 years of experience.",
-    suggested:
-      "Passionate technologist with 5+ years crafting scalable systems at the intersection of AI and product engineering. Led teams shipping features used by 10M+ users at Google. Now focused on democratizing career tools with AI.",
-    impact: "high" as const,
-  },
-  {
-    id: "3",
-    section: "Skills",
-    current: "Missing key skills",
-    suggested: "Add: System Design, LLM Integration, Technical Leadership",
-    impact: "medium" as const,
-  },
-  {
-    id: "4",
-    section: "Experience",
-    current: "Weak bullet points",
-    suggested:
-      "Add quantified achievements: 'Reduced API latency by 40%' instead of 'Worked on APIs'",
-    impact: "medium" as const,
-  },
-];
+interface UserProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  headline?: string | null;
+  bio?: string | null;
+}
 
-const profileSections = [
-  {
-    id: "headline",
-    label: "Headline",
-    value:
-      "Senior Software Engineer | AI Enthusiast | Building the Future of Work",
-  },
-  {
-    id: "about",
-    label: "About",
-    value:
-      "Passionate software engineer with 5+ years of experience building scalable web applications. Skilled in React, Node.js, TypeScript, and Python. Currently exploring AI/ML applications in career technology. Previously at Google and two early-stage startups.",
-  },
-  {
-    id: "experience",
-    label: "Current Role",
-    value:
-      "Senior Software Engineer at TechCorp — Leading a team of 5 engineers building AI-powered analytics platform. Shipped v2.0 reducing processing time by 60%. Stack: TypeScript, React, Python, AWS.",
-  },
-];
+interface CareerGoals {
+  targetRole?: string | null;
+  targetIndustry?: string | null;
+  yearsOfExperience?: number | null;
+}
 
-const skills = [
-  "TypeScript",
-  "React",
-  "Node.js",
-  "Python",
-  "AWS",
-  "System Design",
-  "GraphQL",
-  "PostgreSQL",
-  "Docker",
-  "Kubernetes",
-  "CI/CD",
-  "Machine Learning",
-];
+async function fetchMe(token: string): Promise<UserProfile> {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to load profile');
+  return res.json() as Promise<UserProfile>;
+}
+
+async function fetchCareerGoals(token: string): Promise<CareerGoals> {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me/career-goals`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return {};
+  return res.json() as Promise<CareerGoals>;
+}
+
+async function patchMe(token: string, data: Partial<UserProfile>): Promise<UserProfile> {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update profile');
+  return res.json() as Promise<UserProfile>;
+}
+
+async function patchCareerGoals(token: string, data: CareerGoals): Promise<CareerGoals> {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me/career-goals`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Failed to update career goals');
+  return res.json() as Promise<CareerGoals>;
+}
 
 export default function ProfilePage() {
-  const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(
-    new Set()
-  );
-  const [userSkills, setUserSkills] = useState(skills);
-  const [newSkill, setNewSkill] = useState("");
+  const { data: session } = useSession();
+  const accessToken = (session as { accessToken?: string } | null)?.accessToken;
 
-  function applySuggestion(id: string) {
-    setAppliedSuggestions((prev) => new Set(prev).add(id));
-  }
+  const profileQuery = useQuery({
+    queryKey: ['user-profile'],
+    enabled: !!accessToken,
+    queryFn: () => fetchMe(accessToken!),
+  });
 
-  function addSkill() {
-    if (newSkill.trim() && !userSkills.includes(newSkill.trim())) {
-      setUserSkills((prev) => [...prev, newSkill.trim()]);
-      setNewSkill("");
+  const goalsQuery = useQuery({
+    queryKey: ['career-goals'],
+    enabled: !!accessToken,
+    queryFn: () => fetchCareerGoals(accessToken!),
+  });
+
+  const [headline, setHeadline] = useState('');
+  const [bio, setBio] = useState('');
+  const [targetRole, setTargetRole] = useState('');
+  const [targetIndustry, setTargetIndustry] = useState('');
+
+  useEffect(() => {
+    if (profileQuery.data) {
+      setHeadline(profileQuery.data.headline ?? '');
+      setBio(profileQuery.data.bio ?? '');
     }
-  }
+  }, [profileQuery.data]);
 
-  function removeSkill(skill: string) {
-    setUserSkills((prev) => prev.filter((s) => s !== skill));
-  }
+  useEffect(() => {
+    if (goalsQuery.data) {
+      setTargetRole(goalsQuery.data.targetRole ?? '');
+      setTargetIndustry(goalsQuery.data.targetIndustry ?? '');
+    }
+  }, [goalsQuery.data]);
+
+  const updateProfile = useMutation({
+    mutationFn: () => patchMe(accessToken!, { headline, bio }),
+    onSuccess: () => toast.success('Profile updated'),
+    onError: () => toast.error('Failed to update profile'),
+  });
+
+  const updateGoals = useMutation({
+    mutationFn: () => patchCareerGoals(accessToken!, { targetRole, targetIndustry }),
+    onSuccess: () => toast.success('Career goals updated'),
+    onError: () => toast.error('Failed to update career goals'),
+  });
+
+  const profile = profileQuery.data;
+  const displayName = profile
+    ? `${profile.firstName} ${profile.lastName}`.trim()
+    : (session?.user?.name ?? '');
+  const email = profile?.email ?? session?.user?.email ?? '';
+  const initials = displayName
+    ? displayName
+        .split(' ')
+        .slice(0, 2)
+        .map((w) => w[0])
+        .join('')
+        .toUpperCase()
+    : '?';
+
+  const isLoading = !accessToken || profileQuery.isLoading;
 
   return (
     <div>
-      <Header title="Profile" subtitle="Optimize your LinkedIn profile with AI" />
+      <Header title="Profile" subtitle="Manage your career profile" />
 
       <div className="p-6 space-y-6">
-        {/* Profile Preview + Completeness */}
-        <div className="grid grid-cols-12 gap-6">
-          <Card className="col-span-12 lg:col-span-5 p-6">
-            <div className="flex items-start gap-4">
-              <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-primary-400 text-xl font-bold">
-                AC
-              </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-lg font-semibold text-foreground">Alex Chen</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">
-                  Senior Software Engineer | AI Enthusiast
-                </p>
-                <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                  <span className="flex items-center gap-1">
-                    <MapPin className="h-3 w-3" /> San Francisco, CA
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Building className="h-3 w-3" /> TechCorp
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 mt-3">
-                  <Badge variant="success">Open to Work</Badge>
-                  <Badge variant="primary">
-                    <Linkedin className="h-3 w-3 mr-1" /> Connected
-                  </Badge>
-                </div>
-              </div>
+        {/* Identity card */}
+        <Card className="p-6">
+          <div className="flex items-start gap-5">
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-primary-500 text-xl font-bold">
+              {isLoading ? <Loader2 className="h-6 w-6 animate-spin" /> : initials}
             </div>
-
-            <div className="mt-6 pt-5 border-t border-border">
-              <Progress
-                value={82}
-                label="Profile Completeness"
-                variant="accent"
-                size="md"
-              />
-              <div className="flex items-center gap-4 mt-4 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1">
-                  <CheckCircle2 className="h-3 w-3 text-emerald-600" /> 8/10
-                  sections completed
-                </span>
-                <span className="flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3 text-amber-600" /> 2
-                  improvements needed
-                </span>
-              </div>
+            <div className="min-w-0">
+              <h2 className="text-lg font-semibold text-foreground">
+                {isLoading ? 'Loading…' : displayName || 'Your Name'}
+              </h2>
+              <p className="text-sm text-muted-foreground">{email}</p>
+              {headline && <p className="mt-1 text-sm text-muted-foreground">{headline}</p>}
             </div>
-
-            <Button className="w-full mt-4" variant="secondary" size="sm">
-              <ExternalLink className="h-3.5 w-3.5" />
-              View on LinkedIn
-            </Button>
-          </Card>
-
-          {/* AI Suggestions */}
-          <Card className="col-span-12 lg:col-span-7">
-            <div className="flex items-center justify-between px-6 pt-5 pb-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary-400" />
-                <h3 className="text-base font-semibold text-foreground">
-                  AI Suggestions
-                </h3>
-              </div>
-              <Badge variant="primary">
-                {suggestions.length - appliedSuggestions.size} remaining
-              </Badge>
-            </div>
-            <div className="px-6 pb-5 space-y-3">
-              {suggestions.map((s) => {
-                const applied = appliedSuggestions.has(s.id);
-                return (
-                  <div
-                    key={s.id}
-                    className={`rounded-lg border p-4 transition-all ${
-                      applied
-                        ? "border-emerald-500/20 bg-emerald-500/5"
-                        : "border-border bg-surface-light/30 hover:border-border-light"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-foreground">
-                          {s.section}
-                        </span>
-                        <Badge
-                          variant={
-                            s.impact === "high" ? "danger" : "warning"
-                          }
-                        >
-                          {s.impact} impact
-                        </Badge>
-                      </div>
-                      {applied ? (
-                        <Badge variant="success">
-                          <CheckCircle2 className="h-3 w-3 mr-1" /> Applied
-                        </Badge>
-                      ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => applySuggestion(s.id)}
-                        >
-                          Apply
-                        </Button>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground line-through mb-1">
-                      {s.current}
-                    </p>
-                    <p className="text-sm text-fw-gray-700">{s.suggested}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        </div>
-
-        {/* Section Editors */}
-        <div className="space-y-4">
-          <h3 className="text-base font-semibold text-foreground px-1">
-            Profile Sections
-          </h3>
-          {profileSections.map((section) => (
-            <Card key={section.id} className="p-5">
-              <div className="flex items-center justify-between mb-3">
-                <h4 className="text-sm font-semibold text-foreground">
-                  {section.label}
-                </h4>
-                <Button variant="secondary" size="sm">
-                  <Sparkles className="h-3.5 w-3.5 text-primary-400" />
-                  AI Optimize
-                </Button>
-              </div>
-              <textarea
-                defaultValue={section.value}
-                rows={section.id === "about" ? 4 : 2}
-                className="w-full rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/25 resize-none"
-              />
-            </Card>
-          ))}
-        </div>
-
-        {/* Skills Section */}
-        <Card className="p-5">
-          <h4 className="text-sm font-semibold text-foreground mb-4">Skills</h4>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {userSkills.map((skill) => (
-              <span
-                key={skill}
-                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-light px-3 py-1.5 text-sm text-fw-gray-700"
-              >
-                {skill}
-                <button
-                  onClick={() => removeSkill(skill)}
-                  className="text-muted-foreground hover:text-danger transition-colors duration-200"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </span>
-            ))}
           </div>
+        </Card>
+
+        {/* Edit profile fields */}
+        <Card className="p-6 space-y-5">
           <div className="flex items-center gap-2">
-            <Input
-              placeholder="Add a skill..."
-              value={newSkill}
-              onChange={(e) => setNewSkill(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && addSkill()}
-              className="max-w-xs"
-            />
-            <Button variant="secondary" size="sm" onClick={addSkill}>
-              <Plus className="h-4 w-4" />
-              Add
-            </Button>
+            <User className="h-5 w-5 text-primary-400" />
+            <h3 className="text-base font-semibold text-foreground">Edit Profile</h3>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Professional headline
+              </label>
+              <Input
+                value={headline}
+                onChange={(e) => setHeadline(e.target.value)}
+                placeholder="e.g. Senior Software Engineer | Open to work"
+                disabled={isLoading}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">Bio</label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                rows={4}
+                placeholder="A short summary of your background and goals…"
+                disabled={isLoading}
+                className="w-full resize-none rounded-lg border border-border bg-surface px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/25 disabled:opacity-50"
+              />
+            </div>
+          </div>
+
+          <Button
+            onClick={() => updateProfile.mutate()}
+            disabled={isLoading || updateProfile.isPending}
+          >
+            {updateProfile.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            Save changes
+          </Button>
+        </Card>
+
+        {/* Career goals */}
+        <Card className="p-6 space-y-5">
+          <div className="flex items-center gap-2">
+            <Target className="h-5 w-5 text-amber-400" />
+            <h3 className="text-base font-semibold text-foreground">Career Goals</h3>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Target role
+              </label>
+              <Input
+                value={targetRole}
+                onChange={(e) => setTargetRole(e.target.value)}
+                placeholder="e.g. Staff Engineer, Engineering Manager"
+                disabled={isLoading || goalsQuery.isLoading}
+              />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-foreground">
+                Target industry
+              </label>
+              <Input
+                value={targetIndustry}
+                onChange={(e) => setTargetIndustry(e.target.value)}
+                placeholder="e.g. FinTech, AI / ML, SaaS"
+                disabled={isLoading || goalsQuery.isLoading}
+              />
+            </div>
+          </div>
+
+          <Button
+            variant="secondary"
+            onClick={() => updateGoals.mutate()}
+            disabled={isLoading || goalsQuery.isLoading || updateGoals.isPending}
+          >
+            {updateGoals.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            Save goals
+          </Button>
+        </Card>
+
+        {/* LinkedIn integration placeholder */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-3">
+            <Linkedin className="h-5 w-5 text-sky-500" />
+            <h3 className="text-base font-semibold text-foreground">LinkedIn Integration</h3>
+          </div>
+          <div className="flex flex-col items-center justify-center py-6 text-center rounded-xl border border-dashed border-border">
+            <Sparkles className="mb-3 h-8 w-8 text-muted-foreground/40" />
+            <p className="text-sm font-medium text-foreground">Coming soon</p>
+            <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+              LinkedIn profile import and AI-powered optimization will be available in a future
+              update.
+            </p>
           </div>
         </Card>
       </div>

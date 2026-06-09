@@ -59,11 +59,18 @@ export type ForgeWindApiRepoSnapshot = {
   rawSignal: Record<string, unknown>;
 };
 
+export type ForgeWindNarrativeType =
+  | 'bio'
+  | 'project_summary'
+  | 'commit_story'
+  | 'profile_optimization'
+  | 'skill_analysis';
+
 export type ForgeWindApiNarrative = {
   id: string;
   userId: string;
   repoId: string | null;
-  type: string;
+  type: ForgeWindNarrativeType | string;
   content: string;
   modelVersion: string;
   generatedAt: string;

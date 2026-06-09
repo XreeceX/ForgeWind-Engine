@@ -15,6 +15,8 @@ export const narrativeTypeEnum = pgEnum('narrative_type', [
   'bio',
   'project_summary',
   'commit_story',
+  'profile_optimization',
+  'skill_analysis',
 ]);
 
 export const opportunitySourceEnum = pgEnum('opportunity_source', [

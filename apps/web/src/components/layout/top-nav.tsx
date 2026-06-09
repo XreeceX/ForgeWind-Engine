@@ -3,8 +3,9 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronRight, Command, Home, Menu, Sparkles } from 'lucide-react';
+import { ChevronRight, Command, Home, Menu, Moon, Sparkles, Sun } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { useForgeWindStore } from '@/stores/forgewind.store';
 import { cn } from '@/lib/cn';
@@ -26,6 +27,7 @@ interface TopNavProps {
 export function TopNav({ onOpenSidebar }: TopNavProps) {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const { resolvedTheme, setTheme } = useTheme();
   const setCommandPaletteOpen = useForgeWindStore((state) => state.setCommandPaletteOpen);
   const userName = session?.user?.name ?? '';
   const userEmail = session?.user?.email ?? '';
@@ -80,6 +82,14 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
         </h1>
 
         <div className="flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+            className="rounded-fw-btn p-2 text-fw-gray-400 transition-colors duration-200 hover:bg-fw-gray-50 dark:hover:bg-white/5"
+            aria-label="Toggle dark mode"
+          >
+            {resolvedTheme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
           <Button
             size="sm"
             variant="secondary"

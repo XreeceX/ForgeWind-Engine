@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import type { AuthenticatedForgeWindUser } from '../auth/jwt.strategy';
@@ -13,6 +22,11 @@ export class MatchesController {
   @Get()
   list(@CurrentUser() user: AuthenticatedForgeWindUser) {
     return this.matches.listForUser(user.id);
+  }
+
+  @Post('generate')
+  generate(@CurrentUser() user: AuthenticatedForgeWindUser) {
+    return this.matches.generate(user.id);
   }
 
   @Patch(':id/status')

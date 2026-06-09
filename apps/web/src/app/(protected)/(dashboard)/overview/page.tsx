@@ -29,6 +29,7 @@ export default function OverviewPage() {
   const patchRepository = useForgeWindStore((state) => state.patchRepository);
   const setSelectedRepository = useForgeWindStore((state) => state.setSelectedRepository);
   const generatedContent = useForgeWindStore((state) => state.generatedContent);
+  const aiAnalysis = useForgeWindStore((state) => state.aiAnalysis);
 
   const [syncingRepoId, setSyncingRepoId] = useState<string | null>(null);
   const [openConnectModal, setOpenConnectModal] = useState(false);
@@ -158,7 +159,11 @@ export default function OverviewPage() {
 
   return (
     <div className="space-y-6">
-      <OverviewStatGrid repoCount={repositories.length} contentCount={generatedContent.length} />
+      <OverviewStatGrid
+        repoCount={repositories.length}
+        contentCount={generatedContent.length}
+        analysisReady={aiAnalysis.status === 'complete' || aiAnalysis.findings.length > 0}
+      />
 
       <div className="grid gap-6 xl:grid-cols-3">
         <motion.div

@@ -162,7 +162,7 @@ export default function OverviewPage() {
       <OverviewStatGrid
         repoCount={repositories.length}
         contentCount={generatedContent.length}
-        analysisReady={aiAnalysis.status === 'complete' || aiAnalysis.findings.length > 0}
+        analysisReady={aiAnalysis.status === 'ready' || aiAnalysis.findings.length > 0}
       />
 
       <div className="grid gap-6 xl:grid-cols-3">

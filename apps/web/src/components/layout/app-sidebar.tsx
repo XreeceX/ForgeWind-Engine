@@ -31,9 +31,9 @@ const primaryNav = [
   { href: '/overview', label: 'Overview', icon: LayoutDashboard },
   { href: '/data-hub', label: 'Data Hub', icon: Database },
   { href: '/ai-studio', label: 'AI Studio', icon: BrainCircuit },
-  { href: '/content', label: 'Content', icon: FileText },
+  { href: '/content', label: 'Posts', icon: FileText },
   { href: '/jobs', label: 'Jobs', icon: BriefcaseBusiness },
-  { href: '/memory', label: 'Memory', icon: MemoryStick },
+  { href: '/memory', label: 'Insights', icon: MemoryStick },
   { href: '/settings', label: 'Settings', icon: Settings },
 ] as const;
 

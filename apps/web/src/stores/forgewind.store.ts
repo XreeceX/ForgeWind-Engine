@@ -57,6 +57,32 @@ export interface ForgeWindAgentSnapshot {
   lastAction: string | null;
 }
 
+export interface ExperienceItem {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string | null;
+  description: string;
+  employmentType: string;
+}
+
+export interface EducationItem {
+  id: string;
+  school: string;
+  degree: string;
+  field: string;
+  startYear: string;
+  endYear: string;
+}
+
+export interface SkillItem {
+  id: string;
+  name: string;
+  category: string;
+}
+
 interface ForgeWindState {
   forgeWindUserId: string | null;
   agentSnapshot: ForgeWindAgentSnapshot | null;
@@ -66,9 +92,22 @@ interface ForgeWindState {
   aiAnalysis: AIAnalysisState;
   generatedContent: GeneratedContentItem[];
   memoryContext: MemoryContext;
+  openToWork: boolean;
+  experience: ExperienceItem[];
+  education: EducationItem[];
+  skills: SkillItem[];
   commandPaletteOpen: boolean;
   activeNarrativeSection: NarrativeSectionId;
   chatOverlayOpen: boolean;
+  setOpenToWork: (open: boolean) => void;
+  addExperience: (item: Omit<ExperienceItem, 'id'>) => void;
+  updateExperience: (id: string, patch: Partial<ExperienceItem>) => void;
+  removeExperience: (id: string) => void;
+  addEducation: (item: Omit<EducationItem, 'id'>) => void;
+  updateEducation: (id: string, patch: Partial<EducationItem>) => void;
+  removeEducation: (id: string) => void;
+  addSkill: (item: Omit<SkillItem, 'id'>) => void;
+  removeSkill: (id: string) => void;
   setForgeWindUserId: (id: string | null) => void;
   setRepositories: (repos: RepositorySummary[]) => void;
   applyForgeWindUserFromApi: (user: ForgeWindApiUser) => void;
@@ -112,6 +151,10 @@ export const useForgeWindStore = create<ForgeWindState>()(
         gaps: [],
         preferredTone: 'professional',
       },
+      openToWork: false,
+      experience: [],
+      education: [],
+      skills: [],
       commandPaletteOpen: false,
       activeNarrativeSection: 'identity',
       chatOverlayOpen: false,
@@ -188,10 +231,27 @@ export const useForgeWindStore = create<ForgeWindState>()(
             ...updates,
           },
         })),
+      setOpenToWork: (openToWork) => set({ openToWork }),
+      addExperience: (item) =>
+        set((s) => ({ experience: [{ ...item, id: crypto.randomUUID() }, ...s.experience] })),
+      updateExperience: (id, patch) =>
+        set((s) => ({
+          experience: s.experience.map((e) => (e.id === id ? { ...e, ...patch } : e)),
+        })),
+      removeExperience: (id) =>
+        set((s) => ({ experience: s.experience.filter((e) => e.id !== id) })),
+      addEducation: (item) =>
+        set((s) => ({ education: [{ ...item, id: crypto.randomUUID() }, ...s.education] })),
+      updateEducation: (id, patch) =>
+        set((s) => ({ education: s.education.map((e) => (e.id === id ? { ...e, ...patch } : e)) })),
+      removeEducation: (id) => set((s) => ({ education: s.education.filter((e) => e.id !== id) })),
+      addSkill: (item) =>
+        set((s) => ({ skills: [{ ...item, id: crypto.randomUUID() }, ...s.skills] })),
+      removeSkill: (id) => set((s) => ({ skills: s.skills.filter((sk) => sk.id !== id) })),
       setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
       setActiveNarrativeSection: (activeNarrativeSection) => set({ activeNarrativeSection }),
       setChatOverlayOpen: (chatOverlayOpen) => set({ chatOverlayOpen }),
     }),
-    { name: 'forgewind-web-state-v3' },
+    { name: 'forgewind-web-state-v4' },
   ),
 );

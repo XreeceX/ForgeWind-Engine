@@ -1,10 +1,21 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronRight, Command, Home, Menu, Moon, Sparkles, Sun } from 'lucide-react';
-import { useSession } from 'next-auth/react';
+import {
+  ChevronRight,
+  Command,
+  Home,
+  LogOut,
+  Menu,
+  Moon,
+  Settings,
+  Sparkles,
+  Sun,
+  User,
+} from 'lucide-react';
+import { useSession, signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { useForgeWindStore } from '@/stores/forgewind.store';
@@ -31,6 +42,29 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
   const setCommandPaletteOpen = useForgeWindStore((state) => state.setCommandPaletteOpen);
   const userName = session?.user?.name ?? '';
   const userEmail = session?.user?.email ?? '';
+  const initials = userName
+    ? userName
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : '?';
+
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  /* Close on outside click */
+  useEffect(() => {
+    if (!profileOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [profileOpen]);
 
   const breadcrumbs = useMemo(() => {
     if (pathname === '/' || pathname === '') return ['Workspace'];
@@ -85,7 +119,7 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
           ForgeWind workspace
         </h1>
 
-        {/* Right — theme toggle + command + user chip */}
+        {/* Right — theme toggle + command + user menu */}
         <div className="flex items-center justify-end gap-2">
           {/* Dark / Light toggle */}
           <button
@@ -111,12 +145,73 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
             </span>
           </Button>
 
-          <div className="hidden items-center gap-2 rounded-fw-btn border border-border bg-panel px-3 py-1.5 sm:flex">
-            <Sparkles className="h-3.5 w-3.5 text-fw-orange" />
-            <div className="text-left">
-              <p className="text-xs font-medium text-foreground">{userName || 'Loading…'}</p>
-              <p className="text-[11px] text-muted-foreground">{userEmail}</p>
-            </div>
+          {/* Profile chip + dropdown */}
+          <div className="relative hidden sm:block" ref={profileRef}>
+            <button
+              type="button"
+              onClick={() => setProfileOpen((v) => !v)}
+              className={cn(
+                'flex items-center gap-2 rounded-fw-btn border px-3 py-1.5 transition-colors duration-150',
+                profileOpen
+                  ? 'border-fw-orange bg-fw-orange-light/40'
+                  : 'border-border bg-panel hover:border-fw-orange-mid hover:bg-surface-light',
+              )}
+              aria-haspopup="true"
+              aria-expanded={profileOpen}
+            >
+              <Sparkles className="h-3.5 w-3.5 text-fw-orange" />
+              <div className="text-left">
+                <p className="text-xs font-medium text-foreground">{userName || 'Loading…'}</p>
+                <p className="text-[11px] text-muted-foreground">{userEmail}</p>
+              </div>
+            </button>
+
+            {/* Dropdown */}
+            {profileOpen && (
+              <div className="absolute right-0 top-full mt-2 w-56 rounded-fw-card border border-border bg-panel shadow-md z-50">
+                {/* Avatar row */}
+                <div className="flex items-center gap-3 border-b border-border px-4 py-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-sm font-semibold text-primary-600">
+                    {initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">{userName}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">{userEmail}</p>
+                  </div>
+                </div>
+
+                {/* Menu items */}
+                <div className="py-1">
+                  <Link
+                    href="/profile"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-sm text-foreground hover:bg-surface-light"
+                  >
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    View profile
+                  </Link>
+                  <Link
+                    href="/settings"
+                    onClick={() => setProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-sm text-foreground hover:bg-surface-light"
+                  >
+                    <Settings className="h-4 w-4 text-muted-foreground" />
+                    Settings
+                  </Link>
+                </div>
+
+                <div className="border-t border-border py-1">
+                  <button
+                    type="button"
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-red-500/10"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign out
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

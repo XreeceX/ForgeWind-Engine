@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Modal } from '@/components/ui/modal';
+import { SkeletonCard } from '@/components/ui/skeleton';
 import {
   type ForgeWindApiNarrative,
   type ForgeWindApiOpportunityMatch,
@@ -355,8 +356,10 @@ export default function JobsPage() {
 
       {/* Jobs list */}
       {apiReady && matchesQuery.isLoading ? (
-        <div className="flex items-center justify-center py-12 text-muted-foreground">
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Loading matches…
+        <div className="space-y-3">
+          <SkeletonCard lines={2} />
+          <SkeletonCard lines={2} />
+          <SkeletonCard lines={2} />
         </div>
       ) : filteredJobs.length === 0 ? (
         <Card className="flex flex-col items-center gap-3 py-14 text-center">

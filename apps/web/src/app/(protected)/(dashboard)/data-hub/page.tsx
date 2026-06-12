@@ -9,6 +9,7 @@ import { RepoCard } from '@/components/dashboard/repo-card';
 import { AnalysisDrawer } from '@/components/data-hub/analysis-drawer';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { SkeletonCard } from '@/components/ui/skeleton';
 import {
   forgeWindJson,
   getForgeWindApiBaseUrl,
@@ -209,9 +210,9 @@ export default function DataHubPage() {
 
       {/* Repo list */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-16 text-muted-foreground">
-          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-          Loading repositories…
+        <div className="grid gap-3 md:grid-cols-2">
+          <SkeletonCard lines={2} />
+          <SkeletonCard lines={2} />
         </div>
       ) : mappedRepos.length === 0 ? (
         <Card className="flex flex-col items-center gap-4 py-16 text-center">

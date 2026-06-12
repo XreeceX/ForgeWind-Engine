@@ -1,27 +1,31 @@
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/cn";
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/cn';
 
 interface AIResponseBlockProps {
   title: string;
   content: string;
-  tone?: "default" | "insight" | "actionable";
+  tone?: 'default' | 'insight' | 'actionable';
 }
 
 const toneMap = {
-  default: "border-border",
-  insight: "border-primary-500/30 bg-primary-500/8",
-  actionable: "border-emerald-500/25 bg-emerald-500/8",
+  default: 'border-border',
+  insight: 'border-primary-500/30 bg-primary-500/8',
+  actionable: 'border-emerald-500/25 bg-emerald-500/8',
 } as const;
 
-export function AIResponseBlock({ title, content, tone = "default" }: AIResponseBlockProps) {
+export function AIResponseBlock({ title, content, tone = 'default' }: AIResponseBlockProps) {
   return (
-    <Card className={cn("p-4", toneMap[tone])}>
+    <Card className={cn('p-4', toneMap[tone])}>
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-sm font-semibold text-foreground">{title}</p>
-        <Badge variant={tone === "actionable" ? "success" : tone === "insight" ? "primary" : "default"}>{tone}</Badge>
+        <Badge
+          variant={tone === 'actionable' ? 'success' : tone === 'insight' ? 'primary' : 'default'}
+        >
+          {tone}
+        </Badge>
       </div>
-      <p className="whitespace-pre-wrap text-sm leading-relaxed text-fw-gray-700">{content}</p>
+      <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/80">{content}</p>
     </Card>
   );
 }

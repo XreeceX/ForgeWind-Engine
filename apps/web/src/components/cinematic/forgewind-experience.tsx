@@ -140,8 +140,8 @@ export function ForgeWindExperience() {
         />
       </div>
 
-      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-fw-card border border-fw-gray-100 bg-fw-white/95 px-3 py-2 shadow-sm backdrop-blur-xl">
-        <div className="overflow-hidden rounded-lg ring-1 ring-fw-gray-100">
+      <div className="fixed left-4 top-5 z-50 flex items-center gap-2 rounded-fw-card border border-border bg-panel/90 px-3 py-2 shadow-sm backdrop-blur-xl">
+        <div className="overflow-hidden rounded-lg ring-1 ring-border">
           <ForgeWindLogo size={28} priority />
         </div>
         <span className="hidden pr-1 text-sm font-semibold text-foreground sm:inline">
@@ -149,11 +149,11 @@ export function ForgeWindExperience() {
         </span>
       </div>
 
-      <div className="fixed right-4 top-5 z-50 flex items-center gap-2 overflow-visible rounded-fw-card border border-fw-gray-100 bg-fw-white/95 px-3 py-2 shadow-sm backdrop-blur-xl">
+      <div className="fixed right-4 top-5 z-50 flex items-center gap-2 overflow-visible rounded-fw-card border border-border bg-panel/90 px-3 py-2 shadow-sm backdrop-blur-xl">
         {isAuthed ? (
           <Link
             href="/forgewind-engine"
-            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-fw-btn border border-transparent bg-fw-orange px-3 text-xs font-medium text-fw-white shadow-sm transition-all duration-200 ease-out hover:bg-fw-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
+            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-fw-btn border border-transparent bg-gradient-to-r from-fw-orange to-amber-500 px-3 text-xs font-medium text-white shadow-sm transition-all duration-200 ease-out hover:shadow-md hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
           >
             Open App
           </Link>
@@ -161,13 +161,13 @@ export function ForgeWindExperience() {
           <>
             <Link
               href="/login"
-              className="inline-flex h-8 items-center justify-center rounded-fw-btn border border-fw-gray-200 px-3 text-xs font-medium text-foreground transition-colors hover:bg-fw-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
+              className="inline-flex h-8 items-center justify-center rounded-fw-btn border border-border px-3 text-xs font-medium text-foreground transition-colors hover:bg-surface-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
             >
               Sign in
             </Link>
             <Link
               href="/signup"
-              className="inline-flex h-8 items-center justify-center rounded-fw-btn border border-transparent bg-fw-orange px-3 text-xs font-medium text-fw-white shadow-sm transition-all duration-200 ease-out hover:bg-fw-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
+              className="inline-flex h-8 items-center justify-center rounded-fw-btn border border-transparent bg-gradient-to-r from-fw-orange to-amber-500 px-3 text-xs font-medium text-white shadow-sm transition-all duration-200 ease-out hover:shadow-md hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fw-orange focus-visible:ring-offset-2"
             >
               Get started
             </Link>
@@ -182,7 +182,7 @@ export function ForgeWindExperience() {
           </p>
           <AnimatedTextReveal
             text="A scroll-driven model-forward operating system that turns profile and repo signal into strategic career momentum."
-            className="mt-4 max-w-4xl text-3xl font-semibold leading-tight text-foreground md:text-6xl"
+            className="mt-4 max-w-4xl bg-gradient-to-br from-foreground via-foreground to-fw-orange bg-clip-text text-3xl font-bold leading-tight tracking-tight text-transparent md:text-6xl"
           />
         </div>
       </header>
@@ -334,7 +334,7 @@ export function ForgeWindExperience() {
                   </p>
                   <Link
                     href="/signup"
-                    className="inline-flex h-8 items-center justify-center rounded-fw-btn border border-transparent bg-fw-orange px-3 text-xs font-medium text-fw-white shadow-sm transition-all duration-200 ease-out hover:bg-fw-deep"
+                    className="inline-flex h-8 items-center justify-center rounded-fw-btn border border-transparent bg-gradient-to-r from-fw-orange to-amber-500 px-3 text-xs font-medium text-white shadow-sm transition-all duration-200 ease-out hover:shadow-md hover:brightness-105"
                   >
                     Get started free
                   </Link>

@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useEffect, useId } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
-import { cn } from "@/lib/cn";
+import { useEffect, useId } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/cn';
 
 interface ModalProps {
   open: boolean;
@@ -11,16 +11,16 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   className?: string;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   closeOnOverlayClick?: boolean;
   showCloseButton?: boolean;
 }
 
 const sizeStyles = {
-  sm: "max-w-md",
-  md: "max-w-lg",
-  lg: "max-w-2xl",
-  xl: "max-w-4xl",
+  sm: 'max-w-md',
+  md: 'max-w-lg',
+  lg: 'max-w-2xl',
+  xl: 'max-w-4xl',
 };
 
 export function Modal({
@@ -29,7 +29,7 @@ export function Modal({
   title,
   children,
   className,
-  size = "md",
+  size = 'md',
   closeOnOverlayClick = true,
   showCloseButton = true,
 }: ModalProps) {
@@ -37,21 +37,21 @@ export function Modal({
 
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden';
     } else {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     }
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = '';
     };
   }, [open]);
 
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === 'Escape') onClose();
     }
-    if (open) document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    if (open) document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
   }, [open, onClose]);
 
   return (
@@ -62,7 +62,7 @@ export function Modal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute inset-0 bg-overlay backdrop-blur-sm"
             onClick={closeOnOverlayClick ? onClose : undefined}
           />
@@ -70,14 +70,14 @@ export function Modal({
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
             className={cn(
-              "relative w-full rounded-fw-modal border border-fw-gray-100 bg-fw-white shadow-sm",
+              'relative w-full rounded-fw-modal border border-border bg-panel shadow-lg',
               sizeStyles[size],
-              className
+              className,
             )}
           >
             {title && (

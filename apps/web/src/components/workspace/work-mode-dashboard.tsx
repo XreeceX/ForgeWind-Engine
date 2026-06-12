@@ -196,7 +196,7 @@ export function WorkModeDashboard() {
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-fw-orange">
               Repository intelligence
             </p>
-            <h2 className="mt-1 text-lg font-semibold text-fw-gray-900">Connected repos</h2>
+            <h2 className="mt-1 text-lg font-semibold text-foreground">Connected repos</h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {repositories.map((repo) => (
@@ -247,16 +247,16 @@ export function WorkModeDashboard() {
         />
 
         <div className="grid gap-6 lg:grid-cols-3">
-          <Card className="rounded-fw-card border border-fw-gray-100 bg-fw-white p-4 lg:col-span-2">
-            <p className="text-sm font-semibold text-fw-gray-900">Generated content</p>
+          <Card className="rounded-fw-card border border-border bg-panel p-4 lg:col-span-2">
+            <p className="text-sm font-semibold text-foreground">Generated content</p>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               {generatedContent.slice(0, 4).map((content) => (
                 <ContentPreviewCard key={content.id} content={content} />
               ))}
             </div>
           </Card>
-          <Card className="rounded-fw-card border border-fw-gray-100 bg-fw-white p-4">
-            <p className="text-sm font-semibold text-fw-gray-900">Opportunity feed</p>
+          <Card className="rounded-fw-card border border-border bg-panel p-4">
+            <p className="text-sm font-semibold text-foreground">Opportunity feed</p>
             <div className="mt-3 space-y-2">
               {!apiReady ? (
                 <div className="flex flex-col items-center justify-center py-6 text-center">

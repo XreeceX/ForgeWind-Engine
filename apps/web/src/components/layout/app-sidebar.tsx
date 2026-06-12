@@ -69,22 +69,24 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
 
   return (
     <>
+      {/* Mobile overlay */}
       <div
         className={cn(
-          'fixed inset-0 z-30 bg-fw-gray-900/20 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden',
+          'fixed inset-0 z-30 bg-foreground/20 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden',
           isOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
         )}
         onClick={onClose}
       />
+
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-fw-gray-100 bg-fw-white transition-transform duration-200',
-          /* Flex sibling on lg: stretch with main so background/border run full page height (not capped at 100vh). */
+          'fixed inset-y-0 left-0 z-40 flex h-full w-[260px] flex-col border-r border-border bg-panel transition-transform duration-200',
           'lg:relative lg:z-10 lg:h-auto lg:shrink-0 lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
         )}
       >
-        <div className="flex items-center justify-between gap-2 border-b border-fw-gray-100 px-4 py-4">
+        {/* Logo / header */}
+        <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-4">
           <Link
             href="/"
             onClick={onClose}
@@ -95,20 +97,21 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
               <ForgeWindLogo size={40} className="h-10 w-10" />
             </div>
             <div className="min-w-0 text-left">
-              <p className="text-sm font-semibold text-fw-gray-900">ForgeWind</p>
-              <p className="text-xs text-fw-gray-400">AIML intelligence layer</p>
+              <p className="text-sm font-semibold text-foreground">ForgeWind</p>
+              <p className="text-xs text-muted-foreground">AIML intelligence layer</p>
             </div>
           </Link>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-fw-btn p-2 text-fw-gray-400 transition-colors duration-200 hover:bg-fw-gray-50 lg:hidden"
+            className="rounded-fw-btn p-2 text-muted-foreground transition-colors duration-200 hover:bg-surface-light lg:hidden"
             aria-label="Close sidebar"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
+        {/* Nav links */}
         <nav className="flex-1 overflow-y-auto px-2 py-3">
           <motion.ul
             className="space-y-0.5"
@@ -133,7 +136,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                       'group flex h-12 items-center gap-3 rounded-r-[12px] border-l-[3px] pl-3 pr-3 text-sm font-medium transition-all duration-200',
                       isActive
                         ? 'border-l-fw-orange bg-fw-orange-light text-fw-orange'
-                        : 'border-l-transparent text-fw-gray-700 hover:border-l-fw-orange-mid hover:bg-fw-gray-50 hover:text-fw-orange',
+                        : 'border-l-transparent text-foreground hover:border-l-fw-orange-mid hover:bg-surface-light hover:text-fw-orange',
                     )}
                   >
                     <motion.span
@@ -157,7 +160,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                           'h-[18px] w-[18px] transition-transform duration-200 group-hover:translate-x-0.5',
                           isActive
                             ? 'text-fw-orange'
-                            : 'text-fw-gray-400 group-hover:text-fw-orange',
+                            : 'text-muted-foreground group-hover:text-fw-orange',
                         )}
                       />
                     </motion.span>
@@ -169,7 +172,8 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
           </motion.ul>
         </nav>
 
-        <div className="mt-auto border-t border-fw-gray-100 p-3 space-y-2">
+        {/* Footer */}
+        <div className="mt-auto border-t border-border p-3 space-y-2">
           {/* Active repo */}
           <div className="rounded-fw-card border border-fw-orange-mid bg-fw-orange-light/50 p-3">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-fw-orange">
@@ -178,33 +182,34 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
             <div className="mt-2 flex items-start gap-2">
               <FolderGit2 className="mt-0.5 h-4 w-4 shrink-0 text-fw-orange" />
               <div className="min-w-0">
-                <p className="truncate font-mono text-xs font-medium text-fw-gray-900">
+                <p className="truncate font-mono text-xs font-medium text-foreground">
                   {selectedRepo?.fullName ?? 'None selected'}
                 </p>
-                <p className="text-[11px] text-fw-gray-400">
+                <p className="text-[11px] text-muted-foreground">
                   {selectedRepo?.summary ?? 'Select a repository in Data Hub.'}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* User info + sign out */}
+          {/* User info */}
           <div className="flex items-center gap-2 rounded-fw-btn px-2 py-2">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-xs font-semibold text-primary-600">
               {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-fw-gray-900">
+              <p className="truncate text-sm font-medium text-foreground">
                 {userName || 'Loading…'}
               </p>
-              <p className="truncate text-[11px] text-fw-gray-400">{userEmail}</p>
+              <p className="truncate text-[11px] text-muted-foreground">{userEmail}</p>
             </div>
           </div>
 
+          {/* Sign out */}
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: '/' })}
-            className="flex w-full items-center gap-2.5 rounded-fw-btn px-3 py-2 text-sm font-medium text-red-500 transition-colors duration-200 hover:bg-red-50"
+            className="flex w-full items-center gap-2.5 rounded-fw-btn px-3 py-2 text-sm font-medium text-red-500 transition-colors duration-200 hover:bg-red-500/10"
           >
             <LogOut className="h-4 w-4" />
             Sign out

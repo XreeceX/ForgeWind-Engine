@@ -29,7 +29,7 @@ export function Providers({
   );
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
       <SessionProvider session={session}>
         <QueryClientProvider client={queryClient}>
           <AntiCopyProvider>{children}</AntiCopyProvider>

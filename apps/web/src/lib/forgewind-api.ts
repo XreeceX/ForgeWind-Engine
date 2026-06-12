@@ -3,22 +3,32 @@
  */
 
 export function getForgeWindApiBaseUrl(): string | null {
+  if (typeof window !== 'undefined') {
+    const publicUrl = process.env.NEXT_PUBLIC_FORGEWIND_API_URL?.trim();
+    if (publicUrl) return publicUrl;
+    return '/api/forgewind';
+  }
   const url =
-    process.env.NEXT_PUBLIC_FORGEWIND_API_URL?.trim() || process.env.FORGEWIND_API_URL?.trim();
+    process.env.FORGEWIND_API_URL?.trim() || process.env.NEXT_PUBLIC_FORGEWIND_API_URL?.trim();
   return url || null;
 }
 
 export function getUserServiceUrl(): string {
+  if (typeof window !== 'undefined') {
+    const publicUrl = process.env.NEXT_PUBLIC_USER_SERVICE_URL?.trim();
+    if (publicUrl) return publicUrl;
+    return '/api/user';
+  }
   return (
-    process.env.NEXT_PUBLIC_USER_SERVICE_URL?.trim() ||
     process.env.USER_SERVICE_URL?.trim() ||
+    process.env.NEXT_PUBLIC_USER_SERVICE_URL?.trim() ||
     'http://localhost:4001'
   );
 }
 
 export class ForgeWindApiNotConfiguredError extends Error {
   constructor() {
-    super('NEXT_PUBLIC_FORGEWIND_API_URL is not set');
+    super('ForgeWind API is not configured. Set FORGEWIND_API_URL on the server.');
     this.name = 'ForgeWindApiNotConfiguredError';
   }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Github, Loader2, Plus, RefreshCw, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -46,6 +47,7 @@ function parseRepoInput(raw: string): string {
 /* ────────────────────────────────────────────────── */
 
 export default function DataHubPage() {
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const accessToken = session?.accessToken as string | undefined;
   const queryClient = useQueryClient();
@@ -61,6 +63,13 @@ export default function DataHubPage() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const apiConfigured = !!getForgeWindApiBaseUrl();
+
+  useEffect(() => {
+    if (searchParams.get('connect') === '1') {
+      setConnectOpen(true);
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [searchParams]);
 
   /* ── Load repos from API ── */
   const { data: repos = [], isLoading } = useQuery<ForgeWindApiRepository[]>({

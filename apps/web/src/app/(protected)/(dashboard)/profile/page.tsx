@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
+import Image from 'next/image';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,7 @@ import {
   Briefcase,
   Building2,
   Calendar,
+  Camera,
   Check,
   GraduationCap,
   Loader2,
@@ -41,34 +43,80 @@ interface UserProfile {
   email: string;
   headline?: string | null;
   bio?: string | null;
+  avatarUrl?: string | null;
 }
 interface CareerGoals {
   targetRole?: string | null;
-  targetIndustry?: string | null;
-  yearsOfExperience?: number | null;
+  targetIndustries?: string[];
 }
+interface UserProfileApiResponse {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarUrl?: string | null;
+  linkedinProfile?: { headline?: string | null; about?: string | null } | null;
+  careerGoals?: { targetRole?: string | null; targetIndustries?: string[] } | null;
+}
+
+async function readApiError(res: Response, fallback: string): Promise<string> {
+  const text = await res.text();
+  try {
+    const json = JSON.parse(text) as { message?: string | string[] };
+    const msg = json.message;
+    if (Array.isArray(msg)) return msg.join(', ');
+    if (msg) return msg;
+  } catch {
+    /* not json */
+  }
+  return text.slice(0, 200) || fallback;
+}
+
 async function fetchMe(token: string): Promise<UserProfile> {
   const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me`, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  if (!res.ok) throw new Error('Failed to load profile');
-  return res.json() as Promise<UserProfile>;
+  if (!res.ok) throw new Error(await readApiError(res, 'Failed to load profile'));
+  const data = (await res.json()) as UserProfileApiResponse;
+  return {
+    id: data.id,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
+    avatarUrl: data.avatarUrl ?? null,
+    headline: data.linkedinProfile?.headline ?? null,
+    bio: data.linkedinProfile?.about ?? null,
+  };
 }
 async function fetchCareerGoals(token: string): Promise<CareerGoals> {
-  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me/career-goals`, {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return {};
-  return res.json() as Promise<CareerGoals>;
+  const data = (await res.json()) as UserProfileApiResponse;
+  return {
+    targetRole: data.careerGoals?.targetRole ?? null,
+    targetIndustries: data.careerGoals?.targetIndustries ?? [],
+  };
 }
-async function patchMe(token: string, data: Partial<UserProfile>): Promise<UserProfile> {
-  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me`, {
+async function patchProfileSummary(
+  token: string,
+  data: { headline?: string; about?: string },
+): Promise<void> {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me/profile-summary`, {
     method: 'PATCH',
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error('Failed to update profile');
-  return res.json() as Promise<UserProfile>;
+  if (!res.ok) throw new Error(await readApiError(res, 'Failed to update profile'));
+}
+async function patchAvatar(token: string, avatarUrl: string): Promise<void> {
+  const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ avatarUrl }),
+  });
+  if (!res.ok) throw new Error(await readApiError(res, 'Failed to update photo'));
 }
 async function patchCareerGoals(token: string, data: CareerGoals): Promise<CareerGoals> {
   const res = await fetch(`${getUserServiceUrl()}/api/v1/users/me/career-goals`, {
@@ -76,7 +124,7 @@ async function patchCareerGoals(token: string, data: CareerGoals): Promise<Caree
     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error('Failed to update career goals');
+  if (!res.ok) throw new Error(await readApiError(res, 'Failed to update career goals'));
   return res.json() as Promise<CareerGoals>;
 }
 
@@ -133,34 +181,75 @@ export default function ProfilePage() {
   const [bio, setBio] = useState('');
   const [targetRole, setTargetRole] = useState('');
   const [targetIndustry, setTargetIndustry] = useState('');
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [editingHeadline, setEditingHeadline] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (profileQuery.data) {
       setHeadline(profileQuery.data.headline ?? '');
       setBio(profileQuery.data.bio ?? '');
+      setAvatarUrl(profileQuery.data.avatarUrl ?? null);
     }
   }, [profileQuery.data]);
   useEffect(() => {
     if (goalsQuery.data) {
       setTargetRole(goalsQuery.data.targetRole ?? '');
-      setTargetIndustry(goalsQuery.data.targetIndustry ?? '');
+      setTargetIndustry(goalsQuery.data.targetIndustries?.[0] ?? '');
     }
   }, [goalsQuery.data]);
 
   const updateProfile = useMutation({
-    mutationFn: () => patchMe(accessToken!, { headline, bio }),
+    mutationFn: () => patchProfileSummary(accessToken!, { headline, about: bio }),
     onSuccess: () => {
       toast.success('Profile updated');
       setEditingHeadline(false);
+      void profileQuery.refetch();
     },
-    onError: () => toast.error('Failed to update profile'),
+    onError: (e: Error) => toast.error(e.message),
   });
   const updateGoals = useMutation({
-    mutationFn: () => patchCareerGoals(accessToken!, { targetRole, targetIndustry }),
-    onSuccess: () => toast.success('Career goals updated'),
-    onError: () => toast.error('Failed to update career goals'),
+    mutationFn: () =>
+      patchCareerGoals(accessToken!, {
+        targetRole: targetRole || undefined,
+        targetIndustries: targetIndustry ? [targetIndustry] : [],
+      }),
+    onSuccess: () => {
+      toast.success('Career goals updated');
+      void goalsQuery.refetch();
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
+
+  async function onAvatarSelected(file: File) {
+    if (!accessToken) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please choose an image file');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('Image must be under 2 MB');
+      return;
+    }
+    setUploadingAvatar(true);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error('Failed to read image'));
+        reader.readAsDataURL(file);
+      });
+      await patchAvatar(accessToken, dataUrl);
+      setAvatarUrl(dataUrl);
+      toast.success('Profile photo updated');
+      void profileQuery.refetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Failed to upload photo');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
 
   const profile = profileQuery.data;
   const displayName = profile
@@ -267,13 +356,50 @@ export default function ProfilePage() {
         <div className="p-6 pt-0">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-4">
-              <div
-                className={cn(
-                  '-mt-10 flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-fw-orange-light text-fw-deep text-2xl font-bold ring-4 ring-panel',
-                  openToWork && 'ring-green-400',
-                )}
-              >
-                {isLoading ? <Loader2 className="h-7 w-7 animate-spin" /> : initials}
+              <div className="relative -mt-10 shrink-0">
+                <div
+                  className={cn(
+                    'flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-fw-orange-light text-fw-deep text-2xl font-bold ring-4 ring-panel',
+                    openToWork && 'ring-green-400',
+                  )}
+                >
+                  {uploadingAvatar ? (
+                    <Loader2 className="h-7 w-7 animate-spin" />
+                  ) : avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt={displayName}
+                      width={80}
+                      height={80}
+                      unoptimized
+                      className="h-full w-full object-cover"
+                    />
+                  ) : isLoading ? (
+                    <Loader2 className="h-7 w-7 animate-spin" />
+                  ) : (
+                    initials
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  disabled={uploadingAvatar || !accessToken}
+                  className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full border border-border bg-panel text-foreground shadow-sm transition-colors hover:bg-surface-light"
+                  aria-label="Change profile photo"
+                >
+                  <Camera className="h-3.5 w-3.5" />
+                </button>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) void onAvatarSelected(file);
+                    e.target.value = '';
+                  }}
+                />
               </div>
               <div className="min-w-0 pt-3">
                 <h2 className="text-xl font-bold text-foreground">

@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Loader2, Sparkles } from 'lucide-react';
 import { PromptInputBox } from '@/components/ai-studio/prompt-input-box';
+import { forgeWindJson, getForgeWindApiBaseUrl } from '@/lib/forgewind-api';
+import { useForgeWindAccessToken } from '@/hooks/use-forgewind-access-token';
 import type { RepositorySummary } from '@/stores/forgewind.store';
+import toast from 'react-hot-toast';
 
 interface AIChatPanelProps {
   selectedRepository?: RepositorySummary;
@@ -16,23 +19,58 @@ type ChatMessage = {
 };
 
 export function AIChatPanel({ selectedRepository }: AIChatPanelProps) {
+  const accessToken = useForgeWindAccessToken();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const repoContext = selectedRepository?.fullName ?? null;
+  const apiReady = !!getForgeWindApiBaseUrl() && !!accessToken;
 
-  function onPrompt(prompt: string) {
+  async function onPrompt(prompt: string) {
     const userMsg: ChatMessage = {
       id: crypto.randomUUID(),
       role: 'user',
       content: prompt,
     };
-    const assistantMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: 'assistant',
-      content:
-        'AI-powered responses are coming soon. In the meantime, try syncing a repository from the Overview page to build your career context.',
-    };
-    setMessages((prev) => [...prev, userMsg, assistantMsg]);
+    setMessages((prev) => [...prev, userMsg]);
+    setLoading(true);
+
+    try {
+      if (!apiReady) {
+        throw new Error('AI is unavailable — sign in and ensure the ForgeWind API is configured.');
+      }
+
+      const result = await forgeWindJson<{ content: string }>('/ai/chat', {
+        method: 'POST',
+        accessToken,
+        body: JSON.stringify({
+          message: prompt,
+          ...(repoContext ? { repoContext } : {}),
+        }),
+      });
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: result.content,
+        },
+      ]);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'Something went wrong. Please try again.';
+      toast.error(message);
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: message,
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -44,7 +82,7 @@ export function AIChatPanel({ selectedRepository }: AIChatPanelProps) {
           <p className="mt-1 max-w-xs text-xs text-muted-foreground">
             {repoContext
               ? `Ask anything about your career or ${repoContext}.`
-              : 'Connect a repository first to unlock context-aware responses.'}
+              : 'Connect a repository in Data Hub for richer, context-aware answers.'}
           </p>
         </div>
       ) : (
@@ -55,15 +93,21 @@ export function AIChatPanel({ selectedRepository }: AIChatPanelProps) {
               className={`rounded-lg px-4 py-3 text-sm ${
                 msg.role === 'user'
                   ? 'ml-8 bg-primary-500/10 text-foreground'
-                  : 'mr-8 border border-border bg-surface text-muted-foreground'
+                  : 'mr-8 border border-border bg-surface text-foreground/90'
               }`}
             >
               {msg.content}
             </div>
           ))}
+          {loading && (
+            <div className="mr-8 flex items-center gap-2 rounded-lg border border-border bg-surface px-4 py-3 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Thinking…
+            </div>
+          )}
         </div>
       )}
-      <PromptInputBox onSubmit={onPrompt} />
+      <PromptInputBox onSubmit={onPrompt} disabled={loading} />
     </div>
   );
 }

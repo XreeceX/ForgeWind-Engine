@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UpdateUserDto, UpdateCareerGoalsDto } from './dto';
+import { UpdateUserDto, UpdateCareerGoalsDto, UpdateProfileSummaryDto } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { AuthenticatedUser } from '../auth/jwt.strategy';
@@ -49,6 +49,14 @@ export class UserController {
     @Body() dto: UpdateCareerGoalsDto,
   ) {
     return this.userService.updateCareerGoals(user.id, dto);
+  }
+
+  @Patch('me/profile-summary')
+  async updateProfileSummary(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateProfileSummaryDto,
+  ) {
+    return this.userService.updateProfileSummary(user.id, dto);
   }
 
   @Delete('me')

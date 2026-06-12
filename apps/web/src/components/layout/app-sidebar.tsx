@@ -246,7 +246,7 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                       onClick={() => {
                         setRepoPopoverOpen(false);
                         onClose();
-                        router.push('/data-hub');
+                        router.push('/data-hub?connect=1');
                       }}
                       className="inline-flex items-center gap-1.5 rounded-fw-btn bg-fw-orange px-3 py-1.5 text-xs font-medium text-white hover:bg-fw-deep"
                     >

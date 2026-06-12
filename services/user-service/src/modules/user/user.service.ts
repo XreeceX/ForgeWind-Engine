@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { User, Prisma } from '@prisma/client';
 import { PrismaService } from '../../common/prisma.service';
-import { UpdateUserDto, UpdateCareerGoalsDto } from './dto';
+import { UpdateUserDto, UpdateCareerGoalsDto, UpdateProfileSummaryDto } from './dto';
 
 type UserWithoutPassword = Omit<User, 'passwordHash'>;
 
@@ -66,6 +66,23 @@ export class UserService {
         ...dto,
       },
       update: dto,
+    });
+  }
+
+  async updateProfileSummary(userId: string, dto: UpdateProfileSummaryDto) {
+    await this.ensureUserExists(userId);
+
+    return this.prisma.linkedInProfileData.upsert({
+      where: { userId },
+      create: {
+        userId,
+        headline: dto.headline ?? null,
+        about: dto.about ?? null,
+      },
+      update: {
+        ...(dto.headline !== undefined ? { headline: dto.headline } : {}),
+        ...(dto.about !== undefined ? { about: dto.about } : {}),
+      },
     });
   }
 

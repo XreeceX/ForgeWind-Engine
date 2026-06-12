@@ -1,9 +1,19 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { Briefcase } from 'lucide-react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  Briefcase,
+  Check,
+  Copy,
+  FileText,
+  Linkedin,
+  Loader2,
+  Sparkles,
+  User,
+  Wand2,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 import { AIChatPanel } from '@/components/ai-studio/ai-chat-panel';
 import { ContentPreviewCard } from '@/components/content/content-preview-card';
@@ -12,16 +22,57 @@ import { JobMatchCard } from '@/components/jobs/job-match-card';
 import { AgentStatePanel } from '@/components/workspace/agent-state-panel';
 import { WorkModeBanner } from '@/components/workspace/work-mode-banner';
 import { WorkspaceStatRow } from '@/components/workspace/workspace-stat-row';
+import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Modal } from '@/components/ui/modal';
 import { useForgeWindStore } from '@/stores/forgewind.store';
 import { useForgeWindAccessToken } from '@/hooks/use-forgewind-access-token';
 import {
+  type ForgeWindApiNarrative,
   type ForgeWindApiOpportunityMatch,
   forgeWindJson,
   getForgeWindApiBaseUrl,
 } from '@/lib/forgewind-api';
 import { mapOpportunityMatchToJob } from '@/lib/forgewind-mappers';
+import { cn } from '@/lib/cn';
+
+/* ── content type definitions ───────────────────────────────── */
+const CONTENT_TYPES = [
+  {
+    id: 'commit_story',
+    label: 'LinkedIn Post',
+    description: 'Turn recent commits into an engaging LinkedIn story',
+    icon: Linkedin,
+    channel: 'linkedin' as const,
+    requiresRepo: true,
+  },
+  {
+    id: 'project_summary',
+    label: 'Project Story',
+    description: 'A narrative overview of your repository & its impact',
+    icon: FileText,
+    channel: 'linkedin' as const,
+    requiresRepo: true,
+  },
+  {
+    id: 'bio',
+    label: 'Professional Bio',
+    description: 'A polished, concise bio for your portfolio or README',
+    icon: User,
+    channel: 'portfolio' as const,
+    requiresRepo: false,
+  },
+  {
+    id: 'profile_optimization',
+    label: 'Profile Optimiser',
+    description: 'Headline and improvements to sharpen your public profile',
+    icon: Sparkles,
+    channel: 'portfolio' as const,
+    requiresRepo: false,
+  },
+] as const;
+
+type ContentTypeId = (typeof CONTENT_TYPES)[number]['id'];
 
 export function WorkModeDashboard() {
   const repositories = useForgeWindStore((state) => state.repositories);
@@ -35,6 +86,12 @@ export function WorkModeDashboard() {
   const pushGeneratedContent = useForgeWindStore((state) => state.pushGeneratedContent);
   const accessToken = useForgeWindAccessToken();
   const apiReady = !!getForgeWindApiBaseUrl() && !!accessToken;
+
+  /* ── Generate Post modal state ── */
+  const [generateOpen, setGenerateOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState<ContentTypeId>('commit_story');
+  const [generatedResult, setGeneratedResult] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const selectedRepository = useMemo(
     () => repositories.find((repo) => repo.id === selectedRepositoryId),
@@ -68,13 +125,57 @@ export function WorkModeDashboard() {
       .map(mapOpportunityMatchToJob);
   }, [apiReady, matchesQuery.data]);
 
-  function onGeneratePost() {
+  /* ── Generate narrative via API ── */
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      if (!forgeWindUserId) throw new Error('ForgeWind user not loaded yet.');
+      const typeConfig = CONTENT_TYPES.find((t) => t.id === selectedType)!;
+      const repoId =
+        typeConfig.requiresRepo && selectedRepositoryId ? selectedRepositoryId : undefined;
+
+      return forgeWindJson<ForgeWindApiNarrative>('/narratives/generate', {
+        method: 'POST',
+        accessToken,
+        body: JSON.stringify({
+          userId: forgeWindUserId,
+          type: selectedType,
+          ...(repoId ? { repoId } : {}),
+        }),
+      });
+    },
+    onSuccess: (narrative) => {
+      setGeneratedResult(narrative.content);
+    },
+    onError: (e: Error) => {
+      toast.error(e.message);
+    },
+  });
+
+  function saveToLibrary() {
+    if (!generatedResult) return;
+    const typeConfig = CONTENT_TYPES.find((t) => t.id === selectedType)!;
     pushGeneratedContent({
-      title: 'Building resilient APIs in product teams',
-      channel: 'linkedin',
-      body: `Generated from ${selectedRepository?.fullName ?? 'career context'} with an emphasis on measurable outcomes and architecture thinking.`,
+      title: typeConfig.label,
+      channel: typeConfig.channel,
+      body: generatedResult,
     });
-    toast.success('Draft saved to your content library', { duration: 4000 });
+    toast.success('Draft saved to your content library');
+    setGenerateOpen(false);
+    setGeneratedResult(null);
+  }
+
+  async function copyToClipboard() {
+    if (!generatedResult) return;
+    await navigator.clipboard.writeText(generatedResult);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  function openGenerateModal() {
+    setGeneratedResult(null);
+    setSelectedType('commit_story');
+    generateMutation.reset();
+    setGenerateOpen(true);
   }
 
   return (
@@ -87,7 +188,7 @@ export function WorkModeDashboard() {
       >
         <WorkModeBanner
           onOpenChat={() => setChatOverlayOpen(true)}
-          onGeneratePost={onGeneratePost}
+          onGeneratePost={openGenerateModal}
         />
 
         <section className="space-y-3">
@@ -187,6 +288,132 @@ export function WorkModeDashboard() {
         size="lg"
       >
         <AIChatPanel selectedRepository={selectedRepository} />
+      </Modal>
+
+      {/* ── Generate Post modal ── */}
+      <Modal
+        open={generateOpen}
+        onClose={() => {
+          setGenerateOpen(false);
+          setGeneratedResult(null);
+          generateMutation.reset();
+        }}
+        title="Generate content"
+        size="lg"
+      >
+        <div className="space-y-5">
+          {/* Type picker */}
+          {!generatedResult && (
+            <>
+              <p className="text-sm text-muted-foreground">
+                Choose the type of content to generate
+                {selectedRepository ? ` from ${selectedRepository.fullName}` : ''}.
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {CONTENT_TYPES.map((type) => {
+                  const Icon = type.icon;
+                  const isActive = selectedType === type.id;
+                  const disabled = type.requiresRepo && !selectedRepositoryId;
+                  return (
+                    <button
+                      key={type.id}
+                      type="button"
+                      disabled={disabled}
+                      onClick={() => setSelectedType(type.id)}
+                      className={cn(
+                        'rounded-fw-card border p-4 text-left transition-all duration-150',
+                        'disabled:cursor-not-allowed disabled:opacity-40',
+                        isActive
+                          ? 'border-fw-orange bg-fw-orange-light/50 ring-1 ring-fw-orange'
+                          : 'border-border bg-surface-light hover:border-fw-orange-mid',
+                      )}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <Icon
+                          className={cn(
+                            'h-4 w-4',
+                            isActive ? 'text-fw-orange' : 'text-muted-foreground',
+                          )}
+                        />
+                        <span className="text-sm font-semibold text-foreground">{type.label}</span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{type.description}</p>
+                      {type.requiresRepo && !selectedRepositoryId && (
+                        <p className="mt-1.5 text-[10px] font-medium text-amber-500">
+                          Requires an active repository
+                        </p>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {!apiReady && (
+                <p className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-700">
+                  ForgeWind API is not configured — generation will not work until the backend is
+                  connected.
+                </p>
+              )}
+
+              <div className="flex justify-end">
+                <Button
+                  onClick={() => generateMutation.mutate()}
+                  disabled={generateMutation.isPending || !apiReady || !forgeWindUserId}
+                >
+                  {generateMutation.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>
+                      <Wand2 className="h-4 w-4" />
+                      Generate
+                    </>
+                  )}
+                </Button>
+              </div>
+            </>
+          )}
+
+          {/* Result */}
+          {generatedResult && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-2">
+                <Check className="h-4 w-4 text-green-500" />
+                <p className="text-sm font-semibold text-foreground">Content generated</p>
+              </div>
+              <div className="rounded-fw-card border border-border bg-surface-light p-4 text-sm text-foreground whitespace-pre-wrap leading-relaxed max-h-80 overflow-y-auto">
+                {generatedResult}
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setGeneratedResult(null);
+                    generateMutation.reset();
+                  }}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  ← Try again
+                </button>
+                <div className="flex gap-2">
+                  <Button variant="secondary" size="sm" onClick={copyToClipboard}>
+                    {copied ? (
+                      <Check className="h-3.5 w-3.5 text-green-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                    {copied ? 'Copied!' : 'Copy'}
+                  </Button>
+                  <Button size="sm" onClick={saveToLibrary}>
+                    Save to library
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </Modal>
     </>
   );

@@ -78,10 +78,7 @@ export default function PostsPage() {
   const forgeWindUserId = useForgeWindStore((s) => s.forgeWindUserId);
   const generatedContent = useForgeWindStore((s) => s.generatedContent);
   const selectedRepositoryId = useForgeWindStore((s) => s.selectedRepositoryId);
-  const repositories = useForgeWindStore((s) => s.repositories);
   const pushGeneratedContent = useForgeWindStore((s) => s.pushGeneratedContent);
-  const selectedRepository = repositories.find((r) => r.id === selectedRepositoryId);
-
   const apiReady = !!getForgeWindApiBaseUrl() && !!accessToken;
   const queryClient = useQueryClient();
 

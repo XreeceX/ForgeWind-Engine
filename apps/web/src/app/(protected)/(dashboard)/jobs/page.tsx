@@ -6,7 +6,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   BookmarkCheck,
   Briefcase,
-  Building2,
   Check,
   CheckCircle2,
   Clock,
@@ -690,7 +689,7 @@ export default function JobsPage() {
                   <strong>Headline:</strong> {profile.headline}
                 </p>
               )}
-              {experience.length > 0 && (
+              {experience[0] && (
                 <p>
                   <strong>Recent role:</strong> {experience[0].title} at {experience[0].company}
                 </p>

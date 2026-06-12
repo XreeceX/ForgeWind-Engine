@@ -8,7 +8,6 @@ import { useTheme } from 'next-themes';
 import toast from 'react-hot-toast';
 import {
   Bell,
-  Bot,
   Check,
   ChevronRight,
   Download,

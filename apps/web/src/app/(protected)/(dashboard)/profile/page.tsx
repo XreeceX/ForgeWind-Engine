@@ -29,7 +29,6 @@ import {
   useForgeWindStore,
   type ExperienceItem,
   type EducationItem,
-  type SkillItem,
 } from '@/stores/forgewind.store';
 import { cn } from '@/lib/cn';
 import toast from 'react-hot-toast';

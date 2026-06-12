@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Github, Loader2, Plus, RefreshCw, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -40,7 +40,7 @@ async function fetchGitHubMeta(fullName: string) {
 function parseRepoInput(raw: string): string {
   const stripped = raw.trim().replace(/\/$/, '');
   const ghUrl = stripped.match(/github\.com\/([^/]+\/[^/]+)/);
-  return ghUrl ? ghUrl[1] : stripped;
+  return ghUrl?.[1] ?? stripped;
 }
 
 /* ────────────────────────────────────────────────── */
@@ -67,16 +67,19 @@ export default function DataHubPage() {
     queryKey: ['repositories', accessToken],
     enabled: !!accessToken && apiConfigured,
     queryFn: () => forgeWindJson<ForgeWindApiRepository[]>('/repositories', { accessToken }),
-    onSuccess: (rows) => {
-      const mapped = rows.map(mapForgeWindRepositoryToSummary);
-      setRepositories(mapped);
-      const active = rows.find((r) => r.isActive);
-      const fallback = mapped[0]?.id ?? '';
-      useForgeWindStore.setState({
-        selectedRepositoryId: active?.id ?? fallback,
-      });
-    },
   });
+
+  /* Sync fetched repos into the store (React Query v5 dropped onSuccess) */
+  useEffect(() => {
+    if (!repos.length) return;
+    const mapped = repos.map(mapForgeWindRepositoryToSummary);
+    setRepositories(mapped);
+    const active = repos.find((r) => r.isActive);
+    const fallback = mapped[0]?.id ?? '';
+    useForgeWindStore.setState({
+      selectedRepositoryId: active?.id ?? fallback,
+    });
+  }, [repos, setRepositories]);
 
   const mappedRepos = repos.map(mapForgeWindRepositoryToSummary);
   const selectedRepo = mappedRepos.find((r) => r.id === selectedRepositoryId);

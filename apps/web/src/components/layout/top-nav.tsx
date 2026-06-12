@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  Bell,
   ChevronRight,
   Command,
   Home,
@@ -52,19 +53,26 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
     : '?';
 
   const [profileOpen, setProfileOpen] = useState(false);
+  const [bellOpen, setBellOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const bellRef = useRef<HTMLDivElement>(null);
+  const generatedContent = useForgeWindStore((state) => state.generatedContent);
+  const recentActivity = generatedContent.slice(0, 5);
 
   /* Close on outside click */
   useEffect(() => {
-    if (!profileOpen) return;
+    if (!profileOpen && !bellOpen) return;
     const handler = (e: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setProfileOpen(false);
       }
+      if (bellRef.current && !bellRef.current.contains(e.target as Node)) {
+        setBellOpen(false);
+      }
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
-  }, [profileOpen]);
+  }, [profileOpen, bellOpen]);
 
   const breadcrumbs = useMemo(() => {
     if (pathname === '/' || pathname === '') return ['Workspace'];
@@ -131,6 +139,44 @@ export function TopNav({ onOpenSidebar }: TopNavProps) {
           >
             {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
+
+          {/* Notification bell */}
+          <div className="relative" ref={bellRef}>
+            <button
+              type="button"
+              onClick={() => setBellOpen((v) => !v)}
+              className="relative rounded-fw-btn p-2 text-muted-foreground transition-colors duration-200 hover:bg-surface-light"
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4" />
+              {recentActivity.length > 0 && (
+                <span className="absolute right-1 top-1 flex h-2 w-2 rounded-full bg-fw-orange" />
+              )}
+            </button>
+            {bellOpen && (
+              <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-fw-card border border-border bg-panel shadow-md">
+                <div className="border-b border-border px-4 py-3">
+                  <p className="text-sm font-semibold text-foreground">Recent activity</p>
+                </div>
+                {recentActivity.length === 0 ? (
+                  <p className="px-4 py-6 text-center text-xs text-muted-foreground">
+                    You&apos;re all caught up.
+                  </p>
+                ) : (
+                  <ul className="max-h-64 overflow-y-auto py-1">
+                    {recentActivity.map((item) => (
+                      <li key={item.id} className="px-4 py-2.5 hover:bg-surface-light">
+                        <p className="truncate text-xs font-medium text-foreground">{item.title}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {item.channel} · {new Date(item.createdAt).toLocaleDateString()}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+          </div>
 
           <Button
             size="sm"

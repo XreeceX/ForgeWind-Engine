@@ -83,6 +83,15 @@ function companyUrl(company: string, jobTitle: string, jobUrl?: string | null): 
   return KNOWN_CAREERS[key] ?? linkedInSearchUrl(jobTitle, company);
 }
 
+/* deterministic brand-ish hue per company name */
+function companyHue(company: string): number {
+  let hash = 0;
+  for (let i = 0; i < company.length; i++) {
+    hash = (hash * 31 + company.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash) % 360;
+}
+
 export default function JobsPage() {
   const accessToken = useForgeWindAccessToken();
   const forgeWindUserId = useForgeWindStore((s) => s.forgeWindUserId);
@@ -403,8 +412,13 @@ export default function JobsPage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      {/* Company initials badge */}
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border bg-surface-light text-sm font-bold text-foreground">
+                      {/* Company initials badge — deterministic brand hue */}
+                      <div
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-sm"
+                        style={{
+                          background: `linear-gradient(135deg, hsl(${companyHue(job.company)} 65% 48%), hsl(${(companyHue(job.company) + 30) % 360} 70% 38%))`,
+                        }}
+                      >
                         {job.company.slice(0, 2).toUpperCase()}
                       </div>
                       <div className="min-w-0">
@@ -433,9 +447,22 @@ export default function JobsPage() {
                         </div>
                       </div>
                     </div>
-                    <Badge variant={matchVariant} className="shrink-0">
-                      {job.matchScore}% match
-                    </Badge>
+                    <div className="flex shrink-0 flex-col items-end gap-1.5">
+                      <Badge variant={matchVariant}>{job.matchScore}% match</Badge>
+                      <div className="h-1.5 w-20 overflow-hidden rounded-full bg-border">
+                        <div
+                          className={cn(
+                            'h-full rounded-full transition-all duration-500',
+                            job.matchScore >= 85
+                              ? 'bg-success'
+                              : job.matchScore >= 70
+                                ? 'bg-gradient-to-r from-fw-orange to-amber-400'
+                                : 'bg-warning',
+                          )}
+                          style={{ width: `${Math.min(100, job.matchScore)}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   <p className="mt-3 flex items-start gap-1.5 text-sm text-muted-foreground">

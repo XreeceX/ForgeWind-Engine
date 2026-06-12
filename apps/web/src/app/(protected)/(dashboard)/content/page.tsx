@@ -341,8 +341,17 @@ export default function PostsPage() {
             return (
               <Card
                 key={item.id}
-                className="p-5 transition-all duration-200 hover:border-fw-orange-mid hover:shadow-sm"
+                className="relative overflow-hidden p-5 transition-all duration-200 hover:border-fw-orange-mid hover:shadow-sm"
               >
+                {/* Pin ribbon */}
+                {isPinned && (
+                  <div className="absolute -right-8 top-3 rotate-45 bg-gradient-to-r from-fw-orange to-amber-400 px-8 py-0.5 shadow-sm">
+                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                      <Pin className="h-2.5 w-2.5" /> Pinned
+                    </span>
+                  </div>
+                )}
+
                 {/* Post header */}
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex items-center gap-2">
@@ -357,11 +366,6 @@ export default function PostsPage() {
                       </p>
                     </div>
                   </div>
-                  {isPinned && (
-                    <span className="flex items-center gap-1 rounded-full bg-fw-orange-light px-2 py-0.5 text-[10px] font-semibold text-fw-orange">
-                      <Pin className="h-2.5 w-2.5" /> Pinned
-                    </span>
-                  )}
                 </div>
 
                 {/* Post body */}

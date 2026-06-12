@@ -262,97 +262,129 @@ export default function ProfilePage() {
       )}
 
       {/* Profile hero card */}
-      <Card className="p-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-primary-500/20 text-primary-600 text-2xl font-bold">
-              {isLoading ? <Loader2 className="h-7 w-7 animate-spin" /> : initials}
+      <Card className="overflow-hidden p-0">
+        {/* Cover band */}
+        <div className="h-24 bg-gradient-to-r from-fw-orange via-amber-400 to-fw-orange-mid" />
+        <div className="p-6 pt-0">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-4">
+              <div
+                className={cn(
+                  '-mt-10 flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-fw-orange-light text-fw-deep text-2xl font-bold ring-4 ring-panel',
+                  openToWork && 'ring-green-400',
+                )}
+              >
+                {isLoading ? <Loader2 className="h-7 w-7 animate-spin" /> : initials}
+              </div>
+              <div className="min-w-0 pt-3">
+                <h2 className="text-xl font-bold text-foreground">
+                  {isLoading ? 'Loading…' : displayName || 'Your Name'}
+                </h2>
+                {editingHeadline ? (
+                  <div className="mt-1 flex items-center gap-2">
+                    <Input
+                      value={headline}
+                      onChange={(e) => setHeadline(e.target.value)}
+                      placeholder="Add a headline"
+                      className="h-8 text-sm"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateProfile.mutate()}
+                      className="text-fw-orange hover:text-fw-deep"
+                    >
+                      {updateProfile.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Check className="h-4 w-4" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingHeadline(false)}
+                      className="text-muted-foreground"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <p className="text-sm text-muted-foreground">{headline || 'Add a headline'}</p>
+                    <button
+                      type="button"
+                      onClick={() => setEditingHeadline(true)}
+                      className="text-muted-foreground hover:text-fw-orange"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                )}
+                <p className="mt-0.5 text-xs text-muted-foreground">{email}</p>
+                {targetRole && (
+                  <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1">
+                    <Target className="h-3.5 w-3.5 text-amber-400" />
+                    Targeting: {targetRole}
+                    {targetIndustry ? ` · ${targetIndustry}` : ''}
+                  </p>
+                )}
+              </div>
             </div>
-            <div className="min-w-0">
-              <h2 className="text-xl font-bold text-foreground">
-                {isLoading ? 'Loading…' : displayName || 'Your Name'}
-              </h2>
-              {editingHeadline ? (
-                <div className="mt-1 flex items-center gap-2">
-                  <Input
-                    value={headline}
-                    onChange={(e) => setHeadline(e.target.value)}
-                    placeholder="Add a headline"
-                    className="h-8 text-sm"
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={() => updateProfile.mutate()}
-                    className="text-fw-orange hover:text-fw-deep"
-                  >
-                    {updateProfile.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Check className="h-4 w-4" />
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setEditingHeadline(false)}
-                    className="text-muted-foreground"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <p className="text-sm text-muted-foreground">{headline || 'Add a headline'}</p>
-                  <button
-                    type="button"
-                    onClick={() => setEditingHeadline(true)}
-                    className="text-muted-foreground hover:text-fw-orange"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              )}
-              <p className="mt-0.5 text-xs text-muted-foreground">{email}</p>
-              {targetRole && (
-                <p className="mt-1 text-xs text-muted-foreground flex items-center gap-1">
-                  <Target className="h-3.5 w-3.5 text-amber-400" />
-                  Targeting: {targetRole}
-                  {targetIndustry ? ` · ${targetIndustry}` : ''}
-                </p>
-              )}
+
+            {/* Open to work toggle + share */}
+            <div className="flex shrink-0 items-center gap-2 pt-3">
+              <button
+                type="button"
+                onClick={async () => {
+                  const summary = [
+                    displayName,
+                    headline,
+                    bio,
+                    experience.length > 0
+                      ? `Experience: ${experience.map((e) => `${e.title} at ${e.company}`).join('; ')}`
+                      : '',
+                    skills.length > 0 ? `Skills: ${skills.map((s) => s.name).join(', ')}` : '',
+                  ]
+                    .filter(Boolean)
+                    .join('\n');
+                  await navigator.clipboard.writeText(summary);
+                  toast.success('Profile summary copied to clipboard');
+                }}
+                className="rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:border-fw-orange hover:text-fw-orange"
+              >
+                Share profile
+              </button>
+              <button
+                type="button"
+                onClick={() => setOpenToWork(!openToWork)}
+                className={cn(
+                  'rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
+                  openToWork
+                    ? 'border-green-400 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    : 'border-border text-muted-foreground hover:border-fw-orange hover:text-fw-orange',
+                )}
+              >
+                {openToWork ? '✓ Open to work' : '+ Open to work'}
+              </button>
             </div>
           </div>
 
-          {/* Open to work toggle */}
-          <button
-            type="button"
-            onClick={() => setOpenToWork(!openToWork)}
-            className={cn(
-              'shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors',
-              openToWork
-                ? 'border-green-400 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                : 'border-border text-muted-foreground hover:border-fw-orange hover:text-fw-orange',
-            )}
-          >
-            {openToWork ? '✓ Open to work' : '+ Open to work'}
-          </button>
-        </div>
-
-        {/* Completion bar */}
-        <div className="mt-5 rounded-lg border border-border bg-surface-light p-3">
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs font-semibold text-foreground">Profile completion</p>
-            <span className="text-xs font-bold text-fw-orange">{completionPct}%</span>
+          {/* Completion bar */}
+          <div className="mt-5 rounded-lg border border-border bg-surface-light p-3">
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-xs font-semibold text-foreground">Profile completion</p>
+              <span className="text-xs font-bold text-fw-orange">{completionPct}%</span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-border">
+              <div
+                className="h-2 rounded-full bg-gradient-to-r from-fw-orange to-amber-400 transition-all duration-500"
+                style={{ width: `${completionPct}%` }}
+              />
+            </div>
+            <p className="mt-1.5 text-[11px] text-muted-foreground">
+              {completionPct < 100 ? 'Add more sections below to reach 100%' : 'Profile complete!'}
+            </p>
           </div>
-          <div className="h-2 w-full rounded-full bg-border">
-            <div
-              className="h-2 rounded-full bg-fw-orange transition-all duration-500"
-              style={{ width: `${completionPct}%` }}
-            />
-          </div>
-          <p className="mt-1.5 text-[11px] text-muted-foreground">
-            {completionPct < 100 ? 'Add more sections below to reach 100%' : 'Profile complete!'}
-          </p>
         </div>
       </Card>
 

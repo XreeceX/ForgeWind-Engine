@@ -155,15 +155,32 @@ export default function DataHubPage() {
             Connect GitHub repositories to power your AI agents, content, and job matches.
           </p>
         </div>
-        <Button
-          onClick={() => {
-            setConnectOpen(true);
-            setTimeout(() => inputRef.current?.focus(), 50);
-          }}
-        >
-          <Plus className="h-4 w-4" />
-          Connect repo
-        </Button>
+        <div className="flex gap-2">
+          {mappedRepos.length > 1 && (
+            <Button
+              variant="secondary"
+              disabled={syncingId !== null}
+              onClick={async () => {
+                for (const repo of mappedRepos) {
+                  await syncRepo(repo.id);
+                }
+                toast.success('All repositories synced');
+              }}
+            >
+              <RefreshCw className="h-4 w-4" />
+              Sync all
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              setConnectOpen(true);
+              setTimeout(() => inputRef.current?.focus(), 50);
+            }}
+          >
+            <Plus className="h-4 w-4" />
+            Connect repo
+          </Button>
+        </div>
       </div>
 
       {/* Connect modal */}

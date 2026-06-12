@@ -1,13 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import {
   Briefcase,
   Check,
   Copy,
   FileText,
+  FolderGit2,
   Linkedin,
   Loader2,
   Sparkles,
@@ -75,6 +78,8 @@ const CONTENT_TYPES = [
 type ContentTypeId = (typeof CONTENT_TYPES)[number]['id'];
 
 export function WorkModeDashboard() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const repositories = useForgeWindStore((state) => state.repositories);
   const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
   const generatedContent = useForgeWindStore((state) => state.generatedContent);
@@ -178,6 +183,38 @@ export function WorkModeDashboard() {
     setGenerateOpen(true);
   }
 
+  const hour = new Date().getHours();
+  const timeGreeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  const firstName = (session?.user?.name ?? '').split(' ')[0];
+  const greeting = firstName ? `${timeGreeting}, ${firstName}` : 'ForgeWind workspace';
+
+  const quickActions = [
+    {
+      label: 'Generate Post',
+      description: 'AI-written content from your repos',
+      icon: Wand2,
+      onClick: openGenerateModal,
+    },
+    {
+      label: 'Find Jobs',
+      description: 'AI-matched roles for your profile',
+      icon: Briefcase,
+      onClick: () => router.push('/jobs'),
+    },
+    {
+      label: 'View Insights',
+      description: 'Everything the AI knows about you',
+      icon: Sparkles,
+      onClick: () => router.push('/memory'),
+    },
+    {
+      label: 'Connect Repo',
+      description: 'Add a GitHub repository',
+      icon: FolderGit2,
+      onClick: () => router.push('/data-hub'),
+    },
+  ];
+
   return (
     <>
       <motion.div
@@ -187,9 +224,30 @@ export function WorkModeDashboard() {
         className="flex flex-col gap-6"
       >
         <WorkModeBanner
+          greeting={greeting}
           onOpenChat={() => setChatOverlayOpen(true)}
           onGeneratePost={openGenerateModal}
         />
+
+        {/* Quick actions */}
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {quickActions.map((action) => (
+            <motion.button
+              key={action.label}
+              type="button"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={action.onClick}
+              className="group rounded-fw-card border border-border bg-panel p-4 text-left shadow-sm transition-all duration-200 hover:border-fw-orange-mid hover:shadow-md"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-fw-orange-light transition-colors group-hover:bg-gradient-to-br group-hover:from-fw-orange group-hover:to-amber-400">
+                <action.icon className="h-4.5 w-4.5 text-fw-orange transition-colors group-hover:text-white" />
+              </div>
+              <p className="mt-2.5 text-sm font-semibold text-foreground">{action.label}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{action.description}</p>
+            </motion.button>
+          ))}
+        </div>
 
         <section className="space-y-3">
           <div>
@@ -198,16 +256,34 @@ export function WorkModeDashboard() {
             </p>
             <h2 className="mt-1 text-lg font-semibold text-foreground">Connected repos</h2>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {repositories.map((repo) => (
-              <RepoCard
-                key={repo.id}
-                repo={repo}
-                selected={repo.id === selectedRepositoryId}
-                onSelect={setSelectedRepository}
-              />
-            ))}
-          </div>
+          {repositories.length === 0 ? (
+            <Card className="flex flex-col items-center gap-3 py-10 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-fw-orange-light">
+                <FolderGit2 className="h-6 w-6 text-fw-orange" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">No repositories connected</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Connect a GitHub repo to unlock AI analysis, content, and job matching.
+                </p>
+              </div>
+              <Button size="sm" onClick={() => router.push('/data-hub')}>
+                <FolderGit2 className="h-4 w-4" />
+                Connect a repo
+              </Button>
+            </Card>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {repositories.map((repo) => (
+                <RepoCard
+                  key={repo.id}
+                  repo={repo}
+                  selected={repo.id === selectedRepositoryId}
+                  onSelect={setSelectedRepository}
+                />
+              ))}
+            </div>
+          )}
         </section>
 
         <AgentStatePanel

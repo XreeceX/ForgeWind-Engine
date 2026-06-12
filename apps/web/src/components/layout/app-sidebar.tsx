@@ -155,10 +155,10 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
                     href={item.href}
                     onClick={onClose}
                     className={cn(
-                      'group flex h-12 items-center gap-3 rounded-r-[12px] border-l-[3px] pl-3 pr-3 text-sm font-medium transition-all duration-200',
+                      'group relative flex h-12 items-center gap-3 rounded-r-[12px] pl-3.5 pr-3 text-sm font-medium transition-all duration-200',
                       isActive
-                        ? 'border-l-fw-orange bg-fw-orange-light text-fw-orange'
-                        : 'border-l-transparent text-foreground hover:border-l-fw-orange-mid hover:bg-surface-light hover:text-fw-orange',
+                        ? 'bg-fw-orange-light text-fw-orange before:absolute before:inset-y-1 before:left-0 before:w-[3px] before:rounded-full before:bg-gradient-to-b before:from-fw-orange before:to-amber-400'
+                        : 'text-foreground hover:bg-surface-light hover:text-fw-orange',
                     )}
                   >
                     <motion.span

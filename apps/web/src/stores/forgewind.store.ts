@@ -51,6 +51,13 @@ export type NarrativeSectionId =
   | 'creation'
   | 'opportunity';
 
+export interface NotificationPrefs {
+  jobMatchAlerts: boolean;
+  contentReminders: boolean;
+  weeklyDigest: boolean;
+  agentUpdates: boolean;
+}
+
 export interface ForgeWindAgentSnapshot {
   mode: string;
   agentStatus: string;
@@ -92,6 +99,7 @@ interface ForgeWindState {
   aiAnalysis: AIAnalysisState;
   generatedContent: GeneratedContentItem[];
   memoryContext: MemoryContext;
+  notifications: NotificationPrefs;
   openToWork: boolean;
   experience: ExperienceItem[];
   education: EducationItem[];
@@ -99,6 +107,7 @@ interface ForgeWindState {
   commandPaletteOpen: boolean;
   activeNarrativeSection: NarrativeSectionId;
   chatOverlayOpen: boolean;
+  setNotifications: (prefs: Partial<NotificationPrefs>) => void;
   setOpenToWork: (open: boolean) => void;
   addExperience: (item: Omit<ExperienceItem, 'id'>) => void;
   updateExperience: (id: string, patch: Partial<ExperienceItem>) => void;
@@ -150,6 +159,12 @@ export const useForgeWindStore = create<ForgeWindState>()(
         strengths: [],
         gaps: [],
         preferredTone: 'professional',
+      },
+      notifications: {
+        jobMatchAlerts: true,
+        contentReminders: true,
+        weeklyDigest: false,
+        agentUpdates: true,
       },
       openToWork: false,
       experience: [],
@@ -231,6 +246,8 @@ export const useForgeWindStore = create<ForgeWindState>()(
             ...updates,
           },
         })),
+      setNotifications: (prefs) =>
+        set((s) => ({ notifications: { ...s.notifications, ...prefs } })),
       setOpenToWork: (openToWork) => set({ openToWork }),
       addExperience: (item) =>
         set((s) => ({ experience: [{ ...item, id: crypto.randomUUID() }, ...s.experience] })),

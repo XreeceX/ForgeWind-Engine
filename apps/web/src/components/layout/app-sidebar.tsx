@@ -1,16 +1,21 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   BrainCircuit,
+  ChevronDown,
+  Check,
   X,
   Database,
+  ExternalLink,
   FileText,
   FolderGit2,
   Home,
   LayoutDashboard,
   MemoryStick,
+  Plus,
   Settings,
   BriefcaseBusiness,
   LogOut,
@@ -51,10 +56,27 @@ interface AppSidebarProps {
 
 export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
   const selectedRepositoryId = useForgeWindStore((state) => state.selectedRepositoryId);
   const repositories = useForgeWindStore((state) => state.repositories);
+  const setSelectedRepository = useForgeWindStore((state) => state.setSelectedRepository);
   const selectedRepo = repositories.find((repo) => repo.id === selectedRepositoryId);
+  const accessToken = session?.accessToken as string | undefined;
+
+  const [repoPopoverOpen, setRepoPopoverOpen] = useState(false);
+  const popoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!repoPopoverOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (popoverRef.current && !popoverRef.current.contains(e.target as Node)) {
+        setRepoPopoverOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [repoPopoverOpen]);
 
   const userName = session?.user?.name ?? '';
   const userEmail = session?.user?.email ?? '';
@@ -174,22 +196,107 @@ export function AppSidebar({ isOpen, onClose }: AppSidebarProps) {
 
         {/* Footer */}
         <div className="mt-auto border-t border-border p-3 space-y-2">
-          {/* Active repo */}
-          <div className="rounded-fw-card border border-fw-orange-mid bg-fw-orange-light/50 p-3">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-fw-orange">
-              Active repo
-            </p>
-            <div className="mt-2 flex items-start gap-2">
-              <FolderGit2 className="mt-0.5 h-4 w-4 shrink-0 text-fw-orange" />
-              <div className="min-w-0">
-                <p className="truncate font-mono text-xs font-medium text-foreground">
-                  {selectedRepo?.fullName ?? 'None selected'}
+          {/* Active repo — interactive popover */}
+          <div className="relative" ref={popoverRef}>
+            <button
+              type="button"
+              onClick={() => setRepoPopoverOpen((v) => !v)}
+              className={cn(
+                'w-full rounded-fw-card border p-3 text-left transition-colors duration-150',
+                'hover:border-fw-orange-mid hover:bg-fw-orange-light/30',
+                selectedRepo
+                  ? 'border-fw-orange-mid bg-fw-orange-light/50'
+                  : 'border-border bg-surface-light',
+              )}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-fw-orange">
+                  Active repo
                 </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {selectedRepo?.summary ?? 'Select a repository in Data Hub.'}
-                </p>
+                <ChevronDown
+                  className={cn(
+                    'h-3.5 w-3.5 text-muted-foreground transition-transform duration-150',
+                    repoPopoverOpen && 'rotate-180',
+                  )}
+                />
               </div>
-            </div>
+              <div className="mt-2 flex items-start gap-2">
+                <FolderGit2 className="mt-0.5 h-4 w-4 shrink-0 text-fw-orange" />
+                <div className="min-w-0">
+                  <p className="truncate font-mono text-xs font-medium text-foreground">
+                    {selectedRepo?.fullName ?? 'None selected'}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {selectedRepo ? selectedRepo.language : 'Click to connect or switch repos'}
+                  </p>
+                </div>
+              </div>
+            </button>
+
+            {/* Popover */}
+            {repoPopoverOpen && (
+              <div className="absolute bottom-full left-0 right-0 mb-2 rounded-fw-card border border-border bg-panel shadow-md">
+                {repositories.length === 0 ? (
+                  <div className="p-4 text-center">
+                    <p className="text-xs text-muted-foreground mb-3">
+                      No repositories connected yet.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRepoPopoverOpen(false);
+                        onClose();
+                        router.push('/data-hub');
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-fw-btn bg-fw-orange px-3 py-1.5 text-xs font-medium text-white hover:bg-fw-deep"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      Connect a repo
+                    </button>
+                  </div>
+                ) : (
+                  <ul className="max-h-52 overflow-y-auto py-1">
+                    {repositories.map((repo) => (
+                      <li key={repo.id}>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedRepository(repo.id, accessToken);
+                            setRepoPopoverOpen(false);
+                          }}
+                          className="flex w-full items-center gap-2.5 px-3 py-2 text-left hover:bg-surface-light"
+                        >
+                          <FolderGit2 className="h-3.5 w-3.5 shrink-0 text-fw-orange" />
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate font-mono text-xs font-medium text-foreground">
+                              {repo.fullName}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground">{repo.language}</p>
+                          </div>
+                          {repo.id === selectedRepositoryId && (
+                            <Check className="h-3.5 w-3.5 shrink-0 text-fw-orange" />
+                          )}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className="border-t border-border px-3 py-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setRepoPopoverOpen(false);
+                      onClose();
+                      router.push('/data-hub');
+                    }}
+                    className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-fw-orange"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    Manage in Data Hub
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* User info */}
